@@ -32,7 +32,7 @@ def _valid_today(episode, today=None):
     if not first:
         return True
     today = today or date.today().isoformat()
-    return first <= today
+    return first <= today if len(first) == 10 and first[4] == "-" else True
 
 
 def _episode_order(ep):
@@ -98,12 +98,21 @@ def _show_context(xbmc):
     ) if label(x).isdigit()), "")
     # Never pass Container(56).ListItem.DBID as tvshowid: it identifies a season.
     show_ids = []
-    for expr in ("Container(5698).ListItem.DBID", "ListItem.DBID"):
+    for expr in ("Container(56).ListItem.TvShowDBID",
+                 "Container(5698).ListItem.DBID",
+                 "ListItem.TvShowDBID", "ListItem.DBID"):
         if expr == "ListItem.DBID" and label("ListItem.DBType") != "tvshow":
             continue
         val = label(expr)
         if val.isdigit() and int(val) > 0:
             show_ids.append(int(val))
+    # Native Kodi season paths encode the parent tvshow ID, even when
+    # season list items contain no unique ID of their own.
+    import re
+    match = re.search(r"videodb://tvshows/[^/]+/(\\d+)/",
+                      label("Container.FolderPath"))
+    if match and int(match.group(1)) not in show_ids:
+        show_ids.insert(0, int(match.group(1)))
     return title.strip(), tmdb, show_ids
 
 
