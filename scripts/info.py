@@ -32,6 +32,7 @@ MAX_STUDIOS = 4
 HOME = xbmcgui.Window(10000)
 
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+_IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 T = {
     "library": ("Trakt collection", "Trakt-collectie"),
     "added_to": ("{0} added to your library ({1})", "{0} toegevoegd aan je bibliotheek ({1})"),
@@ -69,7 +70,11 @@ T = {
 
 
 def tr(key, *args):
-    text = T[key][1 if _NL else 0]
+    if _IT:
+        from lang_it import translate
+        text = translate(T[key][0])
+    else:
+        text = T[key][1 if _NL else 0]
     return text.format(*args) if args else text
 
 
@@ -738,8 +743,9 @@ def tmdb_key():
 
 def set_tmdb_key():
     """Skin settings > Integrations: type your own TMDB key (empty = remove it)."""
-    text = ("TMDB API-sleutel (gratis op themoviedb.org > Instellingen > API)" if _NL
-            else "TMDB API key (free at themoviedb.org > Settings > API)")
+    text = ("Chiave API TMDb (gratuita su themoviedb.org > Impostazioni > API)" if _IT
+            else ("TMDB API-sleutel (gratis op themoviedb.org > Instellingen > API)" if _NL
+            else "TMDB API key (free at themoviedb.org > Settings > API)"))
     key = xbmcgui.Dialog().input(text, defaultt=_read_key(TMDB_KEYFILES[0]))
     if key is None or (not key.strip() and not _read_key(TMDB_KEYFILES[0])):
         return
@@ -755,7 +761,7 @@ def tmdb(path, **params):
     if not key:
         raise RuntimeError("no TMDB key")
     params["api_key"] = key
-    params.setdefault("language", "nl-NL" if _NL else "en-US")
+    params.setdefault("language", "it-IT" if _IT else ("nl-NL" if _NL else "en-US"))
     return http(f"{TMDB}{path}?{urllib.parse.urlencode(params)}")
 
 
@@ -857,7 +863,7 @@ def load_reviews(item):
     reviews = []
     if item.tmdb.isdigit():
         seen = set()
-        for lang in (("nl-NL", "en-US") if _NL else ("en-US",)):
+        for lang in (("it-IT", "en-US") if _IT else (("nl-NL", "en-US") if _NL else ("en-US",))):
             try:
                 for r in tmdb(f"{kind}/{item.tmdb}/reviews", language=lang).get("results") or []:
                     if r.get("id") in seen:
@@ -926,7 +932,7 @@ def load_videos(item):
     if not kind or not item.tmdb.isdigit():
         return
     try:
-        lang = "nl" if _NL else "en"
+        lang = "it" if _IT else ("nl" if _NL else "en")
         videos = tmdb(f"{kind}/{item.tmdb}/videos", include_video_language=f"{lang},en,null").get("results") or []
     except Exception as error:  # noqa: BLE001
         log(f"videos: {error}")
@@ -955,7 +961,7 @@ def _region():
         code = xbmc.getLanguage(xbmc.ISO_639_1, True) or ""
         if "-" in code:
             return code.split("-")[1].upper()
-        return {"nl": "NL", "en": "GB", "de": "DE", "fr": "FR", "be": "BE"}.get(code.lower(), "NL")
+        return {"it": "IT", "nl": "NL", "en": "GB", "de": "DE", "fr": "FR", "be": "BE"}.get(code.lower(), "NL")
     except Exception:  # noqa: BLE001
         return "NL"
 
@@ -1230,7 +1236,7 @@ def show_studio(name):
 # ----------------------------------------------------------------------------- open a title's page from TMDB data
 def build_listitem(kind, tmdb_id, trakt_id):
     """A film / series item with TMDB data that the info page can show."""
-    lang = "nl" if _NL else "en"
+    lang = "it" if _IT else ("nl" if _NL else "en")
     extra = "credits,external_ids,images,release_dates" if kind == "movie" else "credits,external_ids,images,content_ratings"
     data = tmdb(f"{kind}/{tmdb_id}", append_to_response=extra, include_image_language=f"{lang},en,null")
     if not data.get("overview"):
