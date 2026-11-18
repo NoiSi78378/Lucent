@@ -152,9 +152,13 @@ def play(cid):
 GN = 6
 REMIND_FILE = "special://profile/addon_data/skin.lucent/live_reminders.json"
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 
 def tr(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if _NL else en
 
 
