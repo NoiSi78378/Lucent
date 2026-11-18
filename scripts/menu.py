@@ -25,6 +25,7 @@ HEADING = "Lucent"
 
 # ----------------------------------------------------------------------------- texts
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+_IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 T = {
     "menu": ("Menu and widgets", "Menu en widgets"),
     "add_tab": ("+ Add a tab", "+ Tab toevoegen"),
@@ -129,7 +130,12 @@ T = {
 
 
 def tr(key, *args):
-    text = (key if isinstance(key, tuple) else T[key])[1 if _NL else 0]
+    pair = key if isinstance(key, tuple) else T[key]
+    if _IT:
+        from lang_it import translate
+        text = translate(pair[0])
+    else:
+        text = pair[1 if _NL else 0]
     return text.format(*args) if args else text
 
 
@@ -538,7 +544,10 @@ def addon_widgets():
 
 
 def tr_pair(pair):
-    return pair[1] if xbmc.getLanguage(xbmc.ISO_639_1) == "nl" else pair[0]
+    if _IT:
+        from lang_it import translate
+        return translate(pair[0])
+    return pair[1] if _NL else pair[0]
 
 
 def plain_tabs():
