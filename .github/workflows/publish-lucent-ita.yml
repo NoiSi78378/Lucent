@@ -3,6 +3,8 @@ name: Publish Lucent ITA Kodi repository
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - "addon.xml"
       - "colors/**"
