@@ -1,0 +1,2420 @@
+# Kodi Media Center language file
+# Addon Name: Lucent
+# Addon id: skin.lucent
+msgid ""
+msgstr ""
+"Project-Id-Version: skin.lucent\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "#31000"
+msgid "Default"
+msgstr "Predefinito"
+
+msgctxt "#31002"
+msgid "Search"
+msgstr "Cerca"
+
+msgctxt "#31006"
+msgid "Add-ons"
+msgstr "Add-on"
+
+msgctxt "#31009"
+msgid "Power"
+msgstr "Spegnimento"
+
+msgctxt "#31018"
+msgid "Resume"
+msgstr "Riprendi"
+
+msgctxt "#31020"
+msgid "Episodes"
+msgstr "Episodi"
+
+msgctxt "#31022"
+msgid "View"
+msgstr "Visualizzazione"
+
+msgctxt "#31023"
+msgid "Sort"
+msgstr "Ordina"
+
+msgctxt "#31024"
+msgid "Ascending"
+msgstr "Crescente"
+
+msgctxt "#31025"
+msgid "Descending"
+msgstr "Decrescente"
+
+msgctxt "#31031"
+msgid "List"
+msgstr "Elenco"
+
+msgctxt "#31032"
+msgid "Posters"
+msgstr "Locandine"
+
+msgctxt "#31033"
+msgid "Poster wall"
+msgstr "Parete di locandine"
+
+msgctxt "#31034"
+msgid "Landscape"
+msgstr "Orizzontale"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "elementi"
+
+msgctxt "#31038"
+msgid "Done"
+msgstr "Fatto"
+
+msgctxt "#31041"
+msgid "Space"
+msgstr "Spazio"
+
+msgctxt "#31042"
+msgid "Symbols"
+msgstr "Simboli"
+
+msgctxt "#31043"
+msgid "Shift"
+msgstr "Maiuscole"
+
+msgctxt "#31044"
+msgid "Caps"
+msgstr "Blocco maiuscole"
+
+msgctxt "#31047"
+msgid "Ends at"
+msgstr "Termina alle"
+
+msgctxt "#31048"
+msgid "Subtitles"
+msgstr "Sottotitoli"
+
+msgctxt "#31049"
+msgid "Audio"
+msgstr "Audio"
+
+msgctxt "#31050"
+msgid "Video settings"
+msgstr "Impostazioni video"
+
+msgctxt "#31052"
+msgid "Bookmarks"
+msgstr "Segnalibri"
+
+msgctxt "#31053"
+msgid "Stop"
+msgstr "Interrompi"
+
+msgctxt "#31054"
+msgid "Next"
+msgstr "Successivo"
+
+msgctxt "#31055"
+msgid "Previous"
+msgstr "Precedente"
+
+msgctxt "#31056"
+msgid "Information"
+msgstr "Informazioni"
+
+msgctxt "#31060"
+msgid "Show clock"
+msgstr "Mostra orologio"
+
+msgctxt "#31061"
+msgid "Season"
+msgstr "Stagione"
+
+msgctxt "#31063"
+msgid "Rating"
+msgstr "Valutazione"
+
+msgctxt "#31064"
+msgid "File manager"
+msgstr "Gestione file"
+
+msgctxt "#31065"
+msgid "System info"
+msgstr "Informazioni di sistema"
+
+msgctxt "#31066"
+msgid "Profiles"
+msgstr "Profili"
+
+msgctxt "#31067"
+msgid "Skin settings"
+msgstr "Impostazioni skin"
+
+
+
+
+msgctxt "#31071"
+msgid "System"
+msgstr "Sistema"
+
+
+msgctxt "#31076"
+msgid "Pause"
+msgstr "Pausa"
+
+msgctxt "#31077"
+msgid "Buffering"
+msgstr "Caricamento"
+
+msgctxt "#31078"
+msgid "Directed by"
+msgstr "Regia di"
+
+msgctxt "#31088"
+msgid "Nothing here yet"
+msgstr "Qui non c'è ancora nulla"
+
+msgctxt "#31089"
+msgid "Install a video add-on to fill your home screen, or add movies and series to your Kodi library."
+msgstr "Installa un add-on video per riempire la schermata iniziale oppure aggiungi film e serie alla videoteca di Kodi."
+
+msgctxt "#31094"
+msgid "This folder is empty"
+msgstr "Questa cartella è vuota"
+
+msgctxt "#31095"
+msgid "Manual search"
+msgstr "Ricerca manuale"
+
+msgctxt "#31096"
+msgid "Muted"
+msgstr "Audio disattivato"
+
+msgctxt "#31097"
+msgid "Back 10 seconds"
+msgstr "Indietro di 10 secondi"
+
+msgctxt "#31098"
+msgid "Forward 30 seconds"
+msgstr "Avanti di 30 secondi"
+
+msgctxt "#31099"
+msgid "Dependencies"
+msgstr "Dipendenze"
+
+msgctxt "#31100"
+msgid "Thumbnails"
+msgstr "Miniature"
+
+msgctxt "#31101"
+msgid "Paths"
+msgstr "Percorsi"
+
+msgctxt "#31102"
+msgid "Name"
+msgstr "Nome"
+
+msgctxt "#31103"
+msgid "Who is watching?"
+msgstr "Chi sta guardando?"
+
+msgctxt "#31104"
+msgid "This tab has no widgets yet. Add them in Settings → Skin settings → Customise menu and widgets."
+msgstr "Questa scheda non contiene ancora widget. Aggiungili in Impostazioni → Impostazioni skin → Personalizza menu e widget."
+
+msgctxt "#31105"
+msgid "Customise menu and widgets"
+msgstr "Personalizza menu e widget"
+
+msgctxt "#31106"
+msgid "Restore the default menu"
+msgstr "Ripristina il menu predefinito"
+
+msgctxt "#31107"
+msgid "Screen"
+msgstr "Schermo"
+
+msgctxt "#31111"
+msgid "Cast and crew"
+msgstr "Cast e troupe"
+
+msgctxt "#31112"
+msgid "Similar titles"
+msgstr "Titoli simili"
+
+msgctxt "#31113"
+msgid "Production"
+msgstr "Produzione"
+
+msgctxt "#31114"
+msgid "Library and lists"
+msgstr "Videoteca ed elenchi"
+
+msgctxt "#31115"
+msgid "Mark as watched"
+msgstr "Segna come visto"
+
+msgctxt "#31116"
+msgid "Watched"
+msgstr "Visto"
+
+msgctxt "#31119"
+msgid "Trailers"
+msgstr "Trailer"
+
+msgctxt "#31120"
+msgid "Filmography"
+msgstr "Filmografia"
+
+msgctxt "#31130"
+msgid "Appearance"
+msgstr "Aspetto"
+
+msgctxt "#31131"
+msgid "Layout"
+msgstr "Layout"
+
+msgctxt "#31132"
+msgid "Menu and widgets"
+msgstr "Menu e widget"
+
+msgctxt "#31133"
+msgid "Playback"
+msgstr "Riproduzione"
+
+msgctxt "#31134"
+msgid "Integrations"
+msgstr "Integrazioni"
+
+msgctxt "#31135"
+msgid "Tracking"
+msgstr "Monitoraggio"
+
+msgctxt "#31136"
+msgid "Profiles"
+msgstr "Profili"
+
+msgctxt "#31137"
+msgid "Advanced"
+msgstr "Avanzate"
+
+
+msgctxt "#31140"
+msgid "Theme"
+msgstr "Tema"
+
+msgctxt "#31141"
+msgid "Colour theme"
+msgstr "Tema colori"
+
+msgctxt "#31143"
+msgid "Interface scale"
+msgstr "Dimensione interfaccia"
+
+msgctxt "#31144"
+msgid "Font and language"
+msgstr "Carattere e lingua"
+
+msgctxt "#31145"
+msgid "Screensaver"
+msgstr "Salvaschermo"
+
+msgctxt "#31146"
+msgid "Dim when idle"
+msgstr "Oscura quando inattivo"
+
+msgctxt "#31147"
+msgid "Idle timeout"
+msgstr "Tempo di inattività"
+
+msgctxt "#31148"
+msgid "Dim strength"
+msgstr "Intensità oscuramento"
+
+msgctxt "#31149"
+msgid "Home"
+msgstr "Home"
+
+msgctxt "#31150"
+msgid "Show poster labels"
+msgstr "Mostra etichette delle locandine"
+
+msgctxt "#31151"
+msgid "Landscape posters"
+msgstr "Locandine orizzontali"
+
+msgctxt "#31152"
+msgid "Watched titles"
+msgstr "Titoli già visti"
+
+msgctxt "#31153"
+msgid "Hide side icons"
+msgstr "Nascondi icone laterali"
+
+msgctxt "#31154"
+msgid "Show full release date"
+msgstr "Mostra data di uscita completa"
+
+msgctxt "#31155"
+msgid "Fullscreen hero backdrop"
+msgstr "Sfondo a schermo intero in evidenza"
+
+msgctxt "#31156"
+msgid "Cards"
+msgstr "Schede"
+
+msgctxt "#31157"
+msgid "Edge glow"
+msgstr "Bagliore sui bordi"
+
+msgctxt "#31158"
+msgid "Details page"
+msgstr "Pagina dei dettagli"
+
+msgctxt "#31159"
+msgid "Show ratings"
+msgstr "Mostra valutazioni"
+
+msgctxt "#31161"
+msgid "Show trailer button"
+msgstr "Mostra pulsante trailer"
+
+msgctxt "#31162"
+msgid "Menu, rows and services"
+msgstr "Menu, righe e servizi"
+
+msgctxt "#31164"
+msgid "Kodi player settings"
+msgstr "Impostazioni lettore Kodi"
+
+msgctxt "#31165"
+msgid "Player settings of the video add-on"
+msgstr "Impostazioni del lettore dell'add-on video"
+
+msgctxt "#31166"
+msgid "Subtitles and audio language"
+msgstr "Lingua sottotitoli e audio"
+
+msgctxt "#31167"
+msgid "Add-ons"
+msgstr "Add-on"
+
+msgctxt "#31169"
+msgid "Watch history, watchlist and lists go through Lucent's own Trakt login. It works with every video add-on."
+msgstr "Cronologia di visione, lista da vedere ed elenchi usano l'accesso Trakt di Lucent. Funziona con qualsiasi add-on video."
+
+msgctxt "#31170"
+msgid "System information"
+msgstr "Informazioni di sistema"
+
+msgctxt "#31171"
+msgid "Event log"
+msgstr "Registro eventi"
+
+msgctxt "#31172"
+msgid "Reload skin"
+msgstr "Ricarica skin"
+
+msgctxt "#31173"
+msgid "Restore all skin settings"
+msgstr "Ripristina tutte le impostazioni della skin"
+
+msgctxt "#31174"
+msgid "Lucent - a cinematic glass skin for Kodi, made by Wilfried van der Voort with Claude. Updates arrive automatically through the Lucent Repository."
+msgstr "Lucent: una skin cinematografica con effetto vetro per Kodi, creata da Wilfried van der Voort con Claude. Gli aggiornamenti arrivano automaticamente dal repository Lucent."
+
+msgctxt "#31177"
+msgid "View options"
+msgstr "Opzioni di visualizzazione"
+
+msgctxt "#31178"
+msgid "Other options"
+msgstr "Altre opzioni"
+
+msgctxt "#31179"
+msgid "Order"
+msgstr "Ordinamento"
+
+msgctxt "#31180"
+msgid "Filter"
+msgstr "Filtro"
+
+msgctxt "#31181"
+msgid "Skin settings"
+msgstr "Impostazioni skin"
+
+msgctxt "#31182"
+msgid "Pause screen"
+msgstr "Schermata di pausa"
+
+msgctxt "#31183"
+msgid "Show info after"
+msgstr "Mostra informazioni dopo"
+
+msgctxt "#31185"
+msgid "Your own picture and sound logos"
+msgstr "I tuoi loghi audio e video"
+
+msgctxt "#31186"
+msgid "YOU'RE WATCHING"
+msgstr "STAI GUARDANDO"
+
+msgctxt "#31187"
+msgid "Statistics"
+msgstr "Statistiche"
+
+msgctxt "#31190"
+msgid "SOURCE"
+msgstr "SORGENTE"
+
+msgctxt "#31191"
+msgid "VIDEO"
+msgstr "VIDEO"
+
+msgctxt "#31192"
+msgid "AUDIO"
+msgstr "AUDIO"
+
+msgctxt "#31193"
+msgid "NETWORK"
+msgstr "RETE"
+
+msgctxt "#31194"
+msgid "SYSTEM"
+msgstr "SISTEMA"
+
+msgctxt "#31195"
+msgid "File"
+msgstr "File"
+
+msgctxt "#31196"
+msgid "Location"
+msgstr "Posizione"
+
+msgctxt "#31197"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "#31198"
+msgid "Bitrate"
+msgstr "Bitrate"
+
+
+msgctxt "#31200"
+msgid "HDR"
+msgstr "HDR"
+
+msgctxt "#31201"
+msgid "Format"
+msgstr "Formato"
+
+msgctxt "#31202"
+msgid "Decoder"
+msgstr "Decodificatore"
+
+msgctxt "#31203"
+msgid "Deinterlace"
+msgstr "Deinterlacciamento"
+
+msgctxt "#31204"
+msgid "Display"
+msgstr "Schermo"
+
+msgctxt "#31205"
+msgid "Queue"
+msgstr "Coda"
+
+
+
+msgctxt "#31208"
+msgid "Buffer"
+msgstr "Buffer"
+
+
+
+msgctxt "#31212"
+msgid "CPU clock"
+msgstr "Frequenza CPU"
+
+msgctxt "#31213"
+msgid "Memory"
+msgstr "Memoria"
+
+msgctxt "#31219"
+msgid "Poster focus"
+msgstr "Selezione locandina"
+
+msgctxt "#31220"
+msgid "Trailer on focus"
+msgstr "Trailer alla selezione"
+
+msgctxt "#31221"
+msgid "Start trailer after"
+msgstr "Avvia trailer dopo"
+
+msgctxt "#31222"
+msgid "Trailers play through the YouTube add-on (installed with the skin)."
+msgstr "I trailer vengono riprodotti tramite l'add-on YouTube, installato con la skin."
+
+msgctxt "#31223"
+msgid "YouTube add-on settings"
+msgstr "Impostazioni add-on YouTube"
+
+msgctxt "#31224"
+msgid "Calendar"
+msgstr "Calendario"
+
+msgctxt "#31225"
+msgid "Pop-up when a new episode is out"
+msgstr "Notifica quando esce un nuovo episodio"
+
+msgctxt "#31226"
+msgid "Open the calendar"
+msgstr "Apri il calendario"
+
+msgctxt "#31227"
+msgid "Calendar notification"
+msgstr "Notifica calendario"
+
+msgctxt "#31228"
+msgid "Notification on"
+msgstr "Notifiche attive"
+
+msgctxt "#31229"
+msgid "The calendar shows the series and films of your Trakt collection. Switch the bell on for a title (here or on its info page) to get a pop-up for a new episode or a digital release."
+msgstr "Il calendario mostra film e serie della tua raccolta Trakt. Attiva la campanella su un titolo (qui o nella sua scheda) per ricevere notifiche sui nuovi episodi o sull'uscita digitale."
+
+msgctxt "#31230"
+msgid "Typing on a keyboard:  Enter = done   ·   Esc = cancel   ·   Backspace = delete"
+msgstr "Digitazione da tastiera: Invio = conferma · Esc = annulla · Backspace = cancella"
+
+msgctxt "#31232"
+msgid "Pop-up when a new version is available"
+msgstr "Notifica quando è disponibile una nuova versione"
+
+msgctxt "#31234"
+msgid "Subtitles"
+msgstr "Sottotitoli"
+
+msgctxt "#31235"
+msgid "Your video add-on can find subtitles in your language with every subtitle add-on at the same time; the Subtitles button in the player menu opens the list."
+msgstr "Il tuo add-on video può cercare sottotitoli nella tua lingua con più add-on contemporaneamente; il pulsante Sottotitoli nel lettore apre l'elenco."
+
+msgctxt "#31236"
+msgid "Lucent Subtitles: accounts and keys"
+msgstr "Lucent Subtitles: account e chiavi"
+
+msgctxt "#31239"
+msgid "Show login screen on startup"
+msgstr "Mostra schermata di accesso all'avvio"
+
+msgctxt "#31240"
+msgid "Log in automatically on startup"
+msgstr "Accedi automaticamente all'avvio"
+
+
+msgctxt "#31243"
+msgid "Channel down"
+msgstr "Canale precedente"
+
+msgctxt "#31244"
+msgid "Channel up"
+msgstr "Canale successivo"
+
+msgctxt "#31245"
+msgid "Record"
+msgstr "Registra"
+
+msgctxt "#31246"
+msgid "UP NEXT"
+msgstr "PROSSIMAMENTE"
+
+msgctxt "#31247"
+msgid "left"
+msgstr "rimanenti"
+
+
+msgctxt "#31249"
+msgid "LIVE"
+msgstr "IN DIRETTA"
+
+
+msgctxt "#31254"
+msgid "Films and series from this studio"
+msgstr "Film e serie di questo studio"
+
+msgctxt "#31260"
+msgid "Playback of video, music, discs and pictures, audio and subtitle language"
+msgstr "Riproduzione video, musica, dischi e immagini, lingua audio e sottotitoli"
+
+msgctxt "#31261"
+msgid "Video playback, refresh rate, zoom and stretch"
+msgstr "Riproduzione video, frequenza di aggiornamento, zoom e allungamento"
+
+msgctxt "#31262"
+msgid "Font, size, colour and position of subtitles"
+msgstr "Carattere, dimensioni, colore e posizione dei sottotitoli"
+
+msgctxt "#31263"
+msgid "Preferred audio and subtitle language"
+msgstr "Lingua preferita per audio e sottotitoli"
+
+
+
+
+msgctxt "#31267"
+msgid "Library, file lists and how your media is shown"
+msgstr "Videoteca, elenchi file e visualizzazione dei contenuti"
+
+msgctxt "#31268"
+msgid "Update the library, show watched and extra art"
+msgstr "Aggiornamento videoteca, elementi visti e immagini aggiuntive"
+
+msgctxt "#31269"
+msgid "Video library: titles, flags, actors and trailers"
+msgstr "Videoteca video: titoli, indicatori, attori e trailer"
+
+
+
+msgctxt "#31272"
+msgid "File lists: hide extensions, sort, delete and rename"
+msgstr "Elenchi file: nascondi estensioni, ordina, elimina e rinomina"
+
+msgctxt "#31273"
+msgid "Live TV"
+msgstr "TV in diretta"
+
+msgctxt "#31274"
+msgid "Your IPTV channels, guide, recordings and parental control"
+msgstr "Canali IPTV, guida TV, registrazioni e controllo genitori"
+
+msgctxt "#31275"
+msgid "Channel manager, groups and channel numbers"
+msgstr "Gestione canali, gruppi e numerazione"
+
+msgctxt "#31276"
+msgid "Guide: days to show, update interval"
+msgstr "Guida TV: giorni visualizzati e intervallo di aggiornamento"
+
+msgctxt "#31277"
+msgid "Playback: switch channels, start at the last channel"
+msgstr "Riproduzione: cambio canale e avvio sull'ultimo canale"
+
+msgctxt "#31278"
+msgid "Recordings: margins and file names"
+msgstr "Registrazioni: margini e nomi dei file"
+
+msgctxt "#31279"
+msgid "Lock channels with a PIN code"
+msgstr "Blocca i canali con un PIN"
+
+msgctxt "#31280"
+msgid "The PVR add-ons (IPTV Simple Client)"
+msgstr "Add-on PVR (IPTV Simple Client)"
+
+msgctxt "#31281"
+msgid "Skin, language, region, screensaver and start-up"
+msgstr "Skin, lingua, regione, salvaschermo e avvio"
+
+msgctxt "#31282"
+msgid "Choose the skin, zoom, sounds and RSS"
+msgstr "Scegli skin, zoom, suoni e RSS"
+
+msgctxt "#31283"
+msgid "Language, keyboard, time, date and units"
+msgstr "Lingua, tastiera, ora, data e unità"
+
+msgctxt "#31284"
+msgid "Screensaver and when it starts"
+msgstr "Salvaschermo e tempo prima dell'attivazione"
+
+msgctxt "#31285"
+msgid "Start-up window and what Kodi shows first"
+msgstr "Schermata iniziale e primo contenuto mostrato da Kodi"
+
+msgctxt "#31286"
+msgid "Master lock with a code"
+msgstr "Blocco principale con codice"
+
+msgctxt "#31287"
+msgid "Display, audio, input, internet and power"
+msgstr "Schermo, audio, dispositivi di input, Internet e alimentazione"
+
+msgctxt "#31288"
+msgid "Resolution, refresh rate and calibration"
+msgstr "Risoluzione, frequenza di aggiornamento e calibrazione"
+
+msgctxt "#31289"
+msgid "Audio output, passthrough and channels"
+msgstr "Uscita audio, passthrough e canali"
+
+msgctxt "#31290"
+msgid "Remote, keyboard, mouse and peripherals"
+msgstr "Telecomando, tastiera, mouse e periferiche"
+
+msgctxt "#31291"
+msgid "Proxy and internet speed"
+msgstr "Proxy e velocità Internet"
+
+msgctxt "#31292"
+msgid "Shut down when idle, wake-on-LAN"
+msgstr "Spegnimento per inattività e Wake-on-LAN"
+
+
+msgctxt "#31294"
+msgid "Debug logging for problems"
+msgstr "Registrazione di debug per i problemi"
+
+msgctxt "#31295"
+msgid "Remote control, sharing and streaming between devices"
+msgstr "Controllo remoto, condivisione e streaming tra dispositivi"
+
+
+msgctxt "#31297"
+msgid "Control from a phone app or web browser"
+msgstr "Controlla Kodi da un'app sul telefono o dal browser"
+
+
+
+
+msgctxt "#31301"
+msgid "Install, update and manage add-ons"
+msgstr "Installa, aggiorna e gestisci gli add-on"
+
+msgctxt "#31302"
+msgid "All add-ons you have installed"
+msgstr "Tutti gli add-on installati"
+
+msgctxt "#31303"
+msgid "Browse the repositories you added"
+msgstr "Sfoglia i repository aggiunti"
+
+msgctxt "#31304"
+msgid "Install an add-on or repository from a zip"
+msgstr "Installa un add-on o un repository da ZIP"
+
+msgctxt "#31305"
+msgid "Add-ons with a newer version"
+msgstr "Add-on con una nuova versione"
+
+msgctxt "#31306"
+msgid "Search add-ons"
+msgstr "Cerca add-on"
+
+msgctxt "#31307"
+msgid "Find an add-on by name"
+msgstr "Trova un add-on per nome"
+
+msgctxt "#31308"
+msgid "Add-on settings"
+msgstr "Impostazioni add-on"
+
+msgctxt "#31309"
+msgid "Unknown sources, automatic updates"
+msgstr "Sorgenti sconosciute e aggiornamenti automatici"
+
+msgctxt "#31310"
+msgid "Files and profiles"
+msgstr "File e profili"
+
+msgctxt "#31311"
+msgid "Your files, sources, profiles, kids mode and backup"
+msgstr "File, sorgenti, profili, modalità bambini e backup"
+
+msgctxt "#31312"
+msgid "Copy, move and delete files"
+msgstr "Copia, sposta ed elimina file"
+
+msgctxt "#31313"
+msgid "Profiles for every person in the house"
+msgstr "Profili per ogni persona in casa"
+
+
+msgctxt "#31315"
+msgid "Kodi version, CPU, memory, storage and network"
+msgstr "Versione Kodi, CPU, memoria, spazio e rete"
+
+msgctxt "#31316"
+msgid "What Kodi did recently, with errors"
+msgstr "Attività recente di Kodi ed errori"
+
+
+msgctxt "#31318"
+msgid "Theme, layout, info page, integrations and more"
+msgstr "Tema, layout, scheda informazioni, integrazioni e altro"
+
+msgctxt "#31319"
+msgid "Tabs of the side menu and the rows on Home"
+msgstr "Schede del menu laterale e righe della home"
+
+msgctxt "#31320"
+msgid "Calibrate the picture"
+msgstr "Calibra l'immagine"
+
+msgctxt "#31321"
+msgid "Fix black edges or a picture that falls off the screen"
+msgstr "Correggi bordi neri o immagini fuori schermo"
+
+
+msgctxt "#31400"
+msgid "Closed"
+msgstr "Chiuso"
+
+msgctxt "#31401"
+msgid "Open"
+msgstr "Aperto"
+
+msgctxt "#31402"
+msgid "Colour theme, scale, clock and screensaver"
+msgstr "Tema colori, dimensioni, orologio e salvaschermo"
+
+msgctxt "#31403"
+msgid "Home screen, cards and the info page"
+msgstr "Schermata iniziale, schede e pagina informazioni"
+
+msgctxt "#31404"
+msgid "Tabs, rows, streaming services and the power menu"
+msgstr "Schede, righe, servizi streaming e menu di spegnimento"
+
+msgctxt "#31405"
+msgid "Player, subtitles and the pause screen"
+msgstr "Lettore, sottotitoli e schermata di pausa"
+
+msgctxt "#31406"
+msgid "Video add-ons, TMDB and subtitles"
+msgstr "Add-on video, TMDb e sottotitoli"
+
+msgctxt "#31407"
+msgid "Trakt and the calendar"
+msgstr "Trakt e calendario"
+
+msgctxt "#31408"
+msgid "Profiles for everyone in the house"
+msgstr "Profili per tutti in casa"
+
+msgctxt "#31409"
+msgid "Picture calibration, system info and resetting"
+msgstr "Calibrazione immagine, informazioni di sistema e ripristino"
+
+msgctxt "#31411"
+msgid "Video add-on settings"
+msgstr "Impostazioni add-on video"
+
+msgctxt "#31412"
+msgid "Accent colour of the focus, buttons and glow"
+msgstr "Colore principale della selezione, dei pulsanti e del bagliore"
+
+msgctxt "#31413"
+msgid "AMOLED mode"
+msgstr "Modalità AMOLED"
+
+msgctxt "#31414"
+msgid "Pure black surfaces, saves power on OLED screens"
+msgstr "Superfici nere pure, riduce il consumo sugli schermi OLED"
+
+msgctxt "#31415"
+msgid "Make everything a bit larger or smaller"
+msgstr "Ingrandisci o rimpicciolisci l'interfaccia"
+
+msgctxt "#31416"
+msgid "Language, region and keyboard of Kodi"
+msgstr "Lingua, regione e tastiera di Kodi"
+
+msgctxt "#31417"
+msgid "Clock at the top right of every screen"
+msgstr "Orologio in alto a destra in ogni schermata"
+
+msgctxt "#31418"
+msgid "Darken the screen when you do nothing for a while"
+msgstr "Oscura lo schermo dopo un periodo di inattività"
+
+msgctxt "#31419"
+msgid "How long before the screen dims"
+msgstr "Tempo prima che lo schermo si oscuri"
+
+msgctxt "#31420"
+msgid "How dark the screen gets"
+msgstr ""
+
+
+msgctxt "#31422"
+msgid "Title under every poster"
+msgstr ""
+
+msgctxt "#31423"
+msgid "Wide cards instead of posters on Home"
+msgstr ""
+
+msgctxt "#31424"
+msgid "Show, dim or hide titles you have seen"
+msgstr ""
+
+msgctxt "#31425"
+msgid "No icons next to the closed side menu"
+msgstr ""
+
+msgctxt "#31426"
+msgid "Day and month as well as the year"
+msgstr ""
+
+msgctxt "#31427"
+msgid "Enlarge the hero background so it fills the screen"
+msgstr ""
+
+msgctxt "#31428"
+msgid "Play a trailer when a poster keeps the focus"
+msgstr ""
+
+msgctxt "#31429"
+msgid "How long to wait before the trailer starts"
+msgstr ""
+
+msgctxt "#31430"
+msgid "Quality and login of the YouTube add-on"
+msgstr ""
+
+
+msgctxt "#31432"
+msgid "Glow around the card that has the focus"
+msgstr ""
+
+msgctxt "#31433"
+msgid "IMDb, TMDB and Trakt scores on the info page"
+msgstr ""
+
+msgctxt "#31434"
+msgid "Rating logos"
+msgstr ""
+
+msgctxt "#31435"
+msgid "Your own logo images instead of the names"
+msgstr ""
+
+msgctxt "#31436"
+msgid "OK on a film opens its page"
+msgstr ""
+
+msgctxt "#31437"
+msgid "Off: the stream starts at once"
+msgstr ""
+
+msgctxt "#31438"
+msgid "OK on an episode opens its page"
+msgstr ""
+
+msgctxt "#31439"
+msgid "Off: the stream starts at once"
+msgstr ""
+
+msgctxt "#31440"
+msgid "Trailer button on the info page"
+msgstr ""
+
+msgctxt "#31441"
+msgid "Install studio logos"
+msgstr ""
+
+msgctxt "#31442"
+msgid "Logo pack for the studios on the info page"
+msgstr ""
+
+msgctxt "#31443"
+msgid "Tabs of the side menu and the rows on Home"
+msgstr ""
+
+msgctxt "#31444"
+msgid "Put the tabs and rows back the way they were"
+msgstr ""
+
+
+msgctxt "#31446"
+msgid "Video, sound and refresh rate of Kodi's player"
+msgstr ""
+
+msgctxt "#31447"
+msgid "Source select, autoplay, Up Next and the playback watchdog"
+msgstr ""
+
+msgctxt "#31448"
+msgid "Preferred language for audio and subtitles"
+msgstr ""
+
+msgctxt "#31449"
+msgid "When the info appears after you pause"
+msgstr ""
+
+msgctxt "#31450"
+msgid "Picture and sound info"
+msgstr ""
+
+msgctxt "#31451"
+msgid "Resolution, HDR and audio badges on the pause screen"
+msgstr ""
+
+msgctxt "#31452"
+msgid "Use your own badge images"
+msgstr ""
+
+msgctxt "#31453"
+msgid "Trakt, accounts and sources"
+msgstr ""
+
+msgctxt "#31454"
+msgid "Install and manage add-ons"
+msgstr ""
+
+msgctxt "#31455"
+msgid "Services"
+msgstr ""
+
+msgctxt "#31456"
+msgid "Remote control and sharing"
+msgstr ""
+
+msgctxt "#31457"
+msgid "TMDB API key"
+msgstr ""
+
+msgctxt "#31458"
+msgid "For cast, collections, studios and the pages opened from them"
+msgstr ""
+
+msgctxt "#31459"
+msgid "Accounts and keys (OpenSubtitles, SubDL), sources"
+msgstr ""
+
+msgctxt "#31466"
+msgid "Notification when a followed series has a new episode"
+msgstr ""
+
+msgctxt "#31467"
+msgid "Week, list and month view"
+msgstr ""
+
+msgctxt "#31468"
+msgid "Photo, own colour theme and Who is watching? at start (switch on Login screen)"
+msgstr ""
+
+msgctxt "#31469"
+msgid "Calibrate the picture"
+msgstr ""
+
+msgctxt "#31470"
+msgid "Fix black edges or a picture that is too large"
+msgstr ""
+
+msgctxt "#31471"
+msgid "Display settings"
+msgstr ""
+
+msgctxt "#31472"
+msgid "Resolution and refresh rate"
+msgstr ""
+
+msgctxt "#31473"
+msgid "Version, processor, memory and storage"
+msgstr ""
+
+msgctxt "#31474"
+msgid "What Kodi did recently"
+msgstr ""
+
+msgctxt "#31475"
+msgid "Reload Lucent without restarting Kodi"
+msgstr ""
+
+msgctxt "#31476"
+msgid "All Lucent settings back to their defaults"
+msgstr ""
+
+msgctxt "#31477"
+msgid "Skin debug"
+msgstr ""
+
+msgctxt "#31478"
+msgid "Shows the names of windows and controls"
+msgstr ""
+
+msgctxt "#31480"
+msgid "Rows, posters and what you see on Home"
+msgstr ""
+
+msgctxt "#31481"
+msgid "Trailer on a poster that has the focus"
+msgstr ""
+
+msgctxt "#31482"
+msgid "Look of the cards"
+msgstr ""
+
+msgctxt "#31483"
+msgid "Ratings, buttons and what OK does"
+msgstr ""
+
+msgctxt "#31484"
+msgid "Video add-ons, services and TMDB"
+msgstr ""
+
+msgctxt "#31485"
+msgid "Search subtitles from the player"
+msgstr ""
+
+msgctxt "#31500"
+msgid "Version"
+msgstr ""
+
+msgctxt "#31501"
+msgid "Made by Wilfried van der Voort with Claude  ·  design inspired by Nuvio Arc"
+msgstr ""
+
+msgctxt "#31502"
+msgid "for Kodi"
+msgstr ""
+
+msgctxt "#31510"
+msgid "Licences and credits"
+msgstr ""
+
+msgctxt "#31512"
+msgid "DATA AND SERVICES"
+msgstr ""
+
+msgctxt "#31513"
+msgid "Cast, collections, studios and the pages opened from them use the TMDB API, but Lucent is not endorsed or certified by TMDB."
+msgstr ""
+
+msgctxt "#31514"
+msgid "Watch history, watchlist, lists and the calendar, through Lucent's own Trakt login. Lucent is not affiliated with Trakt."
+msgstr ""
+
+msgctxt "#31515"
+msgid "Air times in the calendar, from the free TVmaze API (CC BY-SA)."
+msgstr ""
+
+msgctxt "#31516"
+msgid "Games, scores, tables and Formula 1 data on the Sport tab. Lucent is not affiliated with ESPN."
+msgstr ""
+
+msgctxt "#31517"
+msgid "ADD-ONS, FONT AND DESIGN"
+msgstr ""
+
+msgctxt "#31519"
+msgid "Trailers play through the YouTube add-on for Kodi."
+msgstr ""
+
+msgctxt "#31520"
+msgid "Subtitles (via Lucent Subtitles)."
+msgstr ""
+
+msgctxt "#31521"
+msgid "Studio logos"
+msgstr ""
+
+msgctxt "#31522"
+msgid "White and coloured studio logo packs from the official Kodi repository."
+msgstr ""
+
+msgctxt "#31523"
+msgid "Font by Rasmus Andersson, SIL Open Font License 1.1."
+msgstr ""
+
+msgctxt "#31524"
+msgid "The design is inspired by Nuvio Arc, a fork of Nuvio TV by ysosrs123. Lucent is not affiliated with it."
+msgstr ""
+
+msgctxt "#31525"
+msgid "Lucent is a skin for Kodi. Kodi is a trademark of the XBMC Foundation."
+msgstr ""
+
+
+msgctxt "#31330"
+msgid "About Lucent"
+msgstr ""
+
+msgctxt "#31331"
+msgid "Logo, version, update options and licences"
+msgstr ""
+
+msgctxt "#31332"
+msgid "Check for updates now"
+msgstr ""
+
+msgctxt "#31333"
+msgid "Look for a new version of Lucent"
+msgstr ""
+
+
+
+msgctxt "#31336"
+msgid "What's new"
+msgstr ""
+
+msgctxt "#31337"
+msgid "The changes of every version"
+msgstr ""
+
+msgctxt "#31530"
+msgid "What's new"
+msgstr ""
+
+msgctxt "#31531"
+msgid "Watch on"
+msgstr ""
+
+msgctxt "#31532"
+msgid "Streaming data: JustWatch via TMDB"
+msgstr ""
+
+msgctxt "#31533"
+msgid "Colour from the poster"
+msgstr ""
+
+msgctxt "#31534"
+msgid "The background glows in the colour of the poster you are on"
+msgstr ""
+
+msgctxt "#31535"
+msgid "Sport today"
+msgstr ""
+
+msgctxt "#31537"
+msgid "OK: watch on"
+msgstr ""
+
+msgctxt "#31538"
+msgid "No channel found yet – OK opens Sport"
+msgstr ""
+
+msgctxt "#31539"
+msgid "Sport on the home screen"
+msgstr ""
+
+msgctxt "#31540"
+msgid "A card with today's game of a team you follow, OK to watch"
+msgstr ""
+
+msgctxt "#31541"
+msgid "watched"
+msgstr ""
+
+msgctxt "#31542"
+msgid "done at"
+msgstr ""
+
+msgctxt "#31543"
+msgid "Intro at start"
+msgstr ""
+
+msgctxt "#31544"
+msgid "The star and the moon of Lucent when Kodi starts (about 6 seconds)"
+msgstr ""
+
+msgctxt "#31545"
+msgid "Tonight for you"
+msgstr ""
+
+msgctxt "#31546"
+msgid "A row on Home with titles like what you watched last, fitting the time of day"
+msgstr ""
+
+msgctxt "#31547"
+msgid "Films on my watchlist"
+msgstr ""
+
+msgctxt "#31548"
+msgid "Pop-up when a film from your Trakt collection or watchlist comes out digitally, with where to watch it"
+msgstr ""
+
+msgctxt "#31549"
+msgid "Seasons"
+msgstr ""
+
+msgctxt "#31550"
+msgid "Halloween, Sinterklaas, Christmas with snow, New Year and King's Day on Home"
+msgstr ""
+
+msgctxt "#31551"
+msgid "Light mode (2 GB boxes)"
+msgstr ""
+
+msgctxt "#31552"
+msgid "At most 6 rows per tab, small artwork, no snow and no poster colour. The skin reloads once"
+msgstr ""
+
+msgctxt "#31555"
+msgid "Load rows as you go"
+msgstr ""
+
+msgctxt "#31556"
+msgid "Only the top three rows load at start, the rest when you scroll down"
+msgstr ""
+
+msgctxt "#31557"
+msgid "ENDED"
+msgstr ""
+
+msgctxt "#31558"
+msgid "CONTINUING"
+msgstr ""
+
+msgctxt "#31559"
+msgid "CANCELLED"
+msgstr ""
+
+msgctxt "#31560"
+msgid "COMING"
+msgstr ""
+
+msgctxt "#31561"
+msgid "RELEASED"
+msgstr ""
+
+msgctxt "#31562"
+msgid "seasons"
+msgstr ""
+
+msgctxt "#31563"
+msgid "episodes"
+msgstr ""
+
+msgctxt "#31564"
+msgid "watched"
+msgstr ""
+
+msgctxt "#31565"
+msgid "Continue"
+msgstr ""
+
+msgctxt "#31566"
+msgid "More info"
+msgstr ""
+
+msgctxt "#31567"
+msgid "Seasons as tabs"
+msgstr ""
+
+msgctxt "#31568"
+msgid "Left / right: episode   ·   Up: choose a season   ·   OK: play"
+msgstr ""
+
+msgctxt "#31569"
+msgid "Series: seasons as tabs"
+msgstr ""
+
+msgctxt "#31570"
+msgid "Opening a series shows the seasons as tabs above the episodes"
+msgstr ""
+
+msgctxt "#31571"
+msgid "Showcase"
+msgstr ""
+
+msgctxt "#31572"
+msgid "new"
+msgstr ""
+
+msgctxt "#31581"
+msgid "Surprise me"
+msgstr ""
+
+msgctxt "#31588"
+msgid "Quick filters"
+msgstr ""
+
+msgctxt "#31589"
+msgid "Not watched"
+msgstr ""
+
+msgctxt "#31590"
+msgid "Genre"
+msgstr ""
+
+msgctxt "#31591"
+msgid "Year"
+msgstr ""
+
+msgctxt "#31592"
+msgid "Shorter than 2 hours"
+msgstr ""
+
+msgctxt "#31593"
+msgid "Newly added"
+msgstr ""
+
+msgctxt "#31594"
+msgid "of"
+msgstr ""
+
+msgctxt "#31595"
+msgid "Watch the next one"
+msgstr ""
+
+msgctxt "#31596"
+msgid "Collection"
+msgstr ""
+
+
+msgctxt "#31612"
+msgid "Available groups"
+msgstr ""
+
+msgctxt "#31613"
+msgid "Add group"
+msgstr ""
+
+msgctxt "#31614"
+msgid "Rename group"
+msgstr ""
+
+msgctxt "#31615"
+msgid "Delete group"
+msgstr ""
+
+msgctxt "#31616"
+msgid "Channel options"
+msgstr ""
+
+msgctxt "#31617"
+msgid "Other options"
+msgstr ""
+
+msgctxt "#31619"
+msgid "Options"
+msgstr ""
+
+msgctxt "#31620"
+msgid "Hide all groups"
+msgstr ""
+
+msgctxt "#31621"
+msgid "Show all groups"
+msgstr ""
+
+msgctxt "#31622"
+msgid "Setup assistant"
+msgstr ""
+
+msgctxt "#31623"
+msgid "The most important settings and logins, step by step"
+msgstr ""
+
+msgctxt "#31624"
+msgid "▲  Press Up to read on"
+msgstr ""
+
+msgctxt "#31625"
+msgid "Backup and restore"
+msgstr ""
+
+msgctxt "#31626"
+msgid "Save all your settings and logins in one file, and put them back"
+msgstr ""
+
+msgctxt "#31627"
+msgid "Sleep timer"
+msgstr ""
+
+msgctxt "#31628"
+msgid "Kids mode"
+msgstr ""
+
+msgctxt "#31629"
+msgid "Only the menu items you choose, settings behind a PIN"
+msgstr ""
+
+msgctxt "#31630"
+msgid "Kids mode off"
+msgstr ""
+
+msgctxt "#31631"
+msgid "Search subtitles"
+msgstr ""
+
+msgctxt "#31632"
+msgid "Xtream login (IPTV)"
+msgstr ""
+
+msgctxt "#31633"
+msgid "Fill in your provider's server address, user name and password; Lucent sets up IPTV Simple"
+msgstr ""
+
+msgctxt "#31634"
+msgid "Self-test"
+msgstr ""
+
+msgctxt "#31635"
+msgid "Checks your video add-on, IPTV, subtitles and the channel list and tells you what is missing"
+msgstr ""
+
+msgctxt "#31636"
+msgid "Safe log"
+msgstr ""
+
+msgctxt "#31637"
+msgid "Copies Kodi's log with all logins blanked out, to share"
+msgstr ""
+
+msgctxt "#31638"
+msgid "Goal notifications: on"
+msgstr ""
+
+msgctxt "#31639"
+msgid "Goal notifications: off"
+msgstr ""
+
+msgctxt "#31640"
+msgid "A pop-up when a team you follow scores (select to switch on / off)"
+msgstr ""
+
+msgctxt "#31641"
+msgid "Add / remove channel in favourites"
+msgstr ""
+
+msgctxt "#31642"
+msgid "Hide channels"
+msgstr ""
+
+msgctxt "#31643"
+msgid "Leave out groups and channels you never watch (shorter list, faster guide)"
+msgstr ""
+
+msgctxt "#31644"
+msgid "Licences and credits"
+msgstr ""
+
+msgctxt "#31645"
+msgid "Libraries, fonts and artwork that Lucent uses"
+msgstr ""
+
+msgctxt "#31646"
+msgid "Update pop-up: on"
+msgstr ""
+
+msgctxt "#31647"
+msgid "Update pop-up: off"
+msgstr ""
+
+msgctxt "#31648"
+msgid "Light mode: on"
+msgstr ""
+
+msgctxt "#31649"
+msgid "Light mode: off"
+msgstr ""
+
+msgctxt "#31650"
+msgid "On: Home builds only 6 rows and uses small pictures (for boxes with 2 GB). Off: up to 10 rows"
+msgstr ""
+
+msgctxt "#31651"
+msgid "CoreELEC settings"
+msgstr ""
+
+msgctxt "#31652"
+msgid "LibreELEC settings"
+msgstr ""
+
+msgctxt "#31653"
+msgid "Network, Bluetooth, updates and system of this box"
+msgstr ""
+
+msgctxt "#31654"
+msgid "Power menu"
+msgstr ""
+
+msgctxt "#31655"
+msgid "Hide Kodi's own buttons, or add your own (Settings, an add-on, Reload skin…)"
+msgstr ""
+
+msgctxt "#31656"
+msgid "Streaming services"
+msgstr ""
+
+msgctxt "#31657"
+msgid "Which services the 'Streaming services' row shows, their order and their pictures"
+msgstr ""
+
+msgctxt "#31660"
+msgid "Big posters on Home"
+msgstr ""
+
+msgctxt "#31661"
+msgid "On: posters 15% bigger, without names. Off: the old, smaller posters, with the next row peeking in"
+msgstr ""
+
+
+
+msgctxt "#31669"
+msgid "Maintenance"
+msgstr ""
+
+msgctxt "#31670"
+msgid "Free up space: old pictures, add-on zip files and temporary files; also once a month by itself"
+msgstr ""
+
+
+msgctxt "#31671"
+msgid "Skip"
+msgstr ""
+
+
+msgctxt "#31672"
+msgid "OK to skip  ·  Back to keep watching"
+msgstr ""
+
+msgctxt "#31673"
+msgid "Photos of stadiums and race circuits."
+msgstr ""
+
+msgctxt "#31674"
+msgid "TV channel logos by tv-logo (CC BY-SA / BY-NC-SA). The logos belong to their owners."
+msgstr ""
+
+msgctxt "#31675"
+msgid "Coming up"
+msgstr ""
+
+msgctxt "#31676"
+msgid "Nothing coming up. Follow a series or film with the bell on its info page."
+msgstr ""
+
+msgctxt "#31677"
+msgid "Today"
+msgstr ""
+
+msgctxt "#31678"
+msgid "No games today. Choose clubs or competitions under Follow in Sport."
+msgstr ""
+
+msgctxt "#31679"
+msgid "Next"
+msgstr ""
+
+msgctxt "#31680"
+msgid "No TV channels yet. Set up live TV in the setup assistant."
+msgstr ""
+
+msgctxt "#31681"
+msgid "Look, rows, kids mode"
+msgstr ""
+
+msgctxt "#31682"
+msgid "Menu and widgets"
+msgstr ""
+
+msgctxt "#31683"
+msgid "Tabs and rows"
+msgstr ""
+
+msgctxt "#31684"
+msgid "Player"
+msgstr ""
+
+msgctxt "#31685"
+msgid "Buffer, picture and sound"
+msgstr ""
+
+msgctxt "#31686"
+msgid "Subtitles"
+msgstr ""
+
+msgctxt "#31688"
+msgid "Live TV"
+msgstr ""
+
+msgctxt "#31689"
+msgid "IPTV Simple, channels, guide"
+msgstr ""
+
+msgctxt "#31690"
+msgid "System"
+msgstr ""
+
+msgctxt "#31691"
+msgid "Display, network, storage"
+msgstr ""
+
+msgctxt "#31692"
+msgid "Kodi has been running for"
+msgstr ""
+
+msgctxt "#31693"
+msgid "Power off"
+msgstr ""
+
+msgctxt "#31694"
+msgid "Restart"
+msgstr ""
+
+msgctxt "#31695"
+msgid "Sleep"
+msgstr ""
+
+msgctxt "#31696"
+msgid "Sleep timer"
+msgstr ""
+
+msgctxt "#31697"
+msgid "Other profile"
+msgstr ""
+
+msgctxt "#31698"
+msgid "Video add-ons"
+msgstr ""
+
+msgctxt "#31699"
+msgid "Program add-ons"
+msgstr ""
+
+msgctxt "#31700"
+msgid "Skin settings"
+msgstr ""
+
+msgctxt "#31701"
+msgid "Video add-on"
+msgstr ""
+
+msgctxt "#31702"
+msgid "version"
+msgstr ""
+
+msgctxt "#31703"
+msgid "Watch now"
+msgstr ""
+
+msgctxt "#31704"
+msgid "Remind me"
+msgstr ""
+
+msgctxt "#31705"
+msgid "Full guide"
+msgstr ""
+
+msgctxt "#31706"
+msgid "Audio"
+msgstr ""
+
+msgctxt "#31707"
+msgid "More"
+msgstr ""
+
+msgctxt "#31708"
+msgid "No guide for this channel"
+msgstr ""
+
+msgctxt "#31709"
+msgid "Statistics"
+msgstr ""
+
+msgctxt "#31710"
+msgid "Timeline"
+msgstr ""
+
+msgctxt "#31711"
+msgid "Table"
+msgstr ""
+
+msgctxt "#31712"
+msgid "Also live"
+msgstr ""
+
+msgctxt "#31713"
+msgid "Guide"
+msgstr ""
+
+msgctxt "#31714"
+msgid "Subtitles / audio"
+msgstr ""
+
+msgctxt "#31715"
+msgid "Box score"
+msgstr ""
+
+msgctxt "#31716"
+msgid "Standings"
+msgstr ""
+
+msgctxt "#31717"
+msgid "Positions"
+msgstr ""
+
+
+msgctxt "#31719"
+msgid "Next on"
+msgstr ""
+
+msgctxt "#31720"
+msgid "ALSO LIVE  ·  OK SWITCHES"
+msgstr ""
+
+msgctxt "#31721"
+msgid "GOALS"
+msgstr ""
+
+msgctxt "#31722"
+msgid "No other live games on your channels right now."
+msgstr ""
+
+msgctxt "#31723"
+msgid "TOP PLAYERS"
+msgstr ""
+
+msgctxt "#31724"
+msgid "Statistics come in during the game."
+msgstr ""
+
+msgctxt "#31725"
+msgid "LIVE POSITIONS"
+msgstr ""
+
+msgctxt "#31726"
+msgid "Player info"
+msgstr ""
+
+msgctxt "#31727"
+msgid "Picture"
+msgstr ""
+
+msgctxt "#31728"
+msgid "Sound"
+msgstr ""
+
+msgctxt "#31729"
+msgid "Subtitles"
+msgstr ""
+
+msgctxt "#31730"
+msgid "Container"
+msgstr ""
+
+msgctxt "#31731"
+msgid "Resolution"
+msgstr ""
+
+msgctxt "#31732"
+msgid "Track"
+msgstr ""
+
+msgctxt "#31733"
+msgid "Quality"
+msgstr ""
+
+msgctxt "#31734"
+msgid "Temperature CPU"
+msgstr ""
+
+msgctxt "#31735"
+msgid "Temperature GPU"
+msgstr ""
+
+msgctxt "#31736"
+msgid "Render"
+msgstr ""
+
+msgctxt "#31737"
+msgid "Video queue"
+msgstr ""
+
+msgctxt "#31738"
+msgid "Overview"
+msgstr ""
+
+msgctxt "#31739"
+msgid "switch"
+msgstr ""
+
+msgctxt "#31740"
+msgid "Resolution"
+msgstr ""
+
+msgctxt "#31741"
+msgid "Aspect ratio"
+msgstr ""
+
+msgctxt "#31742"
+msgid "Frame rate"
+msgstr ""
+
+msgctxt "#31743"
+msgid "Scan"
+msgstr ""
+
+msgctxt "#31744"
+msgid "Brightness · HDR"
+msgstr ""
+
+msgctxt "#31745"
+msgid "Colour"
+msgstr ""
+
+msgctxt "#31746"
+msgid "From file to screen"
+msgstr ""
+
+msgctxt "#31747"
+msgid "Picture bitrate"
+msgstr ""
+
+msgctxt "#31748"
+msgid "From file to your speakers"
+msgstr ""
+
+msgctxt "#31749"
+msgid "What you hear"
+msgstr ""
+
+msgctxt "#31750"
+msgid "Output"
+msgstr ""
+
+msgctxt "#31751"
+msgid "Device"
+msgstr ""
+
+msgctxt "#31752"
+msgid "Configuration"
+msgstr ""
+
+msgctxt "#31753"
+msgid "Volume"
+msgstr ""
+
+msgctxt "#31754"
+msgid "Audio queue"
+msgstr ""
+
+msgctxt "#31755"
+msgid "sofa"
+msgstr ""
+
+msgctxt "#31756"
+msgid "HEIGHT"
+msgstr ""
+
+msgctxt "#31757"
+msgid "Playing"
+msgstr ""
+
+msgctxt "#31758"
+msgid "Check for updates"
+msgstr ""
+
+msgctxt "#31759"
+msgid "Look for a new Lucent now"
+msgstr ""
+
+msgctxt "#31762"
+msgid "SOLIS · SOLAR PANELS"
+msgstr ""
+
+msgctxt "#31763"
+msgid "Solis now"
+msgstr ""
+
+msgctxt "#31764"
+msgid "Watching"
+msgstr ""
+
+msgctxt "#31766"
+msgid "Help and info"
+msgstr ""
+
+msgctxt "#31767"
+msgid "Look, menu, streaming services, kids mode and the setup assistant"
+msgstr ""
+
+msgctxt "#31768"
+msgid "Playback, subtitles, language and skipping intros"
+msgstr ""
+
+msgctxt "#31770"
+msgid "Screen, sound, remote, network, language and screensaver"
+msgstr ""
+
+msgctxt "#31771"
+msgid "What's new, updates, self-test and system information"
+msgstr ""
+
+msgctxt "#31783"
+msgid "Clean channel logos"
+msgstr ""
+
+msgctxt "#31784"
+msgid "Logos from tv-logos in the guide, the TV tab and the player (on or off)"
+msgstr ""
+
+msgctxt "#31785"
+msgid "Favourite channel group"
+msgstr ""
+
+msgctxt "#31786"
+msgid "Opens first in the guide and shows on the TV tab"
+msgstr ""
+
+msgctxt "#31787"
+msgid "More Kodi settings"
+msgstr ""
+
+msgctxt "#31788"
+msgid "Music, discs, pictures, services and games"
+msgstr ""
+
+msgctxt "#31789"
+msgid "Sound to your amplifier"
+msgstr ""
+
+msgctxt "#31790"
+msgid "Set the volume there"
+msgstr ""
+
+msgctxt "#31791"
+msgid "YouTube trailer fix"
+msgstr ""
+
+msgctxt "#31792"
+msgid "Keeps trailers from stopping after about a minute (bug in YouTube 7.4)"
+msgstr ""
+
+msgctxt "#31793"
+msgid "Name and count above lists"
+msgstr ""
+
+msgctxt "#31796"
+msgid "Scores (OMDb / MDBList)"
+msgstr ""
+
+msgctxt "#31797"
+msgid "IMDb, Rotten Tomatoes, Metacritic and Letterboxd with your own free key"
+msgstr ""
+
+msgctxt "#31798"
+msgid "Covers"
+msgstr ""
+
+msgctxt "#31804"
+msgid "Readable text on light pictures"
+msgstr ""
+
+msgctxt "#31807"
+msgid "Episodes in landscape rows"
+msgstr ""
+
+msgctxt "#31808"
+msgid "Picture of the episode (a still from the episode)"
+msgstr ""
+
+msgctxt "#31809"
+msgid "Picture of the series (landscape art with its logo)"
+msgstr ""
+
+msgctxt "#31810"
+msgid "Remember view per kind"
+msgstr ""
+
+msgctxt "#31813"
+msgid "Percentage watched on posters"
+msgstr ""
+
+msgctxt "#31816"
+msgid "RT audience"
+msgstr ""
+
+msgctxt "#31817"
+msgid "Metacritic users"
+msgstr ""
+
+msgctxt "#31821"
+msgid "MOSTLY"
+msgstr ""
+
+msgctxt "#31822"
+msgid "Media flags in the lists"
+msgstr ""
+
+msgctxt "#31826"
+msgid "Lists and posters"
+msgstr ""
+
+msgctxt "#31827"
+msgid "Media flags, percentage watched, views and the bar above lists"
+msgstr ""
+
+msgctxt "#31828"
+msgid "4K, HDR, codec, sound and languages of the title under the cursor"
+msgstr ""
+
+msgctxt "#31829"
+msgid "A small label like 45% above the progress bar of what you are watching"
+msgstr ""
+
+msgctxt "#31830"
+msgid "The view you pick for films, series, episodes ... is used in every folder of that kind"
+msgstr ""
+
+msgctxt "#31831"
+msgid "Name and count above a list, e.g. 'Red Light · 1647 items · Date'"
+msgstr ""
+
+msgctxt "#31832"
+msgid "A dark edge around the texts and a darker fade behind them"
+msgstr ""
+
+msgctxt "#31833"
+msgid "Settings of this add-on"
+msgstr ""
+
+msgctxt "#31834"
+msgid "Open your video add-on and follow its setup (keys and Trakt). Then the rows fill by themselves. Or add movies and series to your Kodi library."
+msgstr ""
+
+msgctxt "#31835"
+msgid "Subtitles and skip intro"
+msgstr ""
+
+msgctxt "#31836"
+msgid "In your video add-on: subtitle search, spoken language, AI translation and skip intro"
+msgstr ""
+
+msgctxt "#31837"
+msgid "More"
+msgstr ""
+
+msgctxt "#31838"
+msgid "Trailer on focus"
+msgstr ""
+
+msgctxt "#31839"
+msgid "Go to playlist"
+msgstr ""
+
+msgctxt "#31840"
+msgid "Trakt login"
+msgstr ""
+
+msgctxt "#31841"
+msgid "Log in with a code on trakt.tv/activate"
+msgstr ""
+
+msgctxt "#31842"
+msgid "Close the player menu by itself"
+msgstr ""
+
+msgctxt "#31843"
+msgid "Spotlight"
+msgstr ""
+
+msgctxt "#31844"
+msgid "Wall with info panel"
+msgstr ""
+
+msgctxt "#31845"
+msgid "Carousel"
+msgstr ""
+
+msgctxt "#31846"
+msgid "Title card"
+msgstr ""
+
+msgctxt "#31847"
+msgid "What did they say? (10 s back with subtitles)"
+msgstr ""
+
+msgctxt "#31848"
+msgid "Banner list"
+msgstr ""
+
+msgctxt "#31849"
+msgid "Progress rings"
+msgstr ""
+
+msgctxt "#31850"
+msgid "Timeline"
+msgstr ""
+
+msgctxt "#31851"
+msgid "Episode cards"
+msgstr ""
+
+msgctxt "#31852"
+msgid "Mosaic"
+msgstr ""
+
+msgctxt "#31853"
+msgid "Up next stack"
+msgstr ""
+
+msgctxt "#31854"
+msgid "List with flags"
+msgstr ""
+
+msgctxt "#31855"
+msgid "You stopped at"
+msgstr ""
+
+msgctxt "#31856"
+msgid "Not watched yet"
+msgstr ""
+
+msgctxt "#31857"
+msgid "added"
+msgstr ""
+
+msgctxt "#31858"
+msgid "Next episode"
+msgstr ""
+
+msgctxt "#31859"
+msgid "All watched"
+msgstr ""
+
+msgctxt "#31860"
+msgid "Vinyl"
+msgstr ""
+
+msgctxt "#31861"
+msgid "Artist wall"
+msgstr ""
+
+msgctxt "#31862"
+msgid "Album with track list"
+msgstr ""
+
+msgctxt "#31863"
+msgid "Coverflow"
+msgstr ""
+
+msgctxt "#31864"
+msgid "Discography timeline"
+msgstr ""
+
+msgctxt "#31865"
+msgid "Collection shelf"
+msgstr ""
+
+msgctxt "#31866"
+msgid "Recently added"
+msgstr ""
+
+msgctxt "#31867"
+msgid "Episodes as"
+msgstr ""
+
+msgctxt "#31868"
+msgid "Row"
+msgstr ""
+
+msgctxt "#31772"
+msgid "Lucent Subtitles"
+msgstr ""
+
+msgctxt "#31773"
+msgid "Accounts, keys and how subtitles are found"
+msgstr ""
+
+msgctxt "#31687"
+msgid "Lucent Subtitles, languages"
+msgstr ""
+
+msgctxt "#31869"
+msgid "OK: open"
+msgstr ""
+
+msgctxt "#31870"
+msgid "Video add-ons and TMDB"
+msgstr ""
+
+msgctxt "#31871"
+msgid "Logged in as"
+msgstr ""
+
+msgctxt "#31872"
+msgid "Mark intro"
+msgstr ""
+
+msgctxt "#31876"
+msgid "Settings level: press to show more settings"
+msgstr ""
+
+msgctxt "#31880"
+msgid "SEASON PREMIERE"
+msgstr ""
+
+msgctxt "#31881"
+msgid "SEASON FINALE"
+msgstr ""
+
+msgctxt "#31882"
+msgid "PREMIERE"
+msgstr ""
+
+msgctxt "#31883"
+msgid "FINALE"
+msgstr ""
+
+msgctxt "#31886"
+msgid "Sound with the intro"
+msgstr ""
+
+msgctxt "#31887"
+msgid "A warm sound with the intro when Kodi starts"
+msgstr ""
+
+msgctxt "#31890"
+msgid "You have no favourites yet"
+msgstr ""
+
+msgctxt "#31891"
+msgid "Add one with the context menu (long press or the menu button) on a film, series or add-on: Add to favourites."
+msgstr ""
+
+msgctxt "#31892"
+msgid "Reviews"
+msgstr ""
+
+msgctxt "#31893"
+msgid "reviews"
+msgstr ""
+
+msgctxt "#31894"
+msgid "Contains spoilers"
+msgstr ""
+
+msgctxt "#31895"
+msgid "average"
+msgstr ""
+
+msgctxt "#31896"
+msgid "Buttons in the player bar"
+msgstr ""
+
+msgctxt "#31897"
+msgid "Up: View · Sort · Filter"
+msgstr ""
+
+msgctxt "#31898"
+msgid "Order of the buttons"
+msgstr ""
+
+msgctxt "#31899"
+msgid "Options"
+msgstr ""
+
+msgctxt "#31900"
+msgid "Up hint in one-row views"
+msgstr ""
+
+msgctxt "#31901"
+msgid "Shows 'Up: View · Sort · Filter' next to the clock; Up keeps working when it is off"
+msgstr ""
+
+msgctxt "#31902"
+msgid "Slider only when scrolling fast"
+msgstr ""
+
+msgctxt "#31903"
+msgid "The slider under a one-row view only shows while you hold a key down; Down still goes to it"
+msgstr ""
