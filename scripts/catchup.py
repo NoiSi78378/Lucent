@@ -18,9 +18,13 @@ KEEP_DAYS = 14
 MIN_POS = 60                 # less than a minute in: just start from the beginning
 END_MARGIN = 120             # in the last 2 minutes: it counts as seen
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
