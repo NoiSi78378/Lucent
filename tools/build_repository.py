@@ -8,6 +8,7 @@ canonical Kodi add-on datadir. GitHub Pages can serve these as static files.
 from pathlib import Path
 import hashlib
 import os
+import re
 import sys
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -21,7 +22,7 @@ skin_xml = (skin / "addon.xml").read_text(encoding="utf-8")
 skin_addon = ET.fromstring(skin_xml)
 assert skin_addon.attrib["id"] == "skin.lucent.ita"
 version = skin_addon.attrib["version"]
-assert version == "2.1.45.1", version
+assert re.fullmatch(r"\d+\.\d+\.\d+\.\d+", version), version
 
 repo_id = "repository.lucent.ita"
 repo_version = "1.0.1"
