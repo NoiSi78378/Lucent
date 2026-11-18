@@ -25,6 +25,7 @@ STANDARD = os.path.join(DIR, "providers.json")             # the add-on's standa
 OLD_CHOICE = xbmcvfs.translatePath("special://profile/addon_data/script.lucent.library/tmdb/services.json")   # Lucent Library
 IMG = "https://image.tmdb.org/t/p/"
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 T = {
     "title": ("Streaming services", "Streamingdiensten"),
@@ -57,7 +58,11 @@ T = {
 
 
 def tr(key, *args):
-    text = T[key][1 if _NL else 0]
+    if IT:
+        from lang_it import translate
+        text = translate(T[key][0])
+    else:
+        text = T[key][1 if _NL else 0]
     return text.format(*args) if args else text
 
 
