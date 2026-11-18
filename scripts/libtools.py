@@ -18,6 +18,9 @@ NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
 
 
 def t(nl, en):
+    if xbmc.getLanguage(xbmc.ISO_639_1) == "it":
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
