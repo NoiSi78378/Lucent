@@ -124,7 +124,8 @@ jobs:
                       assert addon.get("version")=="1.0.1", addon.get("version")
                       print("Kodi 20+ repository descriptor URLs:",urls,flush=True)
                       assert all(u.startswith(base) for u in urls)
-                  skin=fetch("repo-ita/zips/skin.lucent.ita/skin.lucent.ita-2.1.45.1.zip")
+                  skin_version=next(a.get("version") for a in ET.fromstring(manifest) if a.get("id")=="skin.lucent.ita")
+                  skin=fetch(f"repo-ita/zips/skin.lucent.ita/skin.lucent.ita-{skin_version}.zip")
                   with zipfile.ZipFile(io.BytesIO(skin)) as archive:
                       assert archive.testzip() is None
                       assert "skin.lucent.ita/addon.xml" in archive.namelist()
