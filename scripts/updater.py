@@ -159,6 +159,8 @@ def available_updates():
     available = fetch_available()
     out = []
     for addon_id in sorted(available):
+        if addon_id.startswith("skin."):
+            continue  # Italian fork: never replace this skin with the upstream version
         if addon_id in SILENT:
             continue                                     # updated quietly by Kodi itself, never in this window
         have = installed_version(addon_id)
