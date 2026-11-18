@@ -17,12 +17,16 @@ import xbmcgui
 import xbmcvfs
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 LOGIN_FILE = "special://profile/addon_data/skin.lucent/xtream.json"
 OUT = "special://home/lucent-log.txt"
 LOG = "special://logpath/kodi.log"
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
