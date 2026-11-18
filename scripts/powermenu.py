@@ -18,6 +18,7 @@ import menu   # reuse the action picker of the menu editor (its main() only runs
 NCUSTOM = 6
 HEADING = "Lucent"
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 # key, Kodi string id (the same labels the dialog shows)
 STANDARD = [("quit", 13012), ("off", 13016), ("sleep", 13011), ("reboot", 13013),
@@ -45,7 +46,11 @@ T = {
 
 
 def tr(key, *args):
-    text = T[key][1 if _NL else 0]
+    if IT:
+        from lang_it import translate
+        text = translate(T[key][0])
+    else:
+        text = T[key][1 if _NL else 0]
     return text.format(*args) if args else text
 
 
