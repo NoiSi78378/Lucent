@@ -1,0 +1,56 @@
+name: Build Lucent ITA ZIP
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "addon.xml"
+      - "scripts/**"
+      - "language/resource.language.it_it/**"
+      - ".github/workflows/build-lucent-ita.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Lucent ITA
+        uses: actions/checkout@v4
+      - name: Check Python syntax
+        run: python -m compileall -q scripts
+      - name: Check Italian language file
+        run: |
+          python - <<'PY'
+          import pathlib, re
+          en = pathlib.Path("language/resource.language.en_gb/strings.po").read_text(encoding="utf-8")
+          it = pathlib.Path("language/resource.language.it_it/strings.po").read_text(encoding="utf-8")
+          ids = lambda s: set(re.findall(r'^msgctxt "#(\d+)"', s, flags=re.M))
+          assert ids(it) == ids(en), f"Untranslated IDs: {ids(en)-ids(it)}"
+          assert len(ids(it)) == 593
+          print(f"Verified {len(ids(it))} translated strings")
+          PY
+      - name: Package Kodi-installable skin ZIP
+        run: |
+          mkdir -p "$RUNNER_TEMP/skin-package/skin.lucent"
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='screenshots/' \
+            --exclude='tests/' \
+            --exclude='__pycache__/' \
+            --exclude='*.pyc' \
+            --exclude='*.zip' \
+            --exclude='README.md' \
+            --exclude='*.md' \
+            ./ "$RUNNER_TEMP/skin-package/skin.lucent/"
+          cd "$RUNNER_TEMP/skin-package"
+          zip -q -r "$GITHUB_WORKSPACE/skin.lucent-2.1.45.1-ITA.zip" skin.lucent
+      - name: Upload installable ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lucent-ITA-Kodi
+          path: skin.lucent-2.1.45.1-ITA.zip
+          retention-days: 30
+          if-no-files-found: error
