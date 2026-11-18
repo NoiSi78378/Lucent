@@ -15,10 +15,14 @@ import xbmcgui
 
 HOME = xbmcgui.Window(10000)
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 CLOSE = (9, 10, 92, 216, 247, 257, 275, 61467, 61448)
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
