@@ -41,7 +41,11 @@ TX = {
 
 
 def t(key, *args):
-    text = TX[key][1 if _NL else 0]
+    if xbmc.getLanguage(xbmc.ISO_639_1) == "it":
+        from lang_it import translate
+        text = translate(TX[key][0])
+    else:
+        text = TX[key][1 if _NL else 0]
     return text.format(*args) if args else text
 
 
