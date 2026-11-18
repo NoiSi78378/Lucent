@@ -17,6 +17,7 @@ import xbmcgui
 
 HOME = xbmcgui.Window(10000)
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 STATE = {"id": "", "since": 0.0, "done": "", "busy": False}
 COUNTS = {}                                         # 'db:12:3' / 'tmdb:1399:3' -> episodes in that season
 STATUS = {}                                         # TMDB id -> TMDB status of the series ('Returning Series', 'Ended', ...)
@@ -24,6 +25,9 @@ TYPES = {}                                          # 'tmdb:1399:3' -> {episode:
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
