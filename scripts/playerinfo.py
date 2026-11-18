@@ -20,12 +20,16 @@ import xbmcvfs
 
 HOME = xbmcgui.Window(10000)
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 P = "lucent.pi."
 _STATE = {"hist": [], "vhist": [], "peak": 0.0, "set": {}, "sett": 0.0, "path": None, "size": "", "rpc": 0.0, "tracks": {}, "maxclk": 0.0, "spark": 0, "open": False}
 SPARK_DIR = "special://temp/lucent_pi/"
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 def chan_word(n):
