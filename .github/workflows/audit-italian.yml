@@ -1,0 +1,22 @@
+name: Audit Italian coverage and XML
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/audit_italian.py"
+      - "scripts/**"
+      - "xml/**"
+      - "language/**"
+      - ".github/workflows/audit-italian.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit all Lua-free script and XML strings
+        run: python tools/audit_italian.py
