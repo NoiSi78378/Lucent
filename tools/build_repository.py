@@ -24,7 +24,7 @@ version = skin_addon.attrib["version"]
 assert version == "2.1.45.1", version
 
 repo_id = "repository.lucent.ita"
-repo_version = "1.0.0"
+repo_version = "1.0.1"
 base = "https://noisi78378.github.io/Lucent"
 repo_url = f"{base}/repo-ita"
 skin_zip = site / "repo-ita" / "zips" / skin_addon.attrib["id"] / f"{skin.name}-{version}.zip"
@@ -42,9 +42,12 @@ zip_folder(skin_zip, skin)
 repo_xml = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="{repo_id}" name="Lucent ITA Repository" version="{repo_version}" provider-name="Lucent ITA community translation">
   <extension point="xbmc.addon.repository">
-    <info compressed="false">{repo_url}/addons.xml</info>
-    <checksum>{repo_url}/addons.xml.md5</checksum>
-    <datadir zip="true">{repo_url}/zips/</datadir>
+    <dir>
+      <info compressed="false">{repo_url}/addons.xml</info>
+      <checksum>{repo_url}/addons.xml.md5</checksum>
+      <datadir zip="true">{repo_url}/zips/</datadir>
+      <hashes>false</hashes>
+    </dir>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="it_IT">Repository della traduzione italiana di Lucent</summary>
@@ -91,6 +94,13 @@ index = """<!DOCTYPE html>
 # Verify canonical paths and repository manifest agree.
 listed = ET.parse(addons_path).getroot()
 assert set(x.attrib["id"] for x in listed.findall("addon")) == {skin.name, repo_id}
+repo_extension = ET.fromstring(repo_xml).find("./extension[@point='xbmc.addon.repository']")
+assert repo_extension is not None
+repo_dirs = repo_extension.findall("dir")
+assert len(repo_dirs) == 1, "Kodi 20+ requires a <dir> repository definition"
+assert repo_dirs[0].findtext("info") == f"{repo_url}/addons.xml"
+assert repo_dirs[0].findtext("checksum") == f"{repo_url}/addons.xml.md5"
+assert repo_dirs[0].findtext("datadir") == f"{repo_url}/zips/"
 with ZipFile(skin_zip) as z:
     assert f"{skin.name}/addon.xml" in z.namelist()
 with ZipFile(repo_zip) as z:
