@@ -1063,6 +1063,15 @@ LONG_PREFIX = {
         "(le nuove app non lo rilasciano: lascialo vuoto).",
 }
 
+
+TEXT.update({
+    "No favourite (Kodi chooses)": "Nessun preferito (sceglie Kodi)",
+    "Favourite group - opens first": "Gruppo preferito: si apre per primo",
+    "No favourite group any more": "Nessun gruppo preferito",
+    "{0} now opens first": "{0} ora si apre per primo",
+    "No channel groups yet (Xtream login first).": "Nessun gruppo canali disponibile (effettua prima l'accesso Xtream).",
+})
+
 def translate(english):
     """Ritorna la traduzione italiana di una stringa fuori dal catalogo Kodi."""
     if english in TEXT:
