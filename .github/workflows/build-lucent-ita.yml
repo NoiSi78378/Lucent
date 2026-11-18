@@ -1,4 +1,4 @@
-name: Build Lucent ITA ZIP
+name: Build independent Lucent ITA ZIP
 
 on:
   workflow_dispatch:
@@ -7,6 +7,7 @@ on:
       - "addon.xml"
       - "scripts/**"
       - "language/resource.language.it_it/**"
+      - "tools/package_ita.py"
       - ".github/workflows/build-lucent-ita.yml"
 
 permissions:
@@ -18,39 +19,32 @@ jobs:
     steps:
       - name: Checkout Lucent ITA
         uses: actions/checkout@v4
-      - name: Check Python syntax
-        run: python -m compileall -q scripts
-      - name: Check Italian language file
+      - name: Check all Python scripts
+        run: python -m compileall -q scripts tools
+      - name: Check Italian strings and XML
+        run: python tools/audit_italian.py
+      - name: Stage only runtime skin folders
         run: |
-          python - <<'PY'
-          import pathlib, re
-          en = pathlib.Path("language/resource.language.en_gb/strings.po").read_text(encoding="utf-8")
-          it = pathlib.Path("language/resource.language.it_it/strings.po").read_text(encoding="utf-8")
-          ids = lambda s: set(re.findall(r'^msgctxt "#(\d+)"', s, flags=re.M))
-          assert ids(it) == ids(en), f"Untranslated IDs: {ids(en)-ids(it)}"
-          assert len(ids(it)) == 593
-          print(f"Verified {len(ids(it))} translated strings")
-          PY
-      - name: Package Kodi-installable skin ZIP
+          mkdir -p "$RUNNER_TEMP/skin-package/skin.lucent.ita"
+          cp addon.xml "$RUNNER_TEMP/skin-package/skin.lucent.ita/"
+          for d in colors fonts language logos media resources scripts xml; do
+            cp -a "$d" "$RUNNER_TEMP/skin-package/skin.lucent.ita/"
+          done
+          find "$RUNNER_TEMP/skin-package/skin.lucent.ita" \( -name '__pycache__' -o -name '*.pyc' \) -delete
+      - name: Convert skin to independent add-on ID
         run: |
-          mkdir -p "$RUNNER_TEMP/skin-package/skin.lucent"
-          rsync -a \
-            --exclude='.git/' \
-            --exclude='.github/' \
-            --exclude='screenshots/' \
-            --exclude='tests/' \
-            --exclude='__pycache__/' \
-            --exclude='*.pyc' \
-            --exclude='*.zip' \
-            --exclude='README.md' \
-            --exclude='*.md' \
-            ./ "$RUNNER_TEMP/skin-package/skin.lucent/"
+          python tools/package_ita.py "$RUNNER_TEMP/skin-package/skin.lucent.ita"
+          python -m compileall -q "$RUNNER_TEMP/skin-package/skin.lucent.ita/scripts"
+      - name: Package and inspect Kodi-installable ZIP
+        run: |
           cd "$RUNNER_TEMP/skin-package"
-          zip -q -r "$GITHUB_WORKSPACE/skin.lucent-2.1.45.1-ITA.zip" skin.lucent
-      - name: Upload installable ZIP
+          zip -q -r "$GITHUB_WORKSPACE/skin.lucent.ita-2.1.45.1.zip" skin.lucent.ita
+          unzip -t "$GITHUB_WORKSPACE/skin.lucent.ita-2.1.45.1.zip" | tail -n 1
+          unzip -p "$GITHUB_WORKSPACE/skin.lucent.ita-2.1.45.1.zip" skin.lucent.ita/addon.xml | head -n 2
+      - name: Upload ZIP for private testing
         uses: actions/upload-artifact@v4
         with:
-          name: Lucent-ITA-Kodi
-          path: skin.lucent-2.1.45.1-ITA.zip
+          name: Lucent-ITA-Kodi-test
+          path: skin.lucent.ita-2.1.45.1.zip
           retention-days: 30
           if-no-files-found: error
