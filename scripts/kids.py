@@ -14,6 +14,7 @@ import xbmc
 import xbmcgui
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 HOME = xbmcgui.Window(10000)
 NTABS = 12
 OK_PROP = "lucent.kids.ok"                                 # PIN given: settings stay open until you are home again
@@ -21,6 +22,9 @@ KIDS_ICONS = ("home", "movies", "tv", "library", "favourites")
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
