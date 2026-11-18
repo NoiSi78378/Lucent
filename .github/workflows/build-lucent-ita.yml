@@ -42,7 +42,7 @@ jobs:
       - name: Package and inspect Kodi-installable ZIP
         run: |
           cd "$RUNNER_TEMP/skin-package"
-          VERSION="$(python -c 'import xml.etree.ElementTree as ET; print(ET.parse("addon.xml").getroot().attrib["version"])')"
+          VERSION="$(python -c 'import xml.etree.ElementTree as ET; print(ET.parse("skin.lucent.ita/addon.xml").getroot().attrib["version"])')"
           PACKAGE="$GITHUB_WORKSPACE/skin.lucent.ita-$VERSION.zip"
           zip -q -r "$PACKAGE" skin.lucent.ita
           unzip -t "$PACKAGE" | tail -n 1
