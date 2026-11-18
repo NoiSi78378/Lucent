@@ -22,12 +22,16 @@ import xbmcgui
 import xbmcvfs
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 IPTV = "pvr.iptvsimple"
 DATA = f"special://profile/addon_data/{IPTV}/"
 UA = "Lucent/1.0"
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
