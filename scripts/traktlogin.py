@@ -30,9 +30,13 @@ USER = "lucent.trakt.user"            # Skin.String: the account name, shown in 
 # of your own (typed in earlier) still wins.
 LUCENT_CLIENT_ID = "Ygmc_TAb8t2Y_c3VoSLYyG0i4jZ_cAVBqn18kiyvuvY"
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
