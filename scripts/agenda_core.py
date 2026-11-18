@@ -81,11 +81,15 @@ MONTHS = {"nl": ["januari", "februari", "maart", "april", "mei", "juni", "juli",
                  "November", "December"]}
 MONTHS_SHORT = {"nl": ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
                 "en": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]}
-LANG = "nl" if _NL else "en"
+LANG = "nl" if _NL else ("it" if xbmc.getLanguage(xbmc.ISO_639_1) == "it" else "en")
 
 
 def tr(key, *args):
-    text = T[key][1 if _NL else 0]
+    if LANG == "it":
+        from lang_it import translate
+        text = translate(T[key][0])
+    else:
+        text = T[key][1 if _NL else 0]
     return text.format(*args) if args else text
 
 
