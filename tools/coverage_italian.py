@@ -40,6 +40,14 @@ for path in sorted((root / "scripts").glob("*.py")):
     missing = sorted(s for s in items if translate(s) == s and not s.startswith(("/",".","[","$")) and not re.fullmatch(r"[a-zA-Z0-9_./:=-]+",s) and not any(t in s for t in ("kind=", "mediatype=", "traktlists&", "mdblists&")))
     if missing:
         untranslated[path.name] = missing
+    # String formatting placeholders must survive translation unchanged.
+    for english in items:
+        italian = translate(english)
+        if english == italian:
+            continue
+        fields = lambda text: sorted(re.findall(r'(?<!\{)\{(?:[a-zA-Z_][\w]*|\d*)\}(?!\})', text))
+        if fields(english) != fields(italian):
+            format_errors.append((path.name, english[:120], fields(english), fields(italian)))
     incompatible[path.name] = len(items)
 print(f"TOTAL literal pairs: {sum(incompatible.values())}")
 print(f"TOTAL likely missing Italian labels: {sum(len(a) for a in untranslated.values())}")
@@ -50,3 +58,9 @@ for file, phrases in untranslated.items():
 
 if untranslated:
     raise SystemExit("Found untranslated user-facing strings; correct them before release")
+
+print("Placeholder mismatches:", len(format_errors))
+for item in format_errors[:50]:
+    print("FORMAT", item)
+if format_errors:
+    raise SystemExit("Dynamic placeholders differ from the original strings")
