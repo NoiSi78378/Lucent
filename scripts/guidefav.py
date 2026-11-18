@@ -10,6 +10,14 @@ import xbmc
 import xbmcgui
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
+
+
+def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
+    return nl if NL else en
 KEY = "lucent.guide.group"
 PATH_KEY = "lucent.guide.grouppath"     # Kodi's own folder of that group, for the TV tab on Home
 
@@ -29,22 +37,22 @@ def run():
     if not names:
         return
     current = xbmc.getInfoLabel(f"Skin.String({KEY})")
-    none = "Geen favoriet (Kodi kiest zelf)" if NL else "No favourite (Kodi chooses)"
+    none = t("No favourite (Kodi chooses)", "Geen favoriet (Kodi kiest zelf)")
     labels = [none] + [f"★  {n}" if n == current else n for n in names]
     preselect = names.index(current) + 1 if current in names else 0
-    pick = xbmcgui.Dialog().select("Favoriete groep - opent als eerste" if NL else "Favourite group - opens first",
+    pick = xbmcgui.Dialog().select(t("Favourite group - opens first", "Favoriete groep - opent als eerste"),
                                    labels, preselect=preselect)
     if pick < 0:
         return
     if pick == 0:
         xbmc.executebuiltin(f"Skin.Reset({KEY})", True)
         xbmc.executebuiltin(f"Skin.Reset({PATH_KEY})", True)
-        text = "Geen favoriete groep meer" if NL else "No favourite group any more"
+        text = t("No favourite group any more", "Geen favoriete groep meer")
     else:
         label = names[pick - 1]
         xbmc.executebuiltin(f'Skin.SetString({KEY},"{label.replace(chr(34), chr(39))}")', True)
         remember_path(label)
-        text = f"{label} opent voortaan als eerste" if NL else f"{label} now opens first"
+        text = t("{0} now opens first", "{0} opent voortaan als eerste").format(label)
         open_group(label)
     try:
         import tabpanels                    # the TV tab on Home shows the same group
@@ -82,12 +90,12 @@ def from_settings():
                                                         "params": {"channeltype": "tv"}})))
     names = [g.get("label") or "" for g in (reply.get("result") or {}).get("channelgroups") or [] if g.get("label")]
     if not names:
-        xbmcgui.Dialog().ok("TV", "Nog geen zendergroepen (eerst de Xtream-inlog)." if NL else "No channel groups yet (Xtream login first).")
+        xbmcgui.Dialog().ok("TV", t("No channel groups yet (Xtream login first).", "Nog geen zendergroepen (eerst de Xtream-inlog)."))
         return
     current = xbmc.getInfoLabel(f"Skin.String({KEY})")
-    none = "Geen favoriet (Kodi kiest zelf)" if NL else "No favourite (Kodi chooses)"
+    none = t("No favourite (Kodi chooses)", "Geen favoriet (Kodi kiest zelf)")
     labels = [none] + [f"★  {n}" if n == current else n for n in names]
-    pick = xbmcgui.Dialog().select("Favoriete groep - opent als eerste" if NL else "Favourite group - opens first",
+    pick = xbmcgui.Dialog().select(t("Favourite group - opens first", "Favoriete groep - opent als eerste"),
                                    labels, preselect=names.index(current) + 1 if current in names else 0)
     if pick < 0:
         return
