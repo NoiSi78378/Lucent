@@ -22,6 +22,7 @@ import xbmcvfs
 
 HEADING = "Lucent"
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+_IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 DIM = "screensaver.xbmc.builtin.dim"
 LOGO_DIR = "special://profile/addon_data/skin.lucent/logos/"
 FLAG_DIR = "special://profile/addon_data/skin.lucent/flags/"
@@ -29,7 +30,11 @@ FLAG_KEYS = ['8k', '4k', '1080', '720', 'sd', 'dolbyvision', 'hdr10plus', 'hdr10
 
 
 def tr(pair, *args):
-    text = pair[1 if _NL else 0]
+    if _IT:
+        from lang_it import translate
+        text = translate(pair[0])
+    else:
+        text = pair[1 if _NL else 0]
     return text.format(*args) if args else text
 
 
