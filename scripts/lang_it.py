@@ -1026,6 +1026,43 @@ TEXT.update({
     "Your IPTV provider gave you three things: a server address (like http://host:8080), a user name and a password. Fill them in on the next screens.": "Il fornitore IPTV ti ha dato tre dati: indirizzo server (per esempio http://host:8080), nome utente e password. Inseriscili nelle schermate successive.",
 })
 
+
+TEXT.update({
+    "Could not read the log.": "Impossibile leggere il registro.",
+})
+
+# Le descrizioni complesse vengono riconosciute dal loro inizio; Kodi le
+# concatena su più righe nei sorgenti Python e il testo finale è un'unica stringa.
+LONG_PREFIX = {
+    "The calendar shows the series and films of your Trakt collection.":
+        "Il calendario mostra film e serie della tua raccolta Trakt. Accedi a Trakt da Impostazioni skin > Seguiti, "
+        "aggiungi le serie alla tua raccolta e compariranno automaticamente qui. "
+        "Oppure apri un film o una serie e attiva la campanella nella scheda informazioni.",
+    "Remove [B]{0}[/B] of {1} from the library?":
+        "Rimuovere [B]{0}[/B] di {1} dalla videoteca?\n\n"
+        "Il contenuto resterà escluso anche dopo i successivi aggiornamenti della videoteca dell'add-on video. "
+        "Il tuo account non verrà modificato.",
+    "Put your own logos (PNG, best about 3:1 wide) in this folder:":
+        "Inserisci i loghi personalizzati (PNG, preferibilmente con rapporto 3:1) in questa cartella:"
+        "[CR][B]{0}[/B][CR]imdb, tmdb, trakt, rt (Rotten Tomatoes), rta (pubblico RT), mc (Metacritic), "
+        "mcu (utenti Metacritic) e lb (Letterboxd), ciascuno come nome.png. "
+        "Gli elenchi e la scheda informazioni mostreranno il logo invece del punto e del nome.",
+    "Put your own logos (PNG, preferably white on transparent) in this folder:":
+        "Inserisci i loghi personalizzati (PNG, preferibilmente bianchi su sfondo trasparente) qui:"
+        "[CR][B]{0}[/B][CR][CR]Usa questi nomi di file:[CR]{1}[CR][CR]"
+        "La schermata di pausa mostrerà il tuo logo al posto dell'indicatore integrato. "
+        "Riapri le impostazioni della skin dopo aver aggiunto i file.",
+    "No connection with Solis on your Homey.":
+        "Nessuna connessione a Solis su Homey. Controlla l'indirizzo di Homey nelle impostazioni di Solis Dashboard "
+        "(richiesta versione Solis per Homey 3.37.0 o successiva). Premendo OK sulla scheda si apre l'add-on.",
+    "Trakt needs your own (free) API app once:":
+        "Trakt richiede un'app API personale gratuita, da creare una sola volta:\n"
+        "1. Vai su trakt.tv > Impostazioni > Your API Apps > New application\n"
+        "2. Nome: Lucent – URI di reindirizzamento: urn:ietf:wg:oauth:2.0:oob\n"
+        "3. Inserisci qui il Client ID. Il Client Secret serve solo se la tua app ne dispone "
+        "(le nuove app non lo rilasciano: lascialo vuoto).",
+}
+
 def translate(english):
     """Ritorna la traduzione italiana di una stringa fuori dal catalogo Kodi."""
     if english in TEXT:
@@ -1045,4 +1082,7 @@ def translate(english):
         return english.replace(" (advice ", " (consigliato ", 1)
     if english.startswith("Last backup: "):
         return english.replace("Last backup: ", "Ultimo backup: ", 1)
+    for start, translation in LONG_PREFIX.items():
+        if english.startswith(start):
+            return translation
     return english
