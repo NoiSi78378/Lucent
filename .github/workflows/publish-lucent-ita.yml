@@ -1,0 +1,84 @@
+name: Publish Lucent ITA Kodi repository
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "addon.xml"
+      - "colors/**"
+      - "fonts/**"
+      - "language/**"
+      - "logos/**"
+      - "media/**"
+      - "resources/**"
+      - "scripts/**"
+      - "xml/**"
+      - "tools/package_ita.py"
+      - "tools/build_repository.py"
+      - ".github/workflows/publish-lucent-ita.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: lucent-ita-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+      - name: Validate Python and translations
+        run: |
+          python -m compileall -q scripts tools
+          python tools/audit_italian.py > /tmp/lucent-ita-audit.log
+          python tools/coverage_italian.py
+          python tools/smoke_italian.py
+      - name: Build independent Kodi skin
+        run: |
+          mkdir -p "$RUNNER_TEMP/package/skin.lucent.ita"
+          cp addon.xml "$RUNNER_TEMP/package/skin.lucent.ita/"
+          for d in colors fonts language logos media resources scripts xml; do
+            cp -a "$d" "$RUNNER_TEMP/package/skin.lucent.ita/"
+          done
+          find "$RUNNER_TEMP/package/skin.lucent.ita" -type d -name '__pycache__' -prune -exec rm -rf {} +
+          python tools/package_ita.py "$RUNNER_TEMP/package/skin.lucent.ita"
+      - name: Build and check repository installer and index
+        run: |
+          python tools/build_repository.py "$RUNNER_TEMP/package/skin.lucent.ita" "$RUNNER_TEMP/site"
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import os
+          import xml.etree.ElementTree as ET
+          from zipfile import ZipFile
+          root = Path(os.environ['RUNNER_TEMP'])/'site'
+          p = root/'repo-ita/addons.xml'
+          ET.parse(p)
+          assert (root/'repo-ita/addons.xml.md5').read_text() == hashlib.md5(p.read_bytes()).hexdigest()
+          for x in root.rglob('*.zip'):
+              with ZipFile(x) as z:
+                  assert z.testzip() is None, str(x)
+          print('All website/repository ZIPs and Kodi addons.xml validated')
+          PY
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload GitHub Pages website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ runner.temp }}/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
