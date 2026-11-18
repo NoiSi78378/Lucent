@@ -937,874 +937,874 @@ msgstr "Tempo prima che lo schermo si oscuri"
 
 msgctxt "#31420"
 msgid "How dark the screen gets"
-msgstr ""
+msgstr "Quanto si oscura lo schermo"
 
 
 msgctxt "#31422"
 msgid "Title under every poster"
-msgstr ""
+msgstr "Titolo sotto ogni locandina"
 
 msgctxt "#31423"
 msgid "Wide cards instead of posters on Home"
-msgstr ""
+msgstr "Schede larghe invece delle locandine nella home"
 
 msgctxt "#31424"
 msgid "Show, dim or hide titles you have seen"
-msgstr ""
+msgstr "Mostra, attenua o nascondi i titoli già visti"
 
 msgctxt "#31425"
 msgid "No icons next to the closed side menu"
-msgstr ""
+msgstr "Nessuna icona accanto al menu laterale chiuso"
 
 msgctxt "#31426"
 msgid "Day and month as well as the year"
-msgstr ""
+msgstr "Giorno e mese oltre all'anno"
 
 msgctxt "#31427"
 msgid "Enlarge the hero background so it fills the screen"
-msgstr ""
+msgstr "Ingrandisci lo sfondo principale fino a riempire lo schermo"
 
 msgctxt "#31428"
 msgid "Play a trailer when a poster keeps the focus"
-msgstr ""
+msgstr "Riproduci un trailer quando una locandina resta selezionata"
 
 msgctxt "#31429"
 msgid "How long to wait before the trailer starts"
-msgstr ""
+msgstr "Attesa prima dell'avvio del trailer"
 
 msgctxt "#31430"
 msgid "Quality and login of the YouTube add-on"
-msgstr ""
+msgstr "Qualità e accesso all'add-on YouTube"
 
 
 msgctxt "#31432"
 msgid "Glow around the card that has the focus"
-msgstr ""
+msgstr "Bagliore attorno alla scheda selezionata"
 
 msgctxt "#31433"
 msgid "IMDb, TMDB and Trakt scores on the info page"
-msgstr ""
+msgstr "Valutazioni IMDb, TMDb e Trakt nella scheda informazioni"
 
 msgctxt "#31434"
 msgid "Rating logos"
-msgstr ""
+msgstr "Loghi delle valutazioni"
 
 msgctxt "#31435"
 msgid "Your own logo images instead of the names"
-msgstr ""
+msgstr "Usa immagini personalizzate invece dei nomi"
 
 msgctxt "#31436"
 msgid "OK on a film opens its page"
-msgstr ""
+msgstr "OK su un film apre la sua scheda"
 
 msgctxt "#31437"
 msgid "Off: the stream starts at once"
-msgstr ""
+msgstr "Disattivato: la riproduzione inizia subito"
 
 msgctxt "#31438"
 msgid "OK on an episode opens its page"
-msgstr ""
+msgstr "OK su un episodio apre la sua scheda"
 
 msgctxt "#31439"
 msgid "Off: the stream starts at once"
-msgstr ""
+msgstr "Disattivato: la riproduzione inizia subito"
 
 msgctxt "#31440"
 msgid "Trailer button on the info page"
-msgstr ""
+msgstr "Pulsante trailer nella scheda informazioni"
 
 msgctxt "#31441"
 msgid "Install studio logos"
-msgstr ""
+msgstr "Installa i loghi degli studi"
 
 msgctxt "#31442"
 msgid "Logo pack for the studios on the info page"
-msgstr ""
+msgstr "Pacchetto loghi degli studi nella scheda informazioni"
 
 msgctxt "#31443"
 msgid "Tabs of the side menu and the rows on Home"
-msgstr ""
+msgstr "Schede del menu laterale e righe della home"
 
 msgctxt "#31444"
 msgid "Put the tabs and rows back the way they were"
-msgstr ""
+msgstr "Ripristina schede e righe predefinite"
 
 
 msgctxt "#31446"
 msgid "Video, sound and refresh rate of Kodi's player"
-msgstr ""
+msgstr "Video, audio e frequenza di aggiornamento del lettore Kodi"
 
 msgctxt "#31447"
 msgid "Source select, autoplay, Up Next and the playback watchdog"
-msgstr ""
+msgstr "Scelta sorgente, riproduzione automatica, episodio successivo e controllo riproduzione"
 
 msgctxt "#31448"
 msgid "Preferred language for audio and subtitles"
-msgstr ""
+msgstr "Lingua preferita per audio e sottotitoli"
 
 msgctxt "#31449"
 msgid "When the info appears after you pause"
-msgstr ""
+msgstr "Quando mostrare le informazioni dopo la pausa"
 
 msgctxt "#31450"
 msgid "Picture and sound info"
-msgstr ""
+msgstr "Informazioni video e audio"
 
 msgctxt "#31451"
 msgid "Resolution, HDR and audio badges on the pause screen"
-msgstr ""
+msgstr "Indicatori di risoluzione, HDR e audio nella schermata di pausa"
 
 msgctxt "#31452"
 msgid "Use your own badge images"
-msgstr ""
+msgstr "Usa immagini personalizzate per gli indicatori"
 
 msgctxt "#31453"
 msgid "Trakt, accounts and sources"
-msgstr ""
+msgstr "Trakt, account e sorgenti"
 
 msgctxt "#31454"
 msgid "Install and manage add-ons"
-msgstr ""
+msgstr "Installa e gestisci gli add-on"
 
 msgctxt "#31455"
 msgid "Services"
-msgstr ""
+msgstr "Servizi"
 
 msgctxt "#31456"
 msgid "Remote control and sharing"
-msgstr ""
+msgstr "Controllo remoto e condivisione"
 
 msgctxt "#31457"
 msgid "TMDB API key"
-msgstr ""
+msgstr "Chiave API TMDb"
 
 msgctxt "#31458"
 msgid "For cast, collections, studios and the pages opened from them"
-msgstr ""
+msgstr "Per cast, raccolte, studi e pagine collegate"
 
 msgctxt "#31459"
 msgid "Accounts and keys (OpenSubtitles, SubDL), sources"
-msgstr ""
+msgstr "Account e chiavi (OpenSubtitles, SubDL), sorgenti"
 
 msgctxt "#31466"
 msgid "Notification when a followed series has a new episode"
-msgstr ""
+msgstr "Notifica quando esce un nuovo episodio di una serie seguita"
 
 msgctxt "#31467"
 msgid "Week, list and month view"
-msgstr ""
+msgstr "Visualizzazione settimanale, elenco e mensile"
 
 msgctxt "#31468"
 msgid "Photo, own colour theme and Who is watching? at start (switch on Login screen)"
-msgstr ""
+msgstr "Foto, tema colori personalizzato e scelta del profilo all'avvio (attiva Schermata di accesso)"
 
 msgctxt "#31469"
 msgid "Calibrate the picture"
-msgstr ""
+msgstr "Calibra l'immagine"
 
 msgctxt "#31470"
 msgid "Fix black edges or a picture that is too large"
-msgstr ""
+msgstr "Correggi bordi neri o immagini troppo grandi"
 
 msgctxt "#31471"
 msgid "Display settings"
-msgstr ""
+msgstr "Impostazioni schermo"
 
 msgctxt "#31472"
 msgid "Resolution and refresh rate"
-msgstr ""
+msgstr "Risoluzione e frequenza di aggiornamento"
 
 msgctxt "#31473"
 msgid "Version, processor, memory and storage"
-msgstr ""
+msgstr "Versione, processore, memoria e spazio"
 
 msgctxt "#31474"
 msgid "What Kodi did recently"
-msgstr ""
+msgstr "Attività recente di Kodi"
 
 msgctxt "#31475"
 msgid "Reload Lucent without restarting Kodi"
-msgstr ""
+msgstr "Ricarica Lucent senza riavviare Kodi"
 
 msgctxt "#31476"
 msgid "All Lucent settings back to their defaults"
-msgstr ""
+msgstr "Ripristina le impostazioni predefinite di Lucent"
 
 msgctxt "#31477"
 msgid "Skin debug"
-msgstr ""
+msgstr "Debug della skin"
 
 msgctxt "#31478"
 msgid "Shows the names of windows and controls"
-msgstr ""
+msgstr "Mostra i nomi delle finestre e dei controlli"
 
 msgctxt "#31480"
 msgid "Rows, posters and what you see on Home"
-msgstr ""
+msgstr "Righe, locandine e contenuti della home"
 
 msgctxt "#31481"
 msgid "Trailer on a poster that has the focus"
-msgstr ""
+msgstr "Trailer sulla locandina selezionata"
 
 msgctxt "#31482"
 msgid "Look of the cards"
-msgstr ""
+msgstr "Aspetto delle schede"
 
 msgctxt "#31483"
 msgid "Ratings, buttons and what OK does"
-msgstr ""
+msgstr "Valutazioni, pulsanti e azione del tasto OK"
 
 msgctxt "#31484"
 msgid "Video add-ons, services and TMDB"
-msgstr ""
+msgstr "Add-on video, servizi e TMDb"
 
 msgctxt "#31485"
 msgid "Search subtitles from the player"
-msgstr ""
+msgstr "Cerca sottotitoli dal lettore"
 
 msgctxt "#31500"
 msgid "Version"
-msgstr ""
+msgstr "Versione"
 
 msgctxt "#31501"
 msgid "Made by Wilfried van der Voort with Claude  ·  design inspired by Nuvio Arc"
-msgstr ""
+msgstr "Creata da Wilfried van der Voort con Claude · design ispirato a Nuvio Arc"
 
 msgctxt "#31502"
 msgid "for Kodi"
-msgstr ""
+msgstr "per Kodi"
 
 msgctxt "#31510"
 msgid "Licences and credits"
-msgstr ""
+msgstr "Licenze e riconoscimenti"
 
 msgctxt "#31512"
 msgid "DATA AND SERVICES"
-msgstr ""
+msgstr "DATI E SERVIZI"
 
 msgctxt "#31513"
 msgid "Cast, collections, studios and the pages opened from them use the TMDB API, but Lucent is not endorsed or certified by TMDB."
-msgstr ""
+msgstr "Cast, raccolte, studi e relative pagine utilizzano le API TMDb, ma Lucent non è approvata né certificata da TMDb."
 
 msgctxt "#31514"
 msgid "Watch history, watchlist, lists and the calendar, through Lucent's own Trakt login. Lucent is not affiliated with Trakt."
-msgstr ""
+msgstr "Cronologia, lista da vedere, elenchi e calendario utilizzano l'accesso Trakt di Lucent. Lucent non è affiliata a Trakt."
 
 msgctxt "#31515"
 msgid "Air times in the calendar, from the free TVmaze API (CC BY-SA)."
-msgstr ""
+msgstr "Orari di trasmissione nel calendario forniti dalle API gratuite di TVmaze (CC BY-SA)."
 
 msgctxt "#31516"
 msgid "Games, scores, tables and Formula 1 data on the Sport tab. Lucent is not affiliated with ESPN."
-msgstr ""
+msgstr "Partite, risultati, classifiche e Formula 1 nella scheda Sport. Lucent non è affiliata a ESPN."
 
 msgctxt "#31517"
 msgid "ADD-ONS, FONT AND DESIGN"
-msgstr ""
+msgstr "ADD-ON, CARATTERI E DESIGN"
 
 msgctxt "#31519"
 msgid "Trailers play through the YouTube add-on for Kodi."
-msgstr ""
+msgstr "I trailer vengono riprodotti tramite l'add-on YouTube per Kodi."
 
 msgctxt "#31520"
 msgid "Subtitles (via Lucent Subtitles)."
-msgstr ""
+msgstr "Sottotitoli (tramite Lucent Subtitles)."
 
 msgctxt "#31521"
 msgid "Studio logos"
-msgstr ""
+msgstr "Loghi degli studi"
 
 msgctxt "#31522"
 msgid "White and coloured studio logo packs from the official Kodi repository."
-msgstr ""
+msgstr "Pacchetti di loghi degli studi bianchi e colorati dal repository ufficiale di Kodi."
 
 msgctxt "#31523"
 msgid "Font by Rasmus Andersson, SIL Open Font License 1.1."
-msgstr ""
+msgstr "Carattere di Rasmus Andersson, SIL Open Font License 1.1."
 
 msgctxt "#31524"
 msgid "The design is inspired by Nuvio Arc, a fork of Nuvio TV by ysosrs123. Lucent is not affiliated with it."
-msgstr ""
+msgstr "Il design è ispirato a Nuvio Arc, una variante di Nuvio TV di ysosrs123. Lucent non è affiliata al progetto."
 
 msgctxt "#31525"
 msgid "Lucent is a skin for Kodi. Kodi is a trademark of the XBMC Foundation."
-msgstr ""
+msgstr "Lucent è una skin per Kodi. Kodi è un marchio della XBMC Foundation."
 
 
 msgctxt "#31330"
 msgid "About Lucent"
-msgstr ""
+msgstr "Informazioni su Lucent"
 
 msgctxt "#31331"
 msgid "Logo, version, update options and licences"
-msgstr ""
+msgstr "Logo, versione, aggiornamenti e licenze"
 
 msgctxt "#31332"
 msgid "Check for updates now"
-msgstr ""
+msgstr "Controlla gli aggiornamenti"
 
 msgctxt "#31333"
 msgid "Look for a new version of Lucent"
-msgstr ""
+msgstr "Cerca una nuova versione di Lucent"
 
 
 
 msgctxt "#31336"
 msgid "What's new"
-msgstr ""
+msgstr "Novità"
 
 msgctxt "#31337"
 msgid "The changes of every version"
-msgstr ""
+msgstr "Modifiche di ogni versione"
 
 msgctxt "#31530"
 msgid "What's new"
-msgstr ""
+msgstr "Novità"
 
 msgctxt "#31531"
 msgid "Watch on"
-msgstr ""
+msgstr "Guarda su"
 
 msgctxt "#31532"
 msgid "Streaming data: JustWatch via TMDB"
-msgstr ""
+msgstr "Dati streaming: JustWatch tramite TMDb"
 
 msgctxt "#31533"
 msgid "Colour from the poster"
-msgstr ""
+msgstr "Colore dalla locandina"
 
 msgctxt "#31534"
 msgid "The background glows in the colour of the poster you are on"
-msgstr ""
+msgstr "Lo sfondo si illumina con i colori della locandina selezionata"
 
 msgctxt "#31535"
 msgid "Sport today"
-msgstr ""
+msgstr "Sport oggi"
 
 msgctxt "#31537"
 msgid "OK: watch on"
-msgstr ""
+msgstr "OK: guarda su"
 
 msgctxt "#31538"
 msgid "No channel found yet – OK opens Sport"
-msgstr ""
+msgstr "Nessun canale trovato: premi OK per aprire Sport"
 
 msgctxt "#31539"
 msgid "Sport on the home screen"
-msgstr ""
+msgstr "Sport nella schermata iniziale"
 
 msgctxt "#31540"
 msgid "A card with today's game of a team you follow, OK to watch"
-msgstr ""
+msgstr "Una scheda con la partita odierna di una squadra seguita: OK per guardarla"
 
 msgctxt "#31541"
 msgid "watched"
-msgstr ""
+msgstr "visti"
 
 msgctxt "#31542"
 msgid "done at"
-msgstr ""
+msgstr "terminato alle"
 
 msgctxt "#31543"
 msgid "Intro at start"
-msgstr ""
+msgstr "Introduzione all'avvio"
 
 msgctxt "#31544"
 msgid "The star and the moon of Lucent when Kodi starts (about 6 seconds)"
-msgstr ""
+msgstr "La stella e la luna di Lucent all'avvio di Kodi (circa 6 secondi)"
 
 msgctxt "#31545"
 msgid "Tonight for you"
-msgstr ""
+msgstr "Stasera per te"
 
 msgctxt "#31546"
 msgid "A row on Home with titles like what you watched last, fitting the time of day"
-msgstr ""
+msgstr "Una riga nella home con titoli simili a quelli guardati di recente, adatti all'ora del giorno"
 
 msgctxt "#31547"
 msgid "Films on my watchlist"
-msgstr ""
+msgstr "Film nella mia lista da vedere"
 
 msgctxt "#31548"
 msgid "Pop-up when a film from your Trakt collection or watchlist comes out digitally, with where to watch it"
-msgstr ""
+msgstr "Notifica quando un film della raccolta o della lista da vedere Trakt esce in digitale, con i servizi disponibili"
 
 msgctxt "#31549"
 msgid "Seasons"
-msgstr ""
+msgstr "Stagioni"
 
 msgctxt "#31550"
 msgid "Halloween, Sinterklaas, Christmas with snow, New Year and King's Day on Home"
-msgstr ""
+msgstr "Halloween, San Nicola, Natale con neve, Capodanno e Festa del Re nella home"
 
 msgctxt "#31551"
 msgid "Light mode (2 GB boxes)"
-msgstr ""
+msgstr "Modalità leggera (dispositivi con 2 GB)"
 
 msgctxt "#31552"
 msgid "At most 6 rows per tab, small artwork, no snow and no poster colour. The skin reloads once"
-msgstr ""
+msgstr "Massimo 6 righe per scheda, immagini piccole, niente neve e niente colori delle locandine. La skin si ricarica una volta"
 
 msgctxt "#31555"
 msgid "Load rows as you go"
-msgstr ""
+msgstr "Carica le righe man mano"
 
 msgctxt "#31556"
 msgid "Only the top three rows load at start, the rest when you scroll down"
-msgstr ""
+msgstr "All'avvio carica solo le prime tre righe; le altre quando scorri"
 
 msgctxt "#31557"
 msgid "ENDED"
-msgstr ""
+msgstr "TERMINATA"
 
 msgctxt "#31558"
 msgid "CONTINUING"
-msgstr ""
+msgstr "IN CORSO"
 
 msgctxt "#31559"
 msgid "CANCELLED"
-msgstr ""
+msgstr "CANCELLATA"
 
 msgctxt "#31560"
 msgid "COMING"
-msgstr ""
+msgstr "IN ARRIVO"
 
 msgctxt "#31561"
 msgid "RELEASED"
-msgstr ""
+msgstr "USCITO"
 
 msgctxt "#31562"
 msgid "seasons"
-msgstr ""
+msgstr "stagioni"
 
 msgctxt "#31563"
 msgid "episodes"
-msgstr ""
+msgstr "episodi"
 
 msgctxt "#31564"
 msgid "watched"
-msgstr ""
+msgstr "visti"
 
 msgctxt "#31565"
 msgid "Continue"
-msgstr ""
+msgstr "Continua"
 
 msgctxt "#31566"
 msgid "More info"
-msgstr ""
+msgstr "Altre informazioni"
 
 msgctxt "#31567"
 msgid "Seasons as tabs"
-msgstr ""
+msgstr "Stagioni come schede"
 
 msgctxt "#31568"
 msgid "Left / right: episode   ·   Up: choose a season   ·   OK: play"
-msgstr ""
+msgstr "Sinistra / destra: episodio · Su: scegli stagione · OK: riproduci"
 
 msgctxt "#31569"
 msgid "Series: seasons as tabs"
-msgstr ""
+msgstr "Serie TV: stagioni come schede"
 
 msgctxt "#31570"
 msgid "Opening a series shows the seasons as tabs above the episodes"
-msgstr ""
+msgstr "Aprendo una serie, le stagioni appaiono come schede sopra gli episodi"
 
 msgctxt "#31571"
 msgid "Showcase"
-msgstr ""
+msgstr "Vetrina"
 
 msgctxt "#31572"
 msgid "new"
-msgstr ""
+msgstr "nuovo"
 
 msgctxt "#31581"
 msgid "Surprise me"
-msgstr ""
+msgstr "Sorprendimi"
 
 msgctxt "#31588"
 msgid "Quick filters"
-msgstr ""
+msgstr "Filtri rapidi"
 
 msgctxt "#31589"
 msgid "Not watched"
-msgstr ""
+msgstr "Non visto"
 
 msgctxt "#31590"
 msgid "Genre"
-msgstr ""
+msgstr "Genere"
 
 msgctxt "#31591"
 msgid "Year"
-msgstr ""
+msgstr "Anno"
 
 msgctxt "#31592"
 msgid "Shorter than 2 hours"
-msgstr ""
+msgstr "Durata inferiore a 2 ore"
 
 msgctxt "#31593"
 msgid "Newly added"
-msgstr ""
+msgstr "Aggiunti di recente"
 
 msgctxt "#31594"
 msgid "of"
-msgstr ""
+msgstr "di"
 
 msgctxt "#31595"
 msgid "Watch the next one"
-msgstr ""
+msgstr "Guarda il successivo"
 
 msgctxt "#31596"
 msgid "Collection"
-msgstr ""
+msgstr "Raccolta"
 
 
 msgctxt "#31612"
 msgid "Available groups"
-msgstr ""
+msgstr "Gruppi disponibili"
 
 msgctxt "#31613"
 msgid "Add group"
-msgstr ""
+msgstr "Aggiungi gruppo"
 
 msgctxt "#31614"
 msgid "Rename group"
-msgstr ""
+msgstr "Rinomina gruppo"
 
 msgctxt "#31615"
 msgid "Delete group"
-msgstr ""
+msgstr "Elimina gruppo"
 
 msgctxt "#31616"
 msgid "Channel options"
-msgstr ""
+msgstr "Opzioni canale"
 
 msgctxt "#31617"
 msgid "Other options"
-msgstr ""
+msgstr "Altre opzioni"
 
 msgctxt "#31619"
 msgid "Options"
-msgstr ""
+msgstr "Opzioni"
 
 msgctxt "#31620"
 msgid "Hide all groups"
-msgstr ""
+msgstr "Nascondi tutti i gruppi"
 
 msgctxt "#31621"
 msgid "Show all groups"
-msgstr ""
+msgstr "Mostra tutti i gruppi"
 
 msgctxt "#31622"
 msgid "Setup assistant"
-msgstr ""
+msgstr "Configurazione guidata"
 
 msgctxt "#31623"
 msgid "The most important settings and logins, step by step"
-msgstr ""
+msgstr "Le impostazioni e gli accessi più importanti, passo dopo passo"
 
 msgctxt "#31624"
 msgid "▲  Press Up to read on"
-msgstr ""
+msgstr "▲ Premi Su per continuare a leggere"
 
 msgctxt "#31625"
 msgid "Backup and restore"
-msgstr ""
+msgstr "Backup e ripristino"
 
 msgctxt "#31626"
 msgid "Save all your settings and logins in one file, and put them back"
-msgstr ""
+msgstr "Salva impostazioni e accessi in un file e ripristinali"
 
 msgctxt "#31627"
 msgid "Sleep timer"
-msgstr ""
+msgstr "Timer di spegnimento"
 
 msgctxt "#31628"
 msgid "Kids mode"
-msgstr ""
+msgstr "Modalità bambini"
 
 msgctxt "#31629"
 msgid "Only the menu items you choose, settings behind a PIN"
-msgstr ""
+msgstr "Solo le voci del menu scelte, impostazioni protette da PIN"
 
 msgctxt "#31630"
 msgid "Kids mode off"
-msgstr ""
+msgstr "Modalità bambini disattivata"
 
 msgctxt "#31631"
 msgid "Search subtitles"
-msgstr ""
+msgstr "Cerca sottotitoli"
 
 msgctxt "#31632"
 msgid "Xtream login (IPTV)"
-msgstr ""
+msgstr "Accesso Xtream (IPTV)"
 
 msgctxt "#31633"
 msgid "Fill in your provider's server address, user name and password; Lucent sets up IPTV Simple"
-msgstr ""
+msgstr "Inserisci server, nome utente e password del fornitore; Lucent configura IPTV Simple"
 
 msgctxt "#31634"
 msgid "Self-test"
-msgstr ""
+msgstr "Test automatico"
 
 msgctxt "#31635"
 msgid "Checks your video add-on, IPTV, subtitles and the channel list and tells you what is missing"
-msgstr ""
+msgstr "Verifica add-on video, IPTV, sottotitoli e canali, indicando eventuali problemi"
 
 msgctxt "#31636"
 msgid "Safe log"
-msgstr ""
+msgstr "Registro protetto"
 
 msgctxt "#31637"
 msgid "Copies Kodi's log with all logins blanked out, to share"
-msgstr ""
+msgstr "Copia il registro di Kodi oscurando i dati di accesso, per poterlo condividere"
 
 msgctxt "#31638"
 msgid "Goal notifications: on"
-msgstr ""
+msgstr "Notifiche gol: attive"
 
 msgctxt "#31639"
 msgid "Goal notifications: off"
-msgstr ""
+msgstr "Notifiche gol: disattivate"
 
 msgctxt "#31640"
 msgid "A pop-up when a team you follow scores (select to switch on / off)"
-msgstr ""
+msgstr "Notifica quando segna una squadra seguita (seleziona per attivare o disattivare)"
 
 msgctxt "#31641"
 msgid "Add / remove channel in favourites"
-msgstr ""
+msgstr "Aggiungi o rimuovi il canale dai preferiti"
 
 msgctxt "#31642"
 msgid "Hide channels"
-msgstr ""
+msgstr "Nascondi canali"
 
 msgctxt "#31643"
 msgid "Leave out groups and channels you never watch (shorter list, faster guide)"
-msgstr ""
+msgstr "Escludi gruppi e canali che non guardi mai (elenco più corto e guida più veloce)"
 
 msgctxt "#31644"
 msgid "Licences and credits"
-msgstr ""
+msgstr "Licenze e riconoscimenti"
 
 msgctxt "#31645"
 msgid "Libraries, fonts and artwork that Lucent uses"
-msgstr ""
+msgstr "Librerie, caratteri e immagini usate da Lucent"
 
 msgctxt "#31646"
 msgid "Update pop-up: on"
-msgstr ""
+msgstr "Notifiche aggiornamenti: attive"
 
 msgctxt "#31647"
 msgid "Update pop-up: off"
-msgstr ""
+msgstr "Notifiche aggiornamenti: disattivate"
 
 msgctxt "#31648"
 msgid "Light mode: on"
-msgstr ""
+msgstr "Modalità leggera: attiva"
 
 msgctxt "#31649"
 msgid "Light mode: off"
-msgstr ""
+msgstr "Modalità leggera: disattivata"
 
 msgctxt "#31650"
 msgid "On: Home builds only 6 rows and uses small pictures (for boxes with 2 GB). Off: up to 10 rows"
-msgstr ""
+msgstr "Attiva: la home crea solo 6 righe e usa immagini piccole (per dispositivi con 2 GB). Disattiva: fino a 10 righe"
 
 msgctxt "#31651"
 msgid "CoreELEC settings"
-msgstr ""
+msgstr "Impostazioni CoreELEC"
 
 msgctxt "#31652"
 msgid "LibreELEC settings"
-msgstr ""
+msgstr "Impostazioni LibreELEC"
 
 msgctxt "#31653"
 msgid "Network, Bluetooth, updates and system of this box"
-msgstr ""
+msgstr "Rete, Bluetooth, aggiornamenti e sistema del dispositivo"
 
 msgctxt "#31654"
 msgid "Power menu"
-msgstr ""
+msgstr "Menu di spegnimento"
 
 msgctxt "#31655"
 msgid "Hide Kodi's own buttons, or add your own (Settings, an add-on, Reload skin…)"
-msgstr ""
+msgstr "Nascondi i pulsanti di Kodi o aggiungi i tuoi (Impostazioni, un add-on, Ricarica skin...)"
 
 msgctxt "#31656"
 msgid "Streaming services"
-msgstr ""
+msgstr "Servizi streaming"
 
 msgctxt "#31657"
 msgid "Which services the 'Streaming services' row shows, their order and their pictures"
-msgstr ""
+msgstr "Quali servizi mostra la riga «Servizi streaming», il loro ordine e le immagini"
 
 msgctxt "#31660"
 msgid "Big posters on Home"
-msgstr ""
+msgstr "Locandine grandi nella home"
 
 msgctxt "#31661"
 msgid "On: posters 15% bigger, without names. Off: the old, smaller posters, with the next row peeking in"
-msgstr ""
+msgstr "Attivo: locandine più grandi del 15%, senza nomi. Disattivo: locandine più piccole e parte della riga successiva visibile"
 
 
 
 msgctxt "#31669"
 msgid "Maintenance"
-msgstr ""
+msgstr "Manutenzione"
 
 msgctxt "#31670"
 msgid "Free up space: old pictures, add-on zip files and temporary files; also once a month by itself"
-msgstr ""
+msgstr "Libera spazio: vecchie immagini, ZIP degli add-on e file temporanei; anche automaticamente una volta al mese"
 
 
 msgctxt "#31671"
 msgid "Skip"
-msgstr ""
+msgstr "Salta"
 
 
 msgctxt "#31672"
 msgid "OK to skip  ·  Back to keep watching"
-msgstr ""
+msgstr "OK per saltare · Indietro per continuare a guardare"
 
 msgctxt "#31673"
 msgid "Photos of stadiums and race circuits."
-msgstr ""
+msgstr "Foto di stadi e circuiti automobilistici."
 
 msgctxt "#31674"
 msgid "TV channel logos by tv-logo (CC BY-SA / BY-NC-SA). The logos belong to their owners."
-msgstr ""
+msgstr "Loghi dei canali TV di tv-logo (CC BY-SA / BY-NC-SA). I loghi appartengono ai rispettivi proprietari."
 
 msgctxt "#31675"
 msgid "Coming up"
-msgstr ""
+msgstr "In arrivo"
 
 msgctxt "#31676"
 msgid "Nothing coming up. Follow a series or film with the bell on its info page."
-msgstr ""
+msgstr "Nessun evento in arrivo. Segui una serie o un film con la campanella nella relativa scheda."
 
 msgctxt "#31677"
 msgid "Today"
-msgstr ""
+msgstr "Oggi"
 
 msgctxt "#31678"
 msgid "No games today. Choose clubs or competitions under Follow in Sport."
-msgstr ""
+msgstr "Nessuna partita oggi. Scegli club o competizioni in Seguiti nella sezione Sport."
 
 msgctxt "#31679"
 msgid "Next"
-msgstr ""
+msgstr "Successivo"
 
 msgctxt "#31680"
 msgid "No TV channels yet. Set up live TV in the setup assistant."
-msgstr ""
+msgstr "Nessun canale TV configurato. Imposta la TV in diretta nella configurazione guidata."
 
 msgctxt "#31681"
 msgid "Look, rows, kids mode"
-msgstr ""
+msgstr "Aspetto, righe, modalità bambini"
 
 msgctxt "#31682"
 msgid "Menu and widgets"
-msgstr ""
+msgstr "Menu e widget"
 
 msgctxt "#31683"
 msgid "Tabs and rows"
-msgstr ""
+msgstr "Schede e righe"
 
 msgctxt "#31684"
 msgid "Player"
-msgstr ""
+msgstr "Lettore"
 
 msgctxt "#31685"
 msgid "Buffer, picture and sound"
-msgstr ""
+msgstr "Buffer, immagine e audio"
 
 msgctxt "#31686"
 msgid "Subtitles"
-msgstr ""
+msgstr "Sottotitoli"
 
 msgctxt "#31688"
 msgid "Live TV"
-msgstr ""
+msgstr "TV in diretta"
 
 msgctxt "#31689"
 msgid "IPTV Simple, channels, guide"
-msgstr ""
+msgstr "IPTV Simple, canali e guida"
 
 msgctxt "#31690"
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 msgctxt "#31691"
 msgid "Display, network, storage"
-msgstr ""
+msgstr "Schermo, rete e spazio"
 
 msgctxt "#31692"
 msgid "Kodi has been running for"
-msgstr ""
+msgstr "Kodi è in esecuzione da"
 
 msgctxt "#31693"
 msgid "Power off"
-msgstr ""
+msgstr "Spegni"
 
 msgctxt "#31694"
 msgid "Restart"
-msgstr ""
+msgstr "Riavvia"
 
 msgctxt "#31695"
 msgid "Sleep"
-msgstr ""
+msgstr "Sospendi"
 
 msgctxt "#31696"
 msgid "Sleep timer"
-msgstr ""
+msgstr "Timer di spegnimento"
 
 msgctxt "#31697"
 msgid "Other profile"
-msgstr ""
+msgstr "Cambia profilo"
 
 msgctxt "#31698"
 msgid "Video add-ons"
-msgstr ""
+msgstr "Add-on video"
 
 msgctxt "#31699"
 msgid "Program add-ons"
-msgstr ""
+msgstr "Add-on programmi"
 
 msgctxt "#31700"
 msgid "Skin settings"
-msgstr ""
+msgstr "Impostazioni skin"
 
 msgctxt "#31701"
 msgid "Video add-on"
-msgstr ""
+msgstr "Add-on video"
 
 msgctxt "#31702"
 msgid "version"
-msgstr ""
+msgstr "versione"
 
 msgctxt "#31703"
 msgid "Watch now"
-msgstr ""
+msgstr "Guarda ora"
 
 msgctxt "#31704"
 msgid "Remind me"
-msgstr ""
+msgstr "Ricordamelo"
 
 msgctxt "#31705"
 msgid "Full guide"
-msgstr ""
+msgstr "Guida completa"
 
 msgctxt "#31706"
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 msgctxt "#31707"
 msgid "More"
-msgstr ""
+msgstr "Altro"
 
 msgctxt "#31708"
 msgid "No guide for this channel"
-msgstr ""
+msgstr "Nessuna guida per questo canale"
 
 msgctxt "#31709"
 msgid "Statistics"
