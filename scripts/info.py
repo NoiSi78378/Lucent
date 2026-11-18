@@ -1578,56 +1578,25 @@ def load_logos():
 
 
 def resume_show():
-    """Series page (seasons as tabs): Continue = the episode after the last one you watched (Trakt), played by the
-    video add-on; without a Trakt number its seasons open."""
-    tmdb_id = xbmc.getInfoLabel("Container(56).ListItem.Property(tmdb_id)") or xbmc.getInfoLabel("ListItem.Property(tmdb_id)")
-    if not tmdb_id.isdigit():
-        tmdb_id = str((library_show_ids("Container(56).ListItem.") or {}).get("tmdb") or "")
-    if not lv_open_with():
-        notify(tr("no_player"))
-        return
-    if not tmdb_id.isdigit():
-        notify(tr("no_ids"))
-        return
-    trakt = ""
-    for name in ("Container(56).ListItem.Property(trakt_show_id)", "Container(56).ListItem.Property(tvshow.trakt_id)",
-                 "ListItem.Property(trakt_show_id)"):
-        trakt = xbmc.getInfoLabel(name)
-        if trakt.isdigit():
-            break
-    if not trakt.isdigit():
-        trakt = trakt_show_from(library_show_ids("Container(56).ListItem.") or {}) or trakt_show_from({"tmdb": tmdb_id})
-    episode = next_episode(int(trakt)) if str(trakt).isdigit() else None
-    if episode and episode.get("season") is not None:
-        log(f"continue {tmdb_id}: season {episode['season']} episode {episode['number']} ({episode['why']})")
-        xbmc.executebuiltin(f"PlayMedia({episode_play_url(tmdb_id, episode['season'], episode['number'])})")
-    else:
-        xbmc.executebuiltin(f'ActivateWindow(Videos,"{lv_play_url("tv", tmdb_id)}",return)')
+    """Continue from the Kodi library or the episodes already visible below.
 
-
-def next_episode(show):
-    """The episode 'Continue' should play, from Trakt itself: the first one after the last one you watched (also a new
-    episode that just came out). Only when Trakt has no next one: an episode you stopped halfway. None when Trakt cannot
-    be asked."""
+    Works with Stream4Me and other add-ons that integrate with Kodi, without
+    requiring Lucent Video, TMDb Helper or a Trakt login.
+    """
     try:
-        trakt = Trakt()
-        if not trakt.token:
-            return None
-        seasons = {s.get("number"): (s.get("ids") or {}).get("trakt") for s in trakt.get(f"shows/{show}/seasons") or []}
-        progress = trakt.get(f"shows/{show}/progress/watched?hidden=false&specials=false&count_specials=false") or {}
-        ep = progress.get("next_episode") or {}
-        if (ep.get("ids") or {}).get("trakt"):
-            return {"season": ep.get("season"), "number": ep.get("number"), "trakt_id": ep["ids"]["trakt"],
-                    "trakt_season_id": seasons.get(ep.get("season")), "why": "next after the last watched"}
-        for entry in trakt.get("sync/playback/episodes?limit=50") or []:          # stopped halfway, newest first
-            if ((entry.get("show") or {}).get("ids") or {}).get("trakt") == show and 2 < float(entry.get("progress") or 0) < 90:
-                ep = entry.get("episode") or {}
-                return {"season": ep.get("season"), "number": ep.get("number"), "trakt_id": (ep.get("ids") or {}).get("trakt"),
-                        "trakt_season_id": seasons.get(ep.get("season")), "why": "stopped halfway"}
+        import continue_native
+        if continue_native.run():
+            return
     except Exception as error:  # noqa: BLE001
-        log(f"next episode of {show}: {error}")
-    return None
-
+        log(f"native Continue: {error}")
+    # Never invent a playback URL for an add-on. Leave the user on the same
+    # season's real episode list, where a manual click is already known to work.
+    xbmc.executebuiltin("Control.SetFocus(5601)")
+    message = ("Nessun episodio da riprendere. Selezionalo dalla lista qui sotto."
+               if _IT else
+               ("Geen volgende aflevering gevonden. Kies er een uit de lijst hieronder."
+                if _NL else "No next episode found. Choose an episode below."))
+    notify(message, xbmcgui.NOTIFICATION_INFO)
 
 def load():
     # 2.1.20: the bell (follow in the calendar) is set here too, in a thread next to the rest - before this the info

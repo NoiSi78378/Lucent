@@ -1,0 +1,30 @@
+name: Test native Continue without Lucent Video
+
+on:
+  push:
+    branches:
+      - feature/continue-native-2.2
+    paths:
+      - "scripts/continue_native.py"
+      - "scripts/info.py"
+      - "tools/test_continue_native.py"
+      - ".github/workflows/test-continue-native.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all Kodi skin Python syntax
+        run: python -m compileall -q scripts
+      - name: Execute simulated Kodi library and Stream4Me Continue tests
+        run: python tools/test_continue_native.py
+      - name: Validate existing language and XML audit
+        run: |
+          python tools/audit_italian.py >/tmp/audit.txt
+          python tools/coverage_italian.py
+          python tools/smoke_italian.py
