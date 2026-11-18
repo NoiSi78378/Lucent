@@ -23,6 +23,7 @@ import xbmcvfs
 
 HOME = xbmcgui.Window(10000)
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 DIR = "special://profile/addon_data/skin.lucent/"
 KEYFILE = DIR + "omdb.key"
 MDB_KEYFILE = DIR + "mdblist.key"
@@ -36,6 +37,9 @@ SCORES = [("imdb", "IMDb"), ("rt", "Rotten Tomatoes"), ("mc", "Metacritic"), ("t
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
