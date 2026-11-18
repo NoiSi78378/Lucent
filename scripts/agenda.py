@@ -55,7 +55,12 @@ TX = {
 
 
 def t(key, *args):
-    text = TX[key][1 if _NL else 0]
+    pair = TX[key]
+    if core.LANG == "it":
+        from lang_it import translate
+        text = translate(pair[0])
+    else:
+        text = pair[1 if _NL else 0]
     return text.format(*args) if args else text
 
 
