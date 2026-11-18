@@ -27,6 +27,7 @@ import xbmcvfs
 import xtream
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 FOLDER = "special://profile/addon_data/skin.lucent/"
 CFG = FOLDER + "channel_filter.json"
 OUT = FOLDER + "channels-filtered.m3u"
@@ -35,6 +36,9 @@ BIG = 80 * 1024 * 1024
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
