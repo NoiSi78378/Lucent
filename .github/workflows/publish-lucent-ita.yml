@@ -113,8 +113,14 @@ jobs:
                       assert archive.testzip() is None
                       rx=archive.read("repository.lucent.ita/addon.xml")
                       addon=ET.fromstring(rx)
-                      urls=[addon.find(".//info").text, addon.find(".//checksum").text, addon.find(".//datadir").text]
-                      print("Repository descriptor URLs:",urls,flush=True)
+                      ext=addon.find("./extension[@point='xbmc.addon.repository']")
+                      assert ext is not None, "Repository extension missing"
+                      dirs=ext.findall("dir")
+                      assert len(dirs)==1, "Kodi 20+ needs one <dir> containing repository URLs"
+                      directory=dirs[0]
+                      urls=[directory.find("info").text, directory.find("checksum").text, directory.find("datadir").text]
+                      assert addon.get("version")=="1.0.1", addon.get("version")
+                      print("Kodi 20+ repository descriptor URLs:",urls,flush=True)
                       assert all(u.startswith(base) for u in urls)
                   skin=fetch("repo-ita/zips/skin.lucent.ita/skin.lucent.ita-2.1.45.1.zip")
                   with zipfile.ZipFile(io.BytesIO(skin)) as archive:
