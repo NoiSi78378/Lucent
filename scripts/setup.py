@@ -17,6 +17,7 @@ import xbmcaddon
 import xbmcgui
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 DONE = "lucent.setup.done"
 IPTV = "pvr.iptvsimple"
 LV = "plugin.video.lucent"        # the video add-on: works best with the skin (rows, info page, library, subtitles)
@@ -24,7 +25,18 @@ GREEN, ORANGE, GREY = "FF4CC38A", "FFE8A33D", "FF8A96A3"
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
+
+
+def localized_step(key, pair, kind):
+    """Translate the setup step title/body without changing the English/Dutch sources."""
+    if IT:
+        from lang_it import STEPS
+        return STEPS.get(key, (pair[0], pair[0]))[kind]
+    return pair[1 if NL else 0]
 
 
 def log(text):
@@ -475,7 +487,7 @@ class Setup(xbmcgui.WindowXMLDialog):
         self.setProperty("heading", t("Set up Lucent", "Lucent instellen"))
         self.items = []
         for key, icon, title, _body, _st, _ac in STEPS:
-            li = xbmcgui.ListItem(title[1 if NL else 0])
+            li = xbmcgui.ListItem(localized_step(key, title, 0))
             li.setArt({"icon": icon})
             self.items.append(li)
         self.getControl(100).addItems(self.items)
@@ -487,8 +499,8 @@ class Setup(xbmcgui.WindowXMLDialog):
         self.step = max(0, min(index, len(STEPS) - 1))
         key, _icon, title, body, _st, _ac = STEPS[self.step]
         self.setProperty("stepno", t(f"Step {self.step + 1} of {len(STEPS)}", f"Stap {self.step + 1} van {len(STEPS)}"))
-        self.setProperty("title", title[1 if NL else 0])
-        self.setProperty("body", body[1 if NL else 0])
+        self.setProperty("title", localized_step(key, title, 0))
+        self.setProperty("body", localized_step(key, body, 1))
         self.setProperty("prev", t("Back", "Vorige") if self.step else "")
         last = self.step == len(STEPS) - 1
         self.setProperty("next", t("Finish", "Klaar") if last else (t("Start", "Beginnen") if self.step == 0 else t("Next", "Volgende")))
