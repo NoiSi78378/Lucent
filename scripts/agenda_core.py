@@ -82,6 +82,10 @@ MONTHS = {"nl": ["januari", "februari", "maart", "april", "mei", "juni", "juli",
 MONTHS_SHORT = {"nl": ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
                 "en": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]}
 LANG = "nl" if _NL else ("it" if xbmc.getLanguage(xbmc.ISO_639_1) == "it" else "en")
+WEEKDAYS["it"] = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"]
+WEEKDAYS_SHORT["it"] = ["lun", "mar", "mer", "gio", "ven", "sab", "dom"]
+MONTHS["it"] = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"]
+MONTHS_SHORT["it"] = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"]
 
 
 def tr(key, *args):
