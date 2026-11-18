@@ -14,12 +14,16 @@ import xbmc
 import xbmcgui
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 HOME = xbmcgui.Window(10000)
 GEN, UNTIL, MODE, LABEL = "lucent.sleep.gen", "lucent.sleep.until", "lucent.sleep.mode", "lucent.sleep.label"
 MINUTES = (15, 30, 45, 60, 90)
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
