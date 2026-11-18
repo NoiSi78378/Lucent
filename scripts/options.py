@@ -15,6 +15,7 @@ import xbmc
 import xbmcgui
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 LV = "plugin.video.lucent"          # its library: special://profile/addon_data/plugin.video.lucent/library/
 
 T = {
@@ -46,7 +47,11 @@ KIND = {  # dbtype: (id field, details method, set method, remove method)
 
 
 def tr(key, *args):
-    text = T[key][1 if NL else 0]
+    if IT:
+        from lang_it import translate
+        text = translate(T[key][0])
+    else:
+        text = T[key][1 if NL else 0]
     return text.format(*args) if args else text
 
 
@@ -148,7 +153,7 @@ def choose_art(item):
     kinds = (rpc("VideoLibrary.GetAvailableArtTypes", {"item": item.ref()}) or {}).get("availablearttypes") or []
     order = list(ART)
     kinds = sorted(set(kinds) | {"poster", "fanart"}, key=lambda k: order.index(k) if k in order else 99)
-    labels = [ART.get(k, (k, k))[1 if NL else 0] for k in kinds]
+    labels = [__import__("lang_it").translate(ART.get(k, (k, k))[0]) if IT else ART.get(k, (k, k))[1 if NL else 0] for k in kinds]
     pick = 0
     while True:
         pick = xbmcgui.Dialog().select(loc(CHOOSE_ART), labels, preselect=pick)
