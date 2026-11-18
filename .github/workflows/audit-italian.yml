@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "tools/audit_italian.py"
+      - "tools/coverage_italian.py"
       - "scripts/**"
       - "xml/**"
       - "language/**"
@@ -20,3 +21,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Audit all Lua-free script and XML strings
         run: python tools/audit_italian.py
+      - name: Show untranslated Python dialog labels
+        run: python tools/coverage_italian.py
