@@ -8,10 +8,12 @@ import re
 root = pathlib.Path(__file__).resolve().parents[1]
 data = runpy.run_path(str(root / "scripts/lang_it.py"))
 translated = data["TEXT"]
+translate = data["translate"]
+format_errors = []
 untranslated = {}
 incompatible = {}
 for path in sorted((root / "scripts").glob("*.py")):
-    if path.name == "lang_it.py":
+    if path.name in ("lang_it.py", "setup.py"):
         continue
     raw = path.read_text(encoding="utf-8")
     if "lang_it" not in raw:
@@ -35,7 +37,7 @@ for path in sorted((root / "scripts").glob("*.py")):
                     a,b = b,a
                 if len(a)>=4 and a!=b:
                     items.add(a)
-    missing = sorted(s for s in items if s not in translated and not s.startswith(("/",".","[","$")) and not re.fullmatch(r"[a-zA-Z0-9_./:=-]+",s))
+    missing = sorted(s for s in items if translate(s) == s and not s.startswith(("/",".","[","$")) and not re.fullmatch(r"[a-zA-Z0-9_./:=-]+",s) and not any(t in s for t in ("kind=", "mediatype=", "traktlists&", "mdblists&")))
     if missing:
         untranslated[path.name] = missing
     incompatible[path.name] = len(items)
@@ -45,3 +47,6 @@ for file, phrases in untranslated.items():
     print(f"MISSING {file}: {len(phrases)}")
     for label in phrases[:250]:
         print("  *",repr(label))
+
+if untranslated:
+    raise SystemExit("Found untranslated user-facing strings; correct them before release")
