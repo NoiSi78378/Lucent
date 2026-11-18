@@ -24,6 +24,7 @@ import xbmcgui
 import xbmcvfs
 
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 HEADING = "Lucent"
 PICTURE_DAYS = 30          # pictures not shown for this long go (when you clean up yourself)
 AUTO_PICTURE_DAYS = 60     # the monthly automatic clean-up is a bit more careful
@@ -32,6 +33,9 @@ TEMP_DAYS = 2
 
 
 def t(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if NL else en
 
 
