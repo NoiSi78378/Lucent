@@ -1808,613 +1808,613 @@ msgstr "Nessuna guida per questo canale"
 
 msgctxt "#31709"
 msgid "Statistics"
-msgstr ""
+msgstr "Statistiche"
 
 msgctxt "#31710"
 msgid "Timeline"
-msgstr ""
+msgstr "Cronologia"
 
 msgctxt "#31711"
 msgid "Table"
-msgstr ""
+msgstr "Tabella"
 
 msgctxt "#31712"
 msgid "Also live"
-msgstr ""
+msgstr "Anche in diretta"
 
 msgctxt "#31713"
 msgid "Guide"
-msgstr ""
+msgstr "Guida TV"
 
 msgctxt "#31714"
 msgid "Subtitles / audio"
-msgstr ""
+msgstr "Sottotitoli / audio"
 
 msgctxt "#31715"
 msgid "Box score"
-msgstr ""
+msgstr "Statistiche partita"
 
 msgctxt "#31716"
 msgid "Standings"
-msgstr ""
+msgstr "Classifica"
 
 msgctxt "#31717"
 msgid "Positions"
-msgstr ""
+msgstr "Posizioni"
 
 
 msgctxt "#31719"
 msgid "Next on"
-msgstr ""
+msgstr "A seguire"
 
 msgctxt "#31720"
 msgid "ALSO LIVE  ·  OK SWITCHES"
-msgstr ""
+msgstr "ANCHE IN DIRETTA · OK PER CAMBIARE"
 
 msgctxt "#31721"
 msgid "GOALS"
-msgstr ""
+msgstr "GOL"
 
 msgctxt "#31722"
 msgid "No other live games on your channels right now."
-msgstr ""
+msgstr "Nessun'altra partita in diretta sui tuoi canali in questo momento."
 
 msgctxt "#31723"
 msgid "TOP PLAYERS"
-msgstr ""
+msgstr "MIGLIORI GIOCATORI"
 
 msgctxt "#31724"
 msgid "Statistics come in during the game."
-msgstr ""
+msgstr "Le statistiche vengono aggiornate durante la partita."
 
 msgctxt "#31725"
 msgid "LIVE POSITIONS"
-msgstr ""
+msgstr "POSIZIONI IN DIRETTA"
 
 msgctxt "#31726"
 msgid "Player info"
-msgstr ""
+msgstr "Informazioni giocatore"
 
 msgctxt "#31727"
 msgid "Picture"
-msgstr ""
+msgstr "Immagine"
 
 msgctxt "#31728"
 msgid "Sound"
-msgstr ""
+msgstr "Audio"
 
 msgctxt "#31729"
 msgid "Subtitles"
-msgstr ""
+msgstr "Sottotitoli"
 
 msgctxt "#31730"
 msgid "Container"
-msgstr ""
+msgstr "Contenitore"
 
 msgctxt "#31731"
 msgid "Resolution"
-msgstr ""
+msgstr "Risoluzione"
 
 msgctxt "#31732"
 msgid "Track"
-msgstr ""
+msgstr "Traccia"
 
 msgctxt "#31733"
 msgid "Quality"
-msgstr ""
+msgstr "Qualità"
 
 msgctxt "#31734"
 msgid "Temperature CPU"
-msgstr ""
+msgstr "Temperatura CPU"
 
 msgctxt "#31735"
 msgid "Temperature GPU"
-msgstr ""
+msgstr "Temperatura GPU"
 
 msgctxt "#31736"
 msgid "Render"
-msgstr ""
+msgstr "Rendering"
 
 msgctxt "#31737"
 msgid "Video queue"
-msgstr ""
+msgstr "Coda video"
 
 msgctxt "#31738"
 msgid "Overview"
-msgstr ""
+msgstr "Panoramica"
 
 msgctxt "#31739"
 msgid "switch"
-msgstr ""
+msgstr "cambia"
 
 msgctxt "#31740"
 msgid "Resolution"
-msgstr ""
+msgstr "Risoluzione"
 
 msgctxt "#31741"
 msgid "Aspect ratio"
-msgstr ""
+msgstr "Rapporto d'aspetto"
 
 msgctxt "#31742"
 msgid "Frame rate"
-msgstr ""
+msgstr "Fotogrammi al secondo"
 
 msgctxt "#31743"
 msgid "Scan"
-msgstr ""
+msgstr "Scansione"
 
 msgctxt "#31744"
 msgid "Brightness · HDR"
-msgstr ""
+msgstr "Luminosità · HDR"
 
 msgctxt "#31745"
 msgid "Colour"
-msgstr ""
+msgstr "Colore"
 
 msgctxt "#31746"
 msgid "From file to screen"
-msgstr ""
+msgstr "Dal file allo schermo"
 
 msgctxt "#31747"
 msgid "Picture bitrate"
-msgstr ""
+msgstr "Bitrate video"
 
 msgctxt "#31748"
 msgid "From file to your speakers"
-msgstr ""
+msgstr "Dal file agli altoparlanti"
 
 msgctxt "#31749"
 msgid "What you hear"
-msgstr ""
+msgstr "Quello che senti"
 
 msgctxt "#31750"
 msgid "Output"
-msgstr ""
+msgstr "Uscita"
 
 msgctxt "#31751"
 msgid "Device"
-msgstr ""
+msgstr "Dispositivo"
 
 msgctxt "#31752"
 msgid "Configuration"
-msgstr ""
+msgstr "Configurazione"
 
 msgctxt "#31753"
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 msgctxt "#31754"
 msgid "Audio queue"
-msgstr ""
+msgstr "Coda audio"
 
 msgctxt "#31755"
 msgid "sofa"
-msgstr ""
+msgstr "divano"
 
 msgctxt "#31756"
 msgid "HEIGHT"
-msgstr ""
+msgstr "ALTEZZA"
 
 msgctxt "#31757"
 msgid "Playing"
-msgstr ""
+msgstr "In riproduzione"
 
 msgctxt "#31758"
 msgid "Check for updates"
-msgstr ""
+msgstr "Controlla aggiornamenti"
 
 msgctxt "#31759"
 msgid "Look for a new Lucent now"
-msgstr ""
+msgstr "Cerca una nuova versione di Lucent"
 
 msgctxt "#31762"
 msgid "SOLIS · SOLAR PANELS"
-msgstr ""
+msgstr "SOLIS · PANNELLI SOLARI"
 
 msgctxt "#31763"
 msgid "Solis now"
-msgstr ""
+msgstr "Solis adesso"
 
 msgctxt "#31764"
 msgid "Watching"
-msgstr ""
+msgstr "In visione"
 
 msgctxt "#31766"
 msgid "Help and info"
-msgstr ""
+msgstr "Aiuto e informazioni"
 
 msgctxt "#31767"
 msgid "Look, menu, streaming services, kids mode and the setup assistant"
-msgstr ""
+msgstr "Aspetto, menu, servizi streaming, modalità bambini e configurazione guidata"
 
 msgctxt "#31768"
 msgid "Playback, subtitles, language and skipping intros"
-msgstr ""
+msgstr "Riproduzione, sottotitoli, lingua e salto delle introduzioni"
 
 msgctxt "#31770"
 msgid "Screen, sound, remote, network, language and screensaver"
-msgstr ""
+msgstr "Schermo, audio, telecomando, rete, lingua e salvaschermo"
 
 msgctxt "#31771"
 msgid "What's new, updates, self-test and system information"
-msgstr ""
+msgstr "Novità, aggiornamenti, test automatico e informazioni di sistema"
 
 msgctxt "#31783"
 msgid "Clean channel logos"
-msgstr ""
+msgstr "Loghi dei canali puliti"
 
 msgctxt "#31784"
 msgid "Logos from tv-logos in the guide, the TV tab and the player (on or off)"
-msgstr ""
+msgstr "Loghi di tv-logos nella guida, nella sezione TV e nel lettore (attivi o disattivi)"
 
 msgctxt "#31785"
 msgid "Favourite channel group"
-msgstr ""
+msgstr "Gruppo di canali preferito"
 
 msgctxt "#31786"
 msgid "Opens first in the guide and shows on the TV tab"
-msgstr ""
+msgstr "Si apre per primo nella guida e appare nella sezione TV"
 
 msgctxt "#31787"
 msgid "More Kodi settings"
-msgstr ""
+msgstr "Altre impostazioni Kodi"
 
 msgctxt "#31788"
 msgid "Music, discs, pictures, services and games"
-msgstr ""
+msgstr "Musica, dischi, immagini, servizi e giochi"
 
 msgctxt "#31789"
 msgid "Sound to your amplifier"
-msgstr ""
+msgstr "Audio all'amplificatore"
 
 msgctxt "#31790"
 msgid "Set the volume there"
-msgstr ""
+msgstr "Regola il volume sull'amplificatore"
 
 msgctxt "#31791"
 msgid "YouTube trailer fix"
-msgstr ""
+msgstr "Correzione trailer YouTube"
 
 msgctxt "#31792"
 msgid "Keeps trailers from stopping after about a minute (bug in YouTube 7.4)"
-msgstr ""
+msgstr "Evita che i trailer si interrompano dopo circa un minuto (bug di YouTube 7.4)"
 
 msgctxt "#31793"
 msgid "Name and count above lists"
-msgstr ""
+msgstr "Nome e numero di elementi sopra gli elenchi"
 
 msgctxt "#31796"
 msgid "Scores (OMDb / MDBList)"
-msgstr ""
+msgstr "Valutazioni (OMDb / MDBList)"
 
 msgctxt "#31797"
 msgid "IMDb, Rotten Tomatoes, Metacritic and Letterboxd with your own free key"
-msgstr ""
+msgstr "IMDb, Rotten Tomatoes, Metacritic e Letterboxd con una chiave personale gratuita"
 
 msgctxt "#31798"
 msgid "Covers"
-msgstr ""
+msgstr "Copertine"
 
 msgctxt "#31804"
 msgid "Readable text on light pictures"
-msgstr ""
+msgstr "Testo leggibile sulle immagini chiare"
 
 msgctxt "#31807"
 msgid "Episodes in landscape rows"
-msgstr ""
+msgstr "Episodi in righe orizzontali"
 
 msgctxt "#31808"
 msgid "Picture of the episode (a still from the episode)"
-msgstr ""
+msgstr "Immagine dell'episodio (un fotogramma dell'episodio)"
 
 msgctxt "#31809"
 msgid "Picture of the series (landscape art with its logo)"
-msgstr ""
+msgstr "Immagine della serie (illustrazione orizzontale con il logo)"
 
 msgctxt "#31810"
 msgid "Remember view per kind"
-msgstr ""
+msgstr "Ricorda la visualizzazione per tipo"
 
 msgctxt "#31813"
 msgid "Percentage watched on posters"
-msgstr ""
+msgstr "Percentuale vista sulle locandine"
 
 msgctxt "#31816"
 msgid "RT audience"
-msgstr ""
+msgstr "Pubblico Rotten Tomatoes"
 
 msgctxt "#31817"
 msgid "Metacritic users"
-msgstr ""
+msgstr "Utenti Metacritic"
 
 msgctxt "#31821"
 msgid "MOSTLY"
-msgstr ""
+msgstr "PREVALENTEMENTE"
 
 msgctxt "#31822"
 msgid "Media flags in the lists"
-msgstr ""
+msgstr "Indicatori multimediali negli elenchi"
 
 msgctxt "#31826"
 msgid "Lists and posters"
-msgstr ""
+msgstr "Elenchi e locandine"
 
 msgctxt "#31827"
 msgid "Media flags, percentage watched, views and the bar above lists"
-msgstr ""
+msgstr "Indicatori, percentuale vista, visualizzazioni e barra sopra gli elenchi"
 
 msgctxt "#31828"
 msgid "4K, HDR, codec, sound and languages of the title under the cursor"
-msgstr ""
+msgstr "4K, HDR, codec, audio e lingue del titolo selezionato"
 
 msgctxt "#31829"
 msgid "A small label like 45% above the progress bar of what you are watching"
-msgstr ""
+msgstr "Piccola etichetta, ad esempio 45%, sopra la barra di avanzamento"
 
 msgctxt "#31830"
 msgid "The view you pick for films, series, episodes ... is used in every folder of that kind"
-msgstr ""
+msgstr "La visualizzazione scelta per film, serie ed episodi viene usata in tutte le cartelle dello stesso tipo"
 
 msgctxt "#31831"
 msgid "Name and count above a list, e.g. 'Red Light · 1647 items · Date'"
-msgstr ""
+msgstr "Nome e numero di elementi sopra un elenco, ad esempio «Red Light · 1647 elementi · Data»"
 
 msgctxt "#31832"
 msgid "A dark edge around the texts and a darker fade behind them"
-msgstr ""
+msgstr "Bordo scuro attorno al testo e sfumatura più scura dietro"
 
 msgctxt "#31833"
 msgid "Settings of this add-on"
-msgstr ""
+msgstr "Impostazioni di questo add-on"
 
 msgctxt "#31834"
 msgid "Open your video add-on and follow its setup (keys and Trakt). Then the rows fill by themselves. Or add movies and series to your Kodi library."
-msgstr ""
+msgstr "Apri l'add-on video e completa la configurazione (chiavi e Trakt). Le righe si riempiranno automaticamente. In alternativa, aggiungi film e serie alla videoteca Kodi."
 
 msgctxt "#31835"
 msgid "Subtitles and skip intro"
-msgstr ""
+msgstr "Sottotitoli e salta introduzione"
 
 msgctxt "#31836"
 msgid "In your video add-on: subtitle search, spoken language, AI translation and skip intro"
-msgstr ""
+msgstr "Nel tuo add-on video: ricerca sottotitoli, lingua parlata, traduzione AI e salto introduzione"
 
 msgctxt "#31837"
 msgid "More"
-msgstr ""
+msgstr "Altro"
 
 msgctxt "#31838"
 msgid "Trailer on focus"
-msgstr ""
+msgstr "Trailer alla selezione"
 
 msgctxt "#31839"
 msgid "Go to playlist"
-msgstr ""
+msgstr "Vai alla playlist"
 
 msgctxt "#31840"
 msgid "Trakt login"
-msgstr ""
+msgstr "Accesso Trakt"
 
 msgctxt "#31841"
 msgid "Log in with a code on trakt.tv/activate"
-msgstr ""
+msgstr "Accedi con un codice su trakt.tv/activate"
 
 msgctxt "#31842"
 msgid "Close the player menu by itself"
-msgstr ""
+msgstr "Chiudi automaticamente il menu del lettore"
 
 msgctxt "#31843"
 msgid "Spotlight"
-msgstr ""
+msgstr "In evidenza"
 
 msgctxt "#31844"
 msgid "Wall with info panel"
-msgstr ""
+msgstr "Parete con pannello informazioni"
 
 msgctxt "#31845"
 msgid "Carousel"
-msgstr ""
+msgstr "Carosello"
 
 msgctxt "#31846"
 msgid "Title card"
-msgstr ""
+msgstr "Scheda titolo"
 
 msgctxt "#31847"
 msgid "What did they say? (10 s back with subtitles)"
-msgstr ""
+msgstr "Che cosa hanno detto? (torna indietro di 10 s con sottotitoli)"
 
 msgctxt "#31848"
 msgid "Banner list"
-msgstr ""
+msgstr "Elenco banner"
 
 msgctxt "#31849"
 msgid "Progress rings"
-msgstr ""
+msgstr "Anelli di avanzamento"
 
 msgctxt "#31850"
 msgid "Timeline"
-msgstr ""
+msgstr "Cronologia"
 
 msgctxt "#31851"
 msgid "Episode cards"
-msgstr ""
+msgstr "Schede episodio"
 
 msgctxt "#31852"
 msgid "Mosaic"
-msgstr ""
+msgstr "Mosaico"
 
 msgctxt "#31853"
 msgid "Up next stack"
-msgstr ""
+msgstr "Episodi successivi in pila"
 
 msgctxt "#31854"
 msgid "List with flags"
-msgstr ""
+msgstr "Elenco con indicatori"
 
 msgctxt "#31855"
 msgid "You stopped at"
-msgstr ""
+msgstr "Ti sei fermato a"
 
 msgctxt "#31856"
 msgid "Not watched yet"
-msgstr ""
+msgstr "Non ancora visto"
 
 msgctxt "#31857"
 msgid "added"
-msgstr ""
+msgstr "aggiunti"
 
 msgctxt "#31858"
 msgid "Next episode"
-msgstr ""
+msgstr "Prossimo episodio"
 
 msgctxt "#31859"
 msgid "All watched"
-msgstr ""
+msgstr "Tutti visti"
 
 msgctxt "#31860"
 msgid "Vinyl"
-msgstr ""
+msgstr "Vinile"
 
 msgctxt "#31861"
 msgid "Artist wall"
-msgstr ""
+msgstr "Parete artisti"
 
 msgctxt "#31862"
 msgid "Album with track list"
-msgstr ""
+msgstr "Album con elenco brani"
 
 msgctxt "#31863"
 msgid "Coverflow"
-msgstr ""
+msgstr "Copertine scorrevoli"
 
 msgctxt "#31864"
 msgid "Discography timeline"
-msgstr ""
+msgstr "Cronologia discografia"
 
 msgctxt "#31865"
 msgid "Collection shelf"
-msgstr ""
+msgstr "Scaffale raccolte"
 
 msgctxt "#31866"
 msgid "Recently added"
-msgstr ""
+msgstr "Aggiunti di recente"
 
 msgctxt "#31867"
 msgid "Episodes as"
-msgstr ""
+msgstr "Episodi come"
 
 msgctxt "#31868"
 msgid "Row"
-msgstr ""
+msgstr "Riga"
 
 msgctxt "#31772"
 msgid "Lucent Subtitles"
-msgstr ""
+msgstr "Lucent Subtitles"
 
 msgctxt "#31773"
 msgid "Accounts, keys and how subtitles are found"
-msgstr ""
+msgstr "Account, chiavi e modalità di ricerca dei sottotitoli"
 
 msgctxt "#31687"
 msgid "Lucent Subtitles, languages"
-msgstr ""
+msgstr "Lucent Subtitles, lingue"
 
 msgctxt "#31869"
 msgid "OK: open"
-msgstr ""
+msgstr "OK: apri"
 
 msgctxt "#31870"
 msgid "Video add-ons and TMDB"
-msgstr ""
+msgstr "Add-on video e TMDb"
 
 msgctxt "#31871"
 msgid "Logged in as"
-msgstr ""
+msgstr "Accesso effettuato come"
 
 msgctxt "#31872"
 msgid "Mark intro"
-msgstr ""
+msgstr "Segna introduzione"
 
 msgctxt "#31876"
 msgid "Settings level: press to show more settings"
-msgstr ""
+msgstr "Livello impostazioni: premi per mostrare più opzioni"
 
 msgctxt "#31880"
 msgid "SEASON PREMIERE"
-msgstr ""
+msgstr "PRIMO EPISODIO DELLA STAGIONE"
 
 msgctxt "#31881"
 msgid "SEASON FINALE"
-msgstr ""
+msgstr "FINALE DI STAGIONE"
 
 msgctxt "#31882"
 msgid "PREMIERE"
-msgstr ""
+msgstr "PRIMA VISIONE"
 
 msgctxt "#31883"
 msgid "FINALE"
-msgstr ""
+msgstr "FINALE"
 
 msgctxt "#31886"
 msgid "Sound with the intro"
-msgstr ""
+msgstr "Audio all'avvio"
 
 msgctxt "#31887"
 msgid "A warm sound with the intro when Kodi starts"
-msgstr ""
+msgstr "Suono caldo durante l'introduzione all'avvio di Kodi"
 
 msgctxt "#31890"
 msgid "You have no favourites yet"
-msgstr ""
+msgstr "Non hai ancora preferiti"
 
 msgctxt "#31891"
 msgid "Add one with the context menu (long press or the menu button) on a film, series or add-on: Add to favourites."
-msgstr ""
+msgstr "Aggiungine uno tramite il menu contestuale (pressione prolungata o tasto menu) su film, serie o add-on: Aggiungi ai preferiti."
 
 msgctxt "#31892"
 msgid "Reviews"
-msgstr ""
+msgstr "Recensioni"
 
 msgctxt "#31893"
 msgid "reviews"
-msgstr ""
+msgstr "recensioni"
 
 msgctxt "#31894"
 msgid "Contains spoilers"
-msgstr ""
+msgstr "Contiene spoiler"
 
 msgctxt "#31895"
 msgid "average"
-msgstr ""
+msgstr "media"
 
 msgctxt "#31896"
 msgid "Buttons in the player bar"
-msgstr ""
+msgstr "Pulsanti nella barra del lettore"
 
 msgctxt "#31897"
 msgid "Up: View · Sort · Filter"
-msgstr ""
+msgstr "Su: Visualizzazione · Ordina · Filtra"
 
 msgctxt "#31898"
 msgid "Order of the buttons"
-msgstr ""
+msgstr "Ordine dei pulsanti"
 
 msgctxt "#31899"
 msgid "Options"
-msgstr ""
+msgstr "Opzioni"
 
 msgctxt "#31900"
 msgid "Up hint in one-row views"
-msgstr ""
+msgstr "Suggerimento Su nelle viste a riga singola"
 
 msgctxt "#31901"
 msgid "Shows 'Up: View · Sort · Filter' next to the clock; Up keeps working when it is off"
-msgstr ""
+msgstr "Mostra «Su: Visualizzazione · Ordina · Filtra» accanto all'orologio; il tasto Su funziona anche senza l'indicazione"
 
 msgctxt "#31902"
 msgid "Slider only when scrolling fast"
-msgstr ""
+msgstr "Cursore solo durante lo scorrimento rapido"
 
 msgctxt "#31903"
 msgid "The slider under a one-row view only shows while you hold a key down; Down still goes to it"
-msgstr ""
+msgstr "Il cursore sotto una vista a riga singola appare solo tenendo premuto un tasto; il tasto Giù continua a selezionarlo"
