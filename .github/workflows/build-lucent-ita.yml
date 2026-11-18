@@ -22,7 +22,11 @@ jobs:
       - name: Check all Python scripts
         run: python -m compileall -q scripts tools
       - name: Check Italian strings and XML
-        run: python tools/audit_italian.py
+        run: |
+          python tools/audit_italian.py
+          python tools/coverage_italian.py
+      - name: Smoke-test localised setup, menu and info panels
+        run: python tools/smoke_italian.py
       - name: Stage only runtime skin folders
         run: |
           mkdir -p "$RUNNER_TEMP/skin-package/skin.lucent.ita"
