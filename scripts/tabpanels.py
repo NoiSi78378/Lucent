@@ -15,9 +15,13 @@ import xbmcgui
 HOME = xbmcgui.Window(10000)
 N = 8
 _NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 
 def tr(en, nl):
+    if IT:
+        from lang_it import translate
+        return translate(en)
     return nl if _NL else en
 
 
