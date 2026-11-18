@@ -30,6 +30,7 @@ SOURCES = [(ADDONS_XML, ZIPS_URL),
 STATE_PATH = "special://profile/addon_data/skin.lucent/update_state.json"
 HOME = xbmcgui.Window(10000)
 NL = xbmc.getLanguage(xbmc.ISO_639_1) == "nl"
+IT = xbmc.getLanguage(xbmc.ISO_639_1) == "it"
 
 T = {
     "title": ("{0} {1} is available", "{0} {1} is beschikbaar"),
@@ -53,7 +54,11 @@ T = {
 
 
 def tr(key, *args):
-    text = T[key][1 if NL else 0]
+    if IT:
+        from lang_it import translate
+        text = translate(T[key][0])
+    else:
+        text = T[key][1 if NL else 0]
     return text.format(*args) if args else text
 
 
