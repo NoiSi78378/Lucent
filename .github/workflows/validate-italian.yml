@@ -1,0 +1,39 @@
+name: Validate Italian localisation
+
+on:
+  push:
+    paths:
+      - "language/resource.language.it_it/**"
+      - "scripts/lang_it.py"
+      - "scripts/setup.py"
+      - "scripts/menu.py"
+      - "scripts/settings.py"
+      - "scripts/info.py"
+      - "scripts/backup.py"
+      - "scripts/xtream.py"
+      - "scripts/channels.py"
+      - ".github/workflows/validate-italian.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python syntax
+        run: |
+          python -m compileall -q scripts
+      - name: Validate complete Italian catalogue
+        run: |
+          python - <<'PY'
+          import pathlib, re
+          en = pathlib.Path("language/resource.language.en_gb/strings.po").read_text(encoding="utf-8")
+          it = pathlib.Path("language/resource.language.it_it/strings.po").read_text(encoding="utf-8")
+          ids = lambda s: set(re.findall(r'^msgctxt "#(\d+)"', s, flags=re.M))
+          assert ids(en) == ids(it), f"Missing IDs: {ids(en) - ids(it)}"
+          assert '"Language: it_IT\\n"' in it, "Incorrect language header"
+          entries = re.findall(r'msgctxt "#(\d+)"[\s\S]*?^msgstr "((?:\\.|[^"])*)"', it, re.M)
+          empty = [k for k, value in entries if not value]
+          assert not empty, f"Empty translations: {empty}"
+          print(f"Translated {len(entries)} strings")
+          PY
