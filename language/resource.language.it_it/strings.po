@@ -2364,3 +2364,19 @@ msgstr "Cursore solo durante lo scorrimento rapido"
 msgctxt "#31903"
 msgid "The slider under a one-row view only shows while you hold a key down; Down still goes to it"
 msgstr "Il cursore sotto una vista a riga singola appare solo tenendo premuto un tasto; il tasto Giù continua a selezionarlo"
+
+msgctxt "#31904"
+msgid "Navigation mode"
+msgstr "Modalità di navigazione"
+
+msgctxt "#31905"
+msgid "Automatically detect or force touch / remote navigation"
+msgstr "Rilevamento automatico o modalità touch / telecomando forzata"
+
+msgctxt "#31908"
+msgid "Close"
+msgstr "Chiudi"
+
+msgctxt "#31909"
+msgid "Back"
+msgstr "Indietro"
