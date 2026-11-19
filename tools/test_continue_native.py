@@ -177,11 +177,14 @@ class ContinueIntegrationTests(unittest.TestCase):
     def test_library_fetch_exception_identifies_stage(self):
         """A provider's exception must name the failing API stage."""
         class KodiBroken(FakeKodi):
-            def executeJSONRPC(self, _raw):
-                raise TypeError("mock provider TypeError")
+            def executeJSONRPC(self, raw):
+                if json.loads(raw)["method"] == "VideoLibrary.GetEpisodes":
+                    raise TypeError("mock provider TypeError")
+                return super().executeJSONRPC(raw)
         kodi = self.use(KodiBroken(
             labels={"Container.ShowTitle": "FROM",
-                    "ListItem.TvShowDBID": "50"}))
+                    "ListItem.TvShowDBID": "50"},
+            direct={50: {"title": "FROM"}}))
         self.assertFalse(target.run())
         self.assertIn("TypeError", target.diagnosis())
         self.assertIn("library-fetch", target.diagnosis())
