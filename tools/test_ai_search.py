@@ -102,10 +102,10 @@ script = (r / "scripts/ai_search.py").read_text(encoding="utf-8")
 assert "_ai_request(self.prompt, key, intent)" in script
 assert "self.prompt.strip()" in script and "Ricerca per titolo esatto" in script
 assert "primary_release_date.gte" in script and "primary_release_date.lte" in script
-assert "v3-cinemeta.strem.io/catalog/movie/top" in script
+assert "https://v3-cinemeta.strem.io/catalog/movie/%s.json" in script
 assert "row[\"verified_year\"]" in script and "year_eligible(row, intent)" in script
 assert "rows = _add_artwork(verified + suggestions, intent)" in script
-assert "Nessun titolo del %d verificabile" in script
+assert "Nessun risultato verificato per %s del %d" in script
 assert 'if not intent.get("direct") and not (art.get("year") or art.get("poster"))' in script
 assert 'rows = _add_artwork([row], intent)' in script
 # Genre regressions: the user's two failing cases must NEVER pass.
