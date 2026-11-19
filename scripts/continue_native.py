@@ -262,7 +262,10 @@ def _row(xbmc, control_id, index, season_hint=0):
         playable = get("Property(IsPlayable)").lower() in ("1", "true")
         is_folder = _label(xbmc, stem + "IsFolder").lower() in ("1", "true")
         pattern = re.search(r"(?:s\d{1,2}e\d{1,3}|\b\d{1,2}x\d{1,3}\b)", title, re.IGNORECASE)
-        if is_folder or not (file_path or playable) or not (showname or pattern):
+        if is_folder:
+            return None
+        scoped_season_card = season_hint > 0 and episode > 0
+        if not scoped_season_card and (not (file_path or playable) or not (showname or pattern)):
             return None
     return {"index": index, "title": title,
             "season": season, "episode": episode,
