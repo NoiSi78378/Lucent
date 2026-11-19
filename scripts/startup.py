@@ -134,38 +134,9 @@ def cw_notice():
 
 
 def touch_screen():
-    """2.1.39 (#30): is this a touch screen (phone or tablet)? Kodi has no condition for it, so Lucent looks once per
-    start. iPhone/iPad: yes. Android (2.1.40, the first look only knew /system and missed phones that keep the list in
-    /vendor, like Samsung): the device type Android gives (ro.build.characteristics: phone, tablet or tv), then the
-    feature lists of every partition (handheld/tablet = touch, TV/leanback = not). Skin.HasSetting(lucent.touch) then
-    shows the Options button in the lists."""
-    import os
-    import subprocess
-    cond = xbmc.getCondVisibility
-    touch, why = False, "not Android or iOS"
-    if cond("System.Platform.IOS"):
-        touch, why = True, "iOS"
-    elif cond("System.Platform.Android"):
-        kind = ""
-        for exe in ("/system/bin/getprop", "getprop"):
-            try:
-                kind = subprocess.run([exe, "ro.build.characteristics"], capture_output=True, text=True, timeout=3).stdout.strip().lower()
-                break
-            except Exception:  # noqa: BLE001
-                continue
-        files = set()
-        for part in ("/system", "/vendor", "/product", "/odm", "/system_ext"):
-            try:
-                files.update(os.listdir(part + "/etc/permissions"))
-            except OSError:
-                pass
-        tv = "tv" in kind.split(",") or bool(files & {"tv_core_hardware.xml", "android.software.leanback.xml", "android.software.leanback_only.xml"})
-        hand = bool({"phone", "tablet"} & set(kind.split(","))) or bool(files & {"handheld_core_hardware.xml", "tablet_core_hardware.xml"})
-        touch = hand and not tv
-        why = f"Android type '{kind or '-'}', handheld={hand}, tv={tv}, {len(files)} feature files"
-    if touch != bool(cond("Skin.HasSetting(lucent.touch)")):
-        xbmc.executebuiltin("Skin.SetBool(lucent.touch)" if touch else "Skin.Reset(lucent.touch)")
-    log(f"touch screen: {touch} ({why})")
+    """Respect auto / touch / remote in the saved skin settings."""
+    import touchmode
+    touchmode.apply()
 
 
 def run():

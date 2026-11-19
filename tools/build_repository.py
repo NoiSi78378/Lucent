@@ -25,8 +25,8 @@ version = skin_addon.attrib["version"]
 assert re.fullmatch(r"\d+\.\d+\.\d+\.\d+", version), version
 
 repo_id = "repository.lucent.ita"
-repo_version = "1.0.1"
-base = "https://noisi78378.github.io/Lucent"
+repo_version = "1.0.2"
+base = "https://noisi78378.github.io/Lucent-ITA"
 repo_url = f"{base}/repo-ita"
 skin_zip = site / "repo-ita" / "zips" / skin_addon.attrib["id"] / f"{skin.name}-{version}.zip"
 skin_zip.parent.mkdir(parents=True, exist_ok=True)
@@ -84,7 +84,7 @@ index = """<!DOCTYPE html>
 <body><h1>Lucent ITA – Repository Kodi</h1>
 <p>In Kodi: Impostazioni → Gestione file → Aggiungi sorgente → inserisci l'indirizzo di questa pagina.</p>
 <p>Poi vai in Add-on → Installa da file ZIP → Lucent ITA → scegli il repository qui sotto.</p>
-<p><a href="repository.lucent.ita-1.0.1.zip">repository.lucent.ita-1.0.1.zip (versione corretta per Kodi 20+)</a></p>
+<p><a href="repository.lucent.ita-1.0.2.zip">repository.lucent.ita-1.0.2.zip (versione corretta per Kodi 20+)</a></p>
 <p><a href="repository.lucent.ita.zip">repository.lucent.ita.zip</a></p>
 <p>Una volta installato, seleziona Installa da repository → Lucent ITA Repository → Aspetto e interfaccia → Skin → Lucent (Italiano).</p>
 <p>Skin originale: <a href="https://github.com/djdirty60/Lucent">djdirty60/Lucent</a>. Licenza GPL-2.0-or-later.</p>

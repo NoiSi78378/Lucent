@@ -42,6 +42,7 @@ jobs:
           python tools/smoke_italian.py
           python tools/test_continue_native.py
           python tools/test_continue_directory.py
+          python tools/test_touch_mode.py
       - name: Build independent Kodi skin
         run: |
           mkdir -p "$RUNNER_TEMP/package/skin.lucent.ita"
@@ -97,7 +98,7 @@ jobs:
         run: |
           python - <<'PY'
           import hashlib, time, urllib.error, urllib.request, xml.etree.ElementTree as ET, io, zipfile
-          base="https://noisi78378.github.io/Lucent/"
+          base="https://noisi78378.github.io/Lucent-ITA/"
           def fetch(path):
               url=base+path
               req=urllib.request.Request(url,headers={"User-Agent":"Kodi/21.0"})
@@ -123,7 +124,7 @@ jobs:
                       assert len(dirs)==1, "Kodi 20+ needs one <dir> containing repository URLs"
                       directory=dirs[0]
                       urls=[directory.find("info").text, directory.find("checksum").text, directory.find("datadir").text]
-                      assert addon.get("version")=="1.0.1", addon.get("version")
+                      assert addon.get("version")=="1.0.2", addon.get("version")
                       print("Kodi 20+ repository descriptor URLs:",urls,flush=True)
                       assert all(u.startswith(base) for u in urls)
                   skin_version=next(a.get("version") for a in ET.fromstring(manifest) if a.get("id")=="skin.lucent.ita")
