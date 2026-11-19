@@ -27,6 +27,8 @@
     <onload condition="!Skin.HasSetting(nuvio.trailers.menu)">Skin.Reset(nuvio.posterfocus)</onload>
     <onload condition="!Skin.HasSetting(nuvio.trailers.menu)">Skin.Reset(nuvio.trailer.test)</onload>
     <!-- the very first time: the setup assistant (the most important settings and logins) -->
+    <!-- On an already configured Home, enable Lucent AI search even after a hot skin update. -->
+    <onload condition="String.IsEmpty(Skin.String(lucent.ai.search.migrated)) + !String.IsEmpty(Skin.String(nuvio.menu.version))">RunScript(special://skin/scripts/ai_search.py,setupmenu)</onload>
     <onload>SetProperty(nuvio.started,1,home)</onload>
     <controls>
         <include>LucentHomeMarkers</include>
