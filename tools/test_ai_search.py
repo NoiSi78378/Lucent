@@ -28,4 +28,6 @@ menu = (r / "scripts/menu.py").read_text(encoding="utf-8")
 assert menu.count("RunScript(special://skin/scripts/ai_search.py)") >= 2
 startup = (r / "scripts/startup.py").read_text(encoding="utf-8")
 assert 'ai_search.install_menu' in startup
+home_source = (r / "xml/Home.xml").read_text(encoding="utf-8")
+assert "ai_search.py,setupmenu" in home_source
 print("Lucent AI: verified Stream4Me route, URL encoding, JSON parsing, EPG title matching, UI and menu")
