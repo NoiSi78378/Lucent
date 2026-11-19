@@ -25,7 +25,7 @@ assert panel.count("mask_landscape.png") >= 2
 assert '<include name="LucentAINativeCardPlain">' in panel
 assert '<include name="LucentAINativeCardFocused">' in panel
 assert 'rr14_glow.png' in panel and 'rr14_edge.png' in panel
-assert 'width="400"' in panel and 'height="225"' in panel
+assert '<width>400</width>' in panel and '<height>225</height>' in panel
 assert "Window(home).Property(ai.home.mode)" in panel
 assert "<visible>!String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>" in panel
 assert "<visible>String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>" in panel
@@ -54,7 +54,8 @@ for r,cid in zip(("pop","new","tv","top"),(9510,9520,9530,9540)):
     assert len(node.findall("content/item"))>=20
     assert all("Property(ai.home.%s."%r in it.findtext("label","") for it in node.findall("content/item"))
     assert all(it.findtext("property[@name='backdrop']","") for it in node.findall("content/item"))
-    assert node.find("focusedlayout").find(".//label") is not None
+    assert node.find("focusedlayout/control[2]/include").text == "LucentAINativeCardFocused"
+    assert node.find("itemlayout/include").text == "LucentAINativeCardPlain"
     assert all(it.findtext("visible","").startswith("!String.IsEmpty") for it in node.findall("content/item"))
 assert '<control type="grouplist" id="9501">' in panel
 assert panel.count('<width>1640</width><height>346</height>') == 4
