@@ -22,7 +22,9 @@ jobs:
       - name: Check all Python scripts
         run: python -m compileall -q scripts tools
       - name: Test touch detection and manual overrides
-        run: python tools/test_touch_mode.py
+        run: |
+          python tools/test_touch_mode.py
+          python tools/test_touch_home.py
       - name: Check Italian strings and XML
         run: |
           python tools/audit_italian.py

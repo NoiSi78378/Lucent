@@ -10,6 +10,7 @@
     <include file="Includes_Views.xml"/>
     <include file="Includes_Views2.xml"/>
     <include file="Includes_Home.xml"/>
+    <include file="Includes_HomeMenu_Touch.xml"/>
     <include file="Includes_Settings.xml"/>
     <include file="Includes_Info.xml"/>
     <include file="Includes_Agenda.xml"/>

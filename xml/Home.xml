@@ -5,6 +5,8 @@
     <!-- First time: write the default menu; once per session: select the start tab -->
     <!-- boxes with 2 GB memory or less get the light mode once (Skin settings > Advanced) -->
     <onload>ClearProperty(lucent.kids.ok,home)</onload>
+    <onload>ClearProperty(lucent.touch.menu.open,home)</onload>
+    <onload>ClearProperty(lucent.touch.menu.last,home)</onload>
     <onload condition="!String.IsEmpty(Window(home).Property(nuvio.started)) + [[Skin.HasSetting(lucent.lite) + String.IsEmpty(Skin.String(lucent.lite.built))] | [!Skin.HasSetting(lucent.lite) + !String.IsEmpty(Skin.String(lucent.lite.built))]]">RunScript(special://skin/scripts/settings.py,litebuild)</onload>
     <onload condition="Skin.HasSetting(nuvio.trailer.test)">Skin.Reset(nuvio.trailer.test)</onload>   <!-- old test switch, no longer in Skin settings -->
     <!-- 1.31.58: bigger posters without the names under them (once; switch back in Skin settings) -->
@@ -238,8 +240,8 @@
         <include>SeasonDecor</include>
         <!-- ============ Hero + rows (slide right while the side menu is open) ============ -->
         <control type="group">
-            <animation effect="slide" start="0,0" end="230,0" time="300" tween="cubic" easing="out" condition="Control.HasFocus(9000) + !System.HasVisibleModalDialog">Conditional</animation>
-            <animation effect="fade" start="100" end="45" time="300" condition="Control.HasFocus(9000) + !System.HasVisibleModalDialog">Conditional</animation>
+            <animation effect="slide" start="0,0" end="230,0" time="300" tween="cubic" easing="out" condition="[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog">Conditional</animation>
+            <animation effect="fade" start="100" end="45" time="300" condition="[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog">Conditional</animation>
 
             <control type="group">
                 <visible>!$EXP[LucentPanel]</visible>
@@ -323,7 +325,7 @@
             <colordiffuse>bg_98</colordiffuse>
             <animation effect="fade" start="0" end="100" time="250">Visible</animation>
             <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-            <visible>Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+            <visible>[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog</visible>
         </control>
         <control type="group">
             <include>Anim_Window</include>
@@ -342,9 +344,10 @@
                 <height>52</height>
                 <font>font27_title</font>
                 <label>[B]Lucent[/B]</label>
-                <visible>Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+                <visible>[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog</visible>
             </control>
             <control type="list" id="9000">
+                <onunfocus condition="Skin.HasSetting(lucent.touch)">ClearProperty(lucent.touch.menu.open,home)</onunfocus>
                 <onup>9000</onup>
                 <ondown>9000</ondown>
                 <left>24</left>
@@ -363,6 +366,7 @@
                 <onright condition="$EXP[LucentPPow]">9360</onright>
                 <onright condition="$EXP[LucentPSolis] + !String.IsEmpty(Window(home).Property(lucent.sol.1.t))">9370</onright>
                 <onright condition="Control.IsVisible(9991) + !$EXP[LucentPanel]">9100</onright>
+                <onback condition="Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))">SetFocus(9088)</onback>
                 <onback condition="Control.IsVisible(9991)">9100</onback>
                 <itemlayout width="360" height="84">
                     <control type="image">
@@ -371,7 +375,7 @@
                         <width>36</width>
                         <height>36</height>
                         <aspectratio>keep</aspectratio><texture colordiffuse="$VAR[MenuIconText3]">$INFO[ListItem.Icon]</texture>
-                        <visible>Control.HasFocus(9000) | !Skin.HasSetting(nuvio.sideicons.hide)</visible>
+                        <visible>Skin.HasSetting(lucent.touch) | Control.HasFocus(9000) | !Skin.HasSetting(nuvio.sideicons.hide)</visible>
                     </control>
                     <control type="label">
                         <left>76</left>
@@ -382,7 +386,7 @@
                         <textcolor>text2</textcolor>
                         <selectedcolor>text2</selectedcolor>
                         <label>$INFO[ListItem.Label]</label>
-                        <visible>Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+                        <visible>[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog</visible>
                     </control>
                 </itemlayout>
                 <focusedlayout width="360" height="84">
@@ -392,7 +396,7 @@
                         <width>340</width>
                         <height>64</height>
                         <texture border="32" colordiffuse="focus">pill64.png</texture>
-                        <visible>Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+                        <visible>[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog</visible>
                     </control>
                     <control type="image">
                         <left>2</left>
@@ -401,7 +405,7 @@
                         <height>28</height>
                         <texture>white.png</texture>
                         <colordiffuse>text</colordiffuse>
-                        <visible>!Control.HasFocus(9000)</visible>
+                        <visible>![!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))]</visible>
                     </control>
                     <control type="image">
                         <left>18</left>
@@ -409,7 +413,7 @@
                         <width>36</width>
                         <height>36</height>
                         <aspectratio>keep</aspectratio><texture colordiffuse="$VAR[MenuIconOnFocus]">$INFO[ListItem.Icon]</texture>
-                        <visible>Control.HasFocus(9000)</visible>
+                        <visible>[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))]</visible>
                     </control>
                     <control type="image">
                         <left>18</left>
@@ -417,7 +421,7 @@
                         <width>36</width>
                         <height>36</height>
                         <aspectratio>keep</aspectratio><texture colordiffuse="$VAR[MenuIconText]">$INFO[ListItem.Icon]</texture>
-                        <visible>!Control.HasFocus(9000) + [Control.HasFocus(9000) | !Skin.HasSetting(nuvio.sideicons.hide)]</visible>
+                        <visible>![!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + [Skin.HasSetting(lucent.touch) | !Skin.HasSetting(nuvio.sideicons.hide)]</visible>
                     </control>
                     <control type="label">
                         <left>76</left>
@@ -428,11 +432,11 @@
                         <textcolor>on_focus</textcolor>
                         <selectedcolor>on_focus</selectedcolor>
                         <label>$INFO[ListItem.Label]</label>
-                        <visible>Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+                        <visible>[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog</visible>
                     </control>
                 </focusedlayout>
                 <content>
-                    <include>HomeMenuItems</include>
+                    <include>HomeMenuItemsTouch</include>
                 </content>
             </control>
         </control>
@@ -455,13 +459,14 @@
             <label></label>
             <texturefocus border="26" colordiffuse="focus">rr20.png</texturefocus>
             <texturenofocus border="26" colordiffuse="card">rr20.png</texturenofocus>
+            <onclick>SetProperty(lucent.touch.menu.open,1,home)</onclick>
             <onclick>SetFocus(9000)</onclick>
-            <visible>Skin.HasSetting(lucent.touch) + !Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+            <visible>Skin.HasSetting(lucent.touch) + String.IsEmpty(Window(home).Property(lucent.touch.menu.open)) + !System.HasVisibleModalDialog</visible>
         </control>
         <control type="image">
             <left>48</left><top>89</top><width>50</width><height>46</height>
             <texture colordiffuse="text">icons/list.png</texture>
-            <visible>Skin.HasSetting(lucent.touch) + !Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+            <visible>Skin.HasSetting(lucent.touch) + String.IsEmpty(Window(home).Property(lucent.touch.menu.open)) + !System.HasVisibleModalDialog</visible>
         </control>
         <include>ClockWeather</include>
     </controls>
