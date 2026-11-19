@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Lucent AI Search - all controls are real Kodi controls, remote and touch accessible. -->
+<window type="dialog">
+    <defaultcontrol always="true">10</defaultcontrol>
+    <include>Anim_Dialog</include>
+    <controls>
+        <include>DialogDim</include>
+        <control type="image">
+            <left>75</left><top>45</top><width>1770</width><height>990</height>
+            <texture border="44" colordiffuse="bg_98">rr20.png</texture>
+        </control>
+        <control type="image">
+            <left>75</left><top>45</top><width>1770</width><height>990</height>
+            <texture border="44" colordiffuse="hairline">rr20_edge.png</texture>
+        </control>
+        <control type="image">
+            <left>142</left><top>105</top><width>56</width><height>56</height>
+            <texture colordiffuse="text">icons/search.png</texture>
+        </control>
+        <control type="label">
+            <left>220</left><top>102</top><width>1190</width><height>66</height>
+            <font>font37</font><textcolor>text</textcolor>
+            <label>Lucent AI Search</label>
+        </control>
+        <control type="label">
+            <left>145</left><top>173</top><width>1470</width><height>40</height>
+            <font>font12</font><textcolor>text3</textcolor>
+            <label>Un titolo preciso o una richiesta libera. I suggerimenti AI non garantiscono la disponibilità.</label>
+        </control>
+        <control type="button" id="90">
+            <left>1683</left><top>95</top><width>96</width><height>84</height>
+            <label></label>
+            <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+            <texturenofocus border="30" colordiffuse="glass_strong">pill60.png</texturenofocus>
+            <onclick>noop</onclick>
+            <onleft>14</onleft><ondown>10</ondown>
+        </control>
+        <control type="image">
+            <left>1711</left><top>121</top><width>40</width><height>40</height>
+            <texture colordiffuse="text">icons/close.png</texture>
+        </control>
+        <control type="button" id="10">
+            <left>142</left><top>238</top><width>1635</width><height>96</height>
+            <label>$INFO[Window.Property(ai.prompt)]</label>
+            <font>font27</font><textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+            <textoffsetx>28</textoffsetx><aligny>center</aligny>
+            <texturefocus border="28" colordiffuse="focus">rr20.png</texturefocus>
+            <texturenofocus border="28" colordiffuse="glass_strong">rr20.png</texturenofocus>
+            <ondown>11</ondown><onup>90</onup>
+        </control>
+        <control type="button" id="11">
+            <left>142</left><top>365</top><width>395</width><height>76</height>
+            <font>font12_bold</font><align>center</align><aligny>center</aligny>
+            <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+            <label>Cerca in Stream4Me</label>
+            <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+            <texturenofocus border="30" colordiffuse="card">pill60.png</texturenofocus>
+            <onright>12</onright><onup>10</onup><ondown>50</ondown>
+        </control>
+        <control type="button" id="12">
+            <left>554</left><top>365</top><width>337</width><height>76</height>
+            <font>font12_bold</font><align>center</align><aligny>center</aligny>
+            <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+            <label>Chiedi all'AI</label>
+            <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+            <texturenofocus border="30" colordiffuse="card">pill60.png</texturenofocus>
+            <onleft>11</onleft><onright>13</onright><onup>10</onup><ondown>50</ondown>
+        </control>
+        <control type="button" id="13">
+            <left>908</left><top>365</top><width>339</width><height>76</height>
+            <font>font12_bold</font><align>center</align><aligny>center</aligny>
+            <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+            <label>TV in diretta</label>
+            <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+            <texturenofocus border="30" colordiffuse="card">pill60.png</texturenofocus>
+            <onleft>12</onleft><onright>14</onright><onup>10</onup><ondown>50</ondown>
+        </control>
+        <control type="button" id="14">
+            <left>1264</left><top>365</top><width>513</width><height>76</height>
+            <font>font12_bold</font><align>center</align><aligny>center</aligny>
+            <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+            <label>Chiave OpenRouter</label>
+            <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+            <texturenofocus border="30" colordiffuse="card">pill60.png</texturenofocus>
+            <onleft>13</onleft><onup>10</onup><ondown>50</ondown>
+        </control>
+        <control type="label">
+            <left>145</left><top>475</top><width>1640</width><height>38</height>
+            <font>font12</font><textcolor>text3</textcolor>
+            <label>$INFO[Window.Property(ai.status)]</label>
+        </control>
+        <control type="list" id="50">
+            <left>142</left><top>525</top><width>1635</width><height>420</height>
+            <orientation>vertical</orientation>
+            <scrolltime tween="cubic" easing="out">180</scrolltime>
+            <onup>12</onup><ondown>50</ondown>
+            <itemlayout width="1635" height="100">
+                <control type="image">
+                    <left>20</left><top>15</top><width>68</width><height>68</height>
+                    <aspectratio>keep</aspectratio><texture>$INFO[ListItem.Icon]</texture>
+                </control>
+                <control type="label">
+                    <left>110</left><top>12</top><width>1470</width><height>40</height>
+                    <font>font_label</font><textcolor>text</textcolor><label>$INFO[ListItem.Label]</label>
+                </control>
+                <control type="label">
+                    <left>110</left><top>52</top><width>1470</width><height>34</height>
+                    <font>font12</font><textcolor>text3</textcolor><label>$INFO[ListItem.Label2]</label>
+                </control>
+            </itemlayout>
+            <focusedlayout width="1635" height="100">
+                <control type="image">
+                    <left>0</left><top>3</top><width>1630</width><height>94</height>
+                    <texture border="24" colordiffuse="focus">rr20.png</texture>
+                </control>
+                <control type="image">
+                    <left>20</left><top>15</top><width>68</width><height>68</height>
+                    <aspectratio>keep</aspectratio><texture>$INFO[ListItem.Icon]</texture>
+                </control>
+                <control type="label">
+                    <left>110</left><top>12</top><width>1470</width><height>40</height>
+                    <font>font_label</font><textcolor>on_focus</textcolor><label>$INFO[ListItem.Label]</label>
+                </control>
+                <control type="label">
+                    <left>110</left><top>52</top><width>1470</width><height>34</height>
+                    <font>font12</font><textcolor>on_focus</textcolor><label>$INFO[ListItem.Label2]</label>
+                </control>
+            </focusedlayout>
+        </control>
+        <control type="label">
+            <left>145</left><top>974</top><width>1590</width><height>34</height>
+            <font>font10</font><textcolor>text4</textcolor>
+            <label>Premi su un titolo per cercarlo in Stream4Me  ·  Le dirette sono mostrate solo con EPG Kodi disponibile.</label>
+        </control>
+    </controls>
+</window>

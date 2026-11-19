@@ -143,6 +143,8 @@ def run():
     step("touch screen", touch_screen)
     if first_start():
         return
+    import ai_search
+    step("AI search menu migration", ai_search.install_menu)
     step("season page", season_page)
     step("fresh icons", fresh_icons)
     import keymap

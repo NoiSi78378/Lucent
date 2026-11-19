@@ -571,7 +571,7 @@ def plain_tabs():
         return {"label": tr(key), "icon": f"icons/{icon}.png", "action": action, "widgets": widgets or []}
 
     return [
-        tab("t_search", "search", "VideoLibrary.Search"),
+        tab("t_search", "search", "RunScript(special://skin/scripts/ai_search.py)"),
         tab("t_home", "home", SHOW_WIDGETS, home),
         tab("t_movies", "movies", videos("videodb://movies/titles/"), movies),
         tab("t_shows", "tv", videos("videodb://tvshows/titles/"), shows),
@@ -602,7 +602,7 @@ def lv_tabs():
         return {"label": tr(key), "icon": f"icons/{icon}.png", "action": action, "widgets": widgets or []}
 
     return [
-        tab("t_search", "search", videos(LVA + "searchmenu")),
+        tab("t_search", "search", "RunScript(special://skin/scripts/ai_search.py)"),
         tab("t_home", "home", SHOW_WIDGETS, home),
         tab("t_movies", "movies", videos(LVA + "menu&type=movie"), movies),
         tab("t_shows", "tv", videos(LVA + "menu&type=tvshow"), shows),
