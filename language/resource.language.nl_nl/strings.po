@@ -2364,3 +2364,19 @@ msgstr "Schuifbalk alleen bij snel scrollen"
 msgctxt "#31903"
 msgid "The slider under a one-row view only shows while you hold a key down; Down still goes to it"
 msgstr "De schuifbalk onder de rij verschijnt alleen als je een knop ingedrukt houdt; Omlaag gaat er nog steeds naartoe"
+
+msgctxt "#31904"
+msgid "Navigation mode"
+msgstr "Navigatiemodus"
+
+msgctxt "#31905"
+msgid "Automatically detect or force touch / remote navigation"
+msgstr "Automatisch detecteren of touch / afstandsbediening kiezen"
+
+msgctxt "#31908"
+msgid "Close"
+msgstr "Sluiten"
+
+msgctxt "#31909"
+msgid "Back"
+msgstr "Terug"
