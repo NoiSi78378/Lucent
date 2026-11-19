@@ -1589,13 +1589,13 @@ def resume_show():
             return
     except Exception as error:  # noqa: BLE001
         log(f"native Continue: {error}")
-    # Never invent a playback URL for an add-on. Leave the user on the same
-    # season's real episode list, where a manual click is already known to work.
-    xbmc.executebuiltin("Control.SetFocus(5601)")
-    message = ("Nessun episodio da riprendere. Selezionalo dalla lista qui sotto."
+    # An unknown item is not the same as having no episode in progress.
+    # Never risk playing a different series when the add-on exposes only
+    # TV-show tiles instead of real episodes.
+    message = ("Non riesco a identificare un episodio riproducibile di questa serie. Seleziona una stagione e un episodio."
                if _IT else
-               ("Geen volgende aflevering gevonden. Kies er een uit de lijst hieronder."
-                if _NL else "No next episode found. Choose an episode below."))
+               ("Ik kan geen afspeelbare aflevering van deze serie vinden. Kies een seizoen en aflevering."
+                if _NL else "Can't identify a playable episode of this series. Select a season and an episode."))
     notify(message, xbmcgui.NOTIFICATION_INFO)
 
 def load():
