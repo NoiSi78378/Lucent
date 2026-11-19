@@ -16,6 +16,7 @@ for q in ("", "   ", "x"*300):
 rows, message = parse_ai('z ```json\n{"message":"Ecco","titles":[{"title":"John Wick","year":2014,"type":"movie","reason":"Azione"},{"title":"Silo","type":"tvshow"},{"title":"Silo"}]}\n``` z')
 assert len(rows) == 2 and rows[1]["kind"] == "serie" and rows[0]["year"] == "2014"
 assert message == "Ecco"
+assert rows[0]["title"] == "John Wick" and rows[1]["title"] == "Silo"
 assert matches_live("Il padrino", "Il Padrino (film)") and not matches_live("azione", "Film d'azione")
 assert is_default_search("icons/search.png","VideoLibrary.Search")
 assert not is_default_search("icons/search.png","ActivateWindow(Settings)")
