@@ -150,17 +150,20 @@ def _show_context(xbmc, context=None):
 
 def _matches_show(show, titles, identifiers):
     ids = show.get("uniqueid") or {}
+    name = _normalized(show.get("title"))
+    title_matches = bool(name and any(name == _normalized(t) for t in titles))
+    # The season list can expose identifiers belonging to a *season*, not
+    # the parent TV show. An exact series-title match is more reliable here.
+    if title_matches:
+        return True
+    if titles:
+        return False
+    # With no usable title, require a unique matching external ID.
     for key, incoming in identifiers.items():
         actual = str(ids.get(key) or (show.get("imdbnumber") if key == "imdb" else "") or "")
-        if actual and incoming and actual != incoming:
-            return False
-    # An explicit matching ID is stronger than localized display names.
-    for key, incoming in identifiers.items():
-        actual = str(ids.get(key) or "")
         if actual and actual == incoming:
             return True
-    name = _normalized(show.get("title"))
-    return bool(name and any(name == _normalized(t) for t in titles))
+    return False
 
 
 def _find_library_show(xbmc, context=None):
