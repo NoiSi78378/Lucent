@@ -605,7 +605,7 @@
         <control type="button" id="9048">
             <left>1680</left><top>996</top><width>196</width><height>60</height>
             <label>$LOCALIZE[31909]</label>
-            <font>font12_bold</font><align>center</align><aligny>center</align>
+            <font>font12_bold</font><align>center</align><aligny>center</aligny>
             <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
             <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
             <texturenofocus border="30" colordiffuse="D9141824">pill60.png</texturenofocus>
@@ -684,7 +684,7 @@
                 <control type="button" id="9046">
                     <width>200</width><height>66</height>
                     <label>$LOCALIZE[31908]</label>
-                    <font>font12_bold</font><align>center</align><aligny>center</align>
+                    <font>font12_bold</font><align>center</align><aligny>center</aligny>
                     <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
                     <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
                     <texturenofocus border="30" colordiffuse="card">pill60.png</texturenofocus>
