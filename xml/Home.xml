@@ -28,7 +28,9 @@
     <onload condition="!Skin.HasSetting(nuvio.trailers.menu)">Skin.Reset(nuvio.trailer.test)</onload>
     <!-- the very first time: the setup assistant (the most important settings and logins) -->
     <!-- On an already configured Home, enable Lucent AI search even after a hot skin update. -->
-    <onload condition="String.IsEmpty(Skin.String(lucent.ai.search.migrated)) + !String.IsEmpty(Skin.String(nuvio.menu.version))">RunScript(special://skin/scripts/ai_search.py,setupmenu)</onload>
+    <onload condition="String.IsEmpty(Skin.String(lucent.ai.inline.migrated)) + !String.IsEmpty(Skin.String(nuvio.menu.version))">RunScript(special://skin/scripts/ai_search.py,setupmenu)</onload>
+    <!-- Fetch the suggestions in the background: search contents appear on menu focus. -->
+    <onload>RunScript(special://skin/scripts/ai_home.py,refresh)</onload>
     <onload>SetProperty(nuvio.started,1,home)</onload>
     <controls>
         <include>LucentHomeMarkers</include>
@@ -246,7 +248,7 @@
             <animation effect="fade" start="100" end="45" time="300" condition="[!Skin.HasSetting(lucent.touch) + Control.HasFocus(9000) | Skin.HasSetting(lucent.touch) + !String.IsEmpty(Window(home).Property(lucent.touch.menu.open))] + !System.HasVisibleModalDialog">Conditional</animation>
 
             <control type="group">
-                <visible>!$EXP[LucentPanel]</visible>
+                <visible>!$EXP[LucentPanel] + !String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
                 <include>Anim_SlideLeft</include>
                 <include>HomeHeroes</include>
             </control>
@@ -263,18 +265,19 @@
                 <onleft>9000</onleft>
                 <onup>9100</onup>
                 <ondown>9100</ondown>
-                <visible>!$EXP[LucentPanel]</visible>
+                <visible>!$EXP[LucentPanel] + !String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
                 <include>HomeRows</include>
             </control>
 
             <!-- Calendar / TV / Sport / Add-ons / Settings / Power tab without rows of its own: its own screen -->
             <include>LucentTabPanels</include>
+            <include>LucentAISearchHome</include>
 
             <!-- Shown when the tab has no widgets (or none of them has content) -->
             <control type="group">
                 <left>160</left>
                 <top>620</top>
-                <visible>!Control.IsVisible(9991) + !String.IsEqual(Container(9000).ListItem.Property(tab),kids) + !$EXP[LucentPanel]</visible>
+                <visible>!Control.IsVisible(9991) + !String.IsEqual(Container(9000).ListItem.Property(tab),kids) + !$EXP[LucentPanel] + !String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
                 <animation effect="fade" start="0" end="100" time="300" delay="1500">Visible</animation>
                 <control type="label">
                     <left>0</left>
@@ -360,6 +363,7 @@
                 <hitrect x="24" y="180" w="116" h="870" />
                 <orientation>vertical</orientation>
                 <scrolltime tween="cubic" easing="out">200</scrolltime>
+                <onright condition="String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)">9500</onright>
                 <onright condition="$EXP[LucentPCal]">9310</onright>
                 <onright condition="$EXP[LucentPTv]">9320</onright>
                 <onright condition="$EXP[LucentPSport] + !String.IsEmpty(Window(home).Property(lucent.ps.1.id))">9330</onright>

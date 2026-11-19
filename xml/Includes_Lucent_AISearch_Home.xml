@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Home-native AI search. Menu focus selects this section without a modal window.
+     Search and suggestions use Kodi button controls for keyboard, remote and touch. -->
+<includes>
+  <include name="LucentAISearchHome">
+    <control type="group">
+      <visible>String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
+      <animation effect="fade" start="0" end="100" time="240">Visible</animation>
+      <animation effect="fade" start="100" end="0" time="170">Hidden</animation>
+      <control type="label">
+        <left>218</left><top>142</top><width>1100</width><height>60</height>
+        <font>font37</font><textcolor>text</textcolor><label>Scopri cosa guardare</label>
+      </control>
+      <control type="label">
+        <left>220</left><top>199</top><width>1550</width><height>31</height>
+        <font>font12</font><textcolor>text3</textcolor>
+        <label>Scrivi un titolo, un genere o una richiesta. Conferma con Invio per cercare con Lucent AI.</label>
+      </control>
+      <control type="button" id="9500">
+        <left>215</left><top>245</top><width>1530</width><height>93</height>
+        <label>$INFO[Window(home).Property(ai.home.query),,]</label>
+        <font>font27</font><textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+        <textoffsetx>72</textoffsetx><aligny>center</aligny>
+        <texturefocus border="30" colordiffuse="focus">rr20.png</texturefocus>
+        <texturenofocus border="30" colordiffuse="glass_strong">rr20.png</texturenofocus>
+        <onclick>RunScript(special://skin/scripts/ai_home.py,input)</onclick>
+        <onleft>9000</onleft><onright>9500</onright><onup>9000</onup>
+        <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9531</ondown>
+        <ondown>9511</ondown>
+      </control>
+      <control type="image">
+        <left>237</left><top>269</top><width>43</width><height>43</height>
+        <texture colordiffuse="on_focus">icons/search.png</texture>
+      </control>
+      <control type="label">
+        <left>220</left><top>349</top><width>1520</width><height>36</height>
+        <font>font12</font><textcolor>text3</textcolor><scroll>true</scroll>
+        <label>$INFO[Window(home).Property(ai.home.status)]</label>
+      </control>
+      <control type="group">
+        <visible>!String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>
+        <control type="label"><left>215</left><top>396</top><width>1480</width><height>46</height><font>font27</font><textcolor>text</textcolor><label>Popolari da scoprire</label></control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.1.title))</visible>
+     <control type="button" id="9511">
+       <left>215</left><top>445</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9000</onleft><onright>9512</onright>
+       <onup>9500</onup>
+       <ondown>9521</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,1)</onclick>
+     </control>
+     <control type="image"><left>220</left><top>449</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.pop.1.image)]</texture>
+     </control>
+     <control type="label"><left>222</left><top>607</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.pop.1.title)]</label>
+     </control>
+     <control type="label"><left>222</left><top>632</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.pop.1.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.2.title))</visible>
+     <control type="button" id="9512">
+       <left>521</left><top>445</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9511</onleft><onright>9513</onright>
+       <onup>9500</onup>
+       <ondown>9522</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,2)</onclick>
+     </control>
+     <control type="image"><left>526</left><top>449</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.pop.2.image)]</texture>
+     </control>
+     <control type="label"><left>528</left><top>607</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.pop.2.title)]</label>
+     </control>
+     <control type="label"><left>528</left><top>632</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.pop.2.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.3.title))</visible>
+     <control type="button" id="9513">
+       <left>827</left><top>445</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9512</onleft><onright>9514</onright>
+       <onup>9500</onup>
+       <ondown>9523</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,3)</onclick>
+     </control>
+     <control type="image"><left>832</left><top>449</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.pop.3.image)]</texture>
+     </control>
+     <control type="label"><left>834</left><top>607</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.pop.3.title)]</label>
+     </control>
+     <control type="label"><left>834</left><top>632</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.pop.3.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.4.title))</visible>
+     <control type="button" id="9514">
+       <left>1133</left><top>445</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9513</onleft><onright>9515</onright>
+       <onup>9500</onup>
+       <ondown>9524</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,4)</onclick>
+     </control>
+     <control type="image"><left>1138</left><top>449</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.pop.4.image)]</texture>
+     </control>
+     <control type="label"><left>1140</left><top>607</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.pop.4.title)]</label>
+     </control>
+     <control type="label"><left>1140</left><top>632</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.pop.4.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.5.title))</visible>
+     <control type="button" id="9515">
+       <left>1439</left><top>445</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9514</onleft><onright>9515</onright>
+       <onup>9500</onup>
+       <ondown>9525</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,5)</onclick>
+     </control>
+     <control type="image"><left>1444</left><top>449</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.pop.5.image)]</texture>
+     </control>
+     <control type="label"><left>1446</left><top>607</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.pop.5.title)]</label>
+     </control>
+     <control type="label"><left>1446</left><top>632</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.pop.5.sub)]</label>
+     </control>
+  </control>
+        <control type="label"><left>215</left><top>681</top><width>1480</width><height>46</height><font>font27</font><textcolor>text</textcolor><label>Novità e uscite recenti</label></control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.1.title))</visible>
+     <control type="button" id="9521">
+       <left>215</left><top>730</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9000</onleft><onright>9522</onright>
+       <onup>9511</onup>
+       <ondown>9521</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,1)</onclick>
+     </control>
+     <control type="image"><left>220</left><top>734</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.new.1.image)]</texture>
+     </control>
+     <control type="label"><left>222</left><top>892</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.new.1.title)]</label>
+     </control>
+     <control type="label"><left>222</left><top>917</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.new.1.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.2.title))</visible>
+     <control type="button" id="9522">
+       <left>521</left><top>730</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9521</onleft><onright>9523</onright>
+       <onup>9512</onup>
+       <ondown>9522</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,2)</onclick>
+     </control>
+     <control type="image"><left>526</left><top>734</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.new.2.image)]</texture>
+     </control>
+     <control type="label"><left>528</left><top>892</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.new.2.title)]</label>
+     </control>
+     <control type="label"><left>528</left><top>917</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.new.2.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.3.title))</visible>
+     <control type="button" id="9523">
+       <left>827</left><top>730</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9522</onleft><onright>9524</onright>
+       <onup>9513</onup>
+       <ondown>9523</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,3)</onclick>
+     </control>
+     <control type="image"><left>832</left><top>734</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.new.3.image)]</texture>
+     </control>
+     <control type="label"><left>834</left><top>892</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.new.3.title)]</label>
+     </control>
+     <control type="label"><left>834</left><top>917</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.new.3.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.4.title))</visible>
+     <control type="button" id="9524">
+       <left>1133</left><top>730</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9523</onleft><onright>9525</onright>
+       <onup>9514</onup>
+       <ondown>9524</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,4)</onclick>
+     </control>
+     <control type="image"><left>1138</left><top>734</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.new.4.image)]</texture>
+     </control>
+     <control type="label"><left>1140</left><top>892</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.new.4.title)]</label>
+     </control>
+     <control type="label"><left>1140</left><top>917</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.new.4.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.5.title))</visible>
+     <control type="button" id="9525">
+       <left>1439</left><top>730</top><width>285</width><height>210</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9524</onleft><onright>9525</onright>
+       <onup>9515</onup>
+       <ondown>9525</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,5)</onclick>
+     </control>
+     <control type="image"><left>1444</left><top>734</top><width>275</width><height>155</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_landscape.png" background="true">$INFO[Window(home).Property(ai.home.new.5.image)]</texture>
+     </control>
+     <control type="label"><left>1446</left><top>892</top><width>270</width><height>28</height>
+       <font>font12_bold</font><textcolor>text</textcolor><scroll>true</scroll>
+       <label>$INFO[Window(home).Property(ai.home.new.5.title)]</label>
+     </control>
+     <control type="label"><left>1446</left><top>917</top><width>270</width><height>20</height>
+       <font>font10</font><textcolor>text3</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.new.5.sub)]</label>
+     </control>
+  </control>
+      </control>
+      <control type="group">
+        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>
+        <control type="label">
+          <left>215</left><top>424</top><width>1450</width><height>42</height>
+          <font>font27</font><textcolor>text</textcolor>
+          <label>Risultati della ricerca</label>
+        </control>
+        <control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.1.title))</visible>
+     <control type="button" id="9531">
+       <left>215</left><top>490</top><width>285</width><height>398</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9000</onleft><onright>9532</onright>
+       <onup>9500</onup><ondown>9531</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,1)</onclick>
+     </control>
+     <control type="image"><left>262</left><top>500</top><width>190</width><height>273</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_poster.png" background="true">$INFO[Window(home).Property(ai.home.result.1.poster)]</texture>
+       <visible>!String.IsEmpty(Window(home).Property(ai.home.result.1.poster))</visible>
+     </control>
+     <control type="image"><left>324</left><top>600</top><width>64</width><height>64</height>
+       <texture colordiffuse="text3">icons/movies.png</texture>
+       <visible>String.IsEmpty(Window(home).Property(ai.home.result.1.poster))</visible>
+     </control>
+     <control type="label"><left>227</left><top>790</top><width>260</width><height>41</height>
+       <font>font12_bold</font><align>center</align><scroll>true</scroll><textcolor>text</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.result.1.title)]</label>
+     </control>
+     <control type="label"><left>227</left><top>832</top><width>260</width><height>29</height>
+       <font>font10</font><textcolor>text3</textcolor><align>center</align>
+       <label>$INFO[Window(home).Property(ai.home.result.1.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.2.title))</visible>
+     <control type="button" id="9532">
+       <left>521</left><top>490</top><width>285</width><height>398</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9531</onleft><onright>9533</onright>
+       <onup>9500</onup><ondown>9532</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,2)</onclick>
+     </control>
+     <control type="image"><left>568</left><top>500</top><width>190</width><height>273</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_poster.png" background="true">$INFO[Window(home).Property(ai.home.result.2.poster)]</texture>
+       <visible>!String.IsEmpty(Window(home).Property(ai.home.result.2.poster))</visible>
+     </control>
+     <control type="image"><left>630</left><top>600</top><width>64</width><height>64</height>
+       <texture colordiffuse="text3">icons/movies.png</texture>
+       <visible>String.IsEmpty(Window(home).Property(ai.home.result.2.poster))</visible>
+     </control>
+     <control type="label"><left>533</left><top>790</top><width>260</width><height>41</height>
+       <font>font12_bold</font><align>center</align><scroll>true</scroll><textcolor>text</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.result.2.title)]</label>
+     </control>
+     <control type="label"><left>533</left><top>832</top><width>260</width><height>29</height>
+       <font>font10</font><textcolor>text3</textcolor><align>center</align>
+       <label>$INFO[Window(home).Property(ai.home.result.2.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.3.title))</visible>
+     <control type="button" id="9533">
+       <left>827</left><top>490</top><width>285</width><height>398</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9532</onleft><onright>9534</onright>
+       <onup>9500</onup><ondown>9533</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,3)</onclick>
+     </control>
+     <control type="image"><left>874</left><top>500</top><width>190</width><height>273</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_poster.png" background="true">$INFO[Window(home).Property(ai.home.result.3.poster)]</texture>
+       <visible>!String.IsEmpty(Window(home).Property(ai.home.result.3.poster))</visible>
+     </control>
+     <control type="image"><left>936</left><top>600</top><width>64</width><height>64</height>
+       <texture colordiffuse="text3">icons/movies.png</texture>
+       <visible>String.IsEmpty(Window(home).Property(ai.home.result.3.poster))</visible>
+     </control>
+     <control type="label"><left>839</left><top>790</top><width>260</width><height>41</height>
+       <font>font12_bold</font><align>center</align><scroll>true</scroll><textcolor>text</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.result.3.title)]</label>
+     </control>
+     <control type="label"><left>839</left><top>832</top><width>260</width><height>29</height>
+       <font>font10</font><textcolor>text3</textcolor><align>center</align>
+       <label>$INFO[Window(home).Property(ai.home.result.3.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.4.title))</visible>
+     <control type="button" id="9534">
+       <left>1133</left><top>490</top><width>285</width><height>398</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9533</onleft><onright>9535</onright>
+       <onup>9500</onup><ondown>9534</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,4)</onclick>
+     </control>
+     <control type="image"><left>1180</left><top>500</top><width>190</width><height>273</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_poster.png" background="true">$INFO[Window(home).Property(ai.home.result.4.poster)]</texture>
+       <visible>!String.IsEmpty(Window(home).Property(ai.home.result.4.poster))</visible>
+     </control>
+     <control type="image"><left>1242</left><top>600</top><width>64</width><height>64</height>
+       <texture colordiffuse="text3">icons/movies.png</texture>
+       <visible>String.IsEmpty(Window(home).Property(ai.home.result.4.poster))</visible>
+     </control>
+     <control type="label"><left>1145</left><top>790</top><width>260</width><height>41</height>
+       <font>font12_bold</font><align>center</align><scroll>true</scroll><textcolor>text</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.result.4.title)]</label>
+     </control>
+     <control type="label"><left>1145</left><top>832</top><width>260</width><height>29</height>
+       <font>font10</font><textcolor>text3</textcolor><align>center</align>
+       <label>$INFO[Window(home).Property(ai.home.result.4.sub)]</label>
+     </control>
+  </control>
+<control type="group">
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.5.title))</visible>
+     <control type="button" id="9535">
+       <left>1439</left><top>490</top><width>285</width><height>398</height>
+       <label></label>
+       <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
+       <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
+       <onleft>9534</onleft><onright>9535</onright>
+       <onup>9500</onup><ondown>9535</ondown>
+       <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,5)</onclick>
+     </control>
+     <control type="image"><left>1486</left><top>500</top><width>190</width><height>273</height>
+       <aspectratio>scale</aspectratio>
+       <texture diffuse="mask_poster.png" background="true">$INFO[Window(home).Property(ai.home.result.5.poster)]</texture>
+       <visible>!String.IsEmpty(Window(home).Property(ai.home.result.5.poster))</visible>
+     </control>
+     <control type="image"><left>1548</left><top>600</top><width>64</width><height>64</height>
+       <texture colordiffuse="text3">icons/movies.png</texture>
+       <visible>String.IsEmpty(Window(home).Property(ai.home.result.5.poster))</visible>
+     </control>
+     <control type="label"><left>1451</left><top>790</top><width>260</width><height>41</height>
+       <font>font12_bold</font><align>center</align><scroll>true</scroll><textcolor>text</textcolor>
+       <label>$INFO[Window(home).Property(ai.home.result.5.title)]</label>
+     </control>
+     <control type="label"><left>1451</left><top>832</top><width>260</width><height>29</height>
+       <font>font10</font><textcolor>text3</textcolor><align>center</align>
+       <label>$INFO[Window(home).Property(ai.home.result.5.sub)]</label>
+     </control>
+  </control>
+        <control type="label">
+          <left>225</left><top>911</top><width>1450</width><height>49</height>
+          <font>font12</font><textcolor>text3</textcolor><scroll>true</scroll>
+          <label>Seleziona una copertina per cercare il titolo in Stream4Me.</label>
+        </control>
+      </control>
+    </control>
+  </include>
+</includes>

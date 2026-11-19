@@ -449,20 +449,31 @@ def _live_epg(titles):
         return [], "EPG PVR non disponibile o non compatibile con questi canali."
 
 def install_menu():
-    """Migrate standard existing Search tabs once; never override custom menu actions."""
-    if xbmc.getInfoLabel("Skin.String(lucent.ai.search.migrated)") == "1":
+    """Migrate *only* the known default Search actions to the native Home section.
+
+    Preserve any search tab with a deliberate custom action; the user's other
+    tabs, row definitions and widget customizations are never rewritten.
+    """
+    if xbmc.getInfoLabel("Skin.String(lucent.ai.inline.migrated)") == "1":
         return
     if not xbmc.getInfoLabel("Skin.String(nuvio.menu.version)"):
         return
+    standard_actions = {
+        MENU_ACTION,
+        "VideoLibrary.Search",
+        "ActivateWindow(Videos,plugin://plugin.video.lucent/?action=searchmenu,return)",
+    }
     count = 0
     for index in range(1, 13):
         icon = xbmc.getInfoLabel("Skin.String(nuvio.tab%d.icon)" % index)
         action = xbmc.getInfoLabel("Skin.String(nuvio.tab%d.action)" % index)
-        if is_default_search(icon, action):
-            xbmc.executebuiltin('Skin.SetString(nuvio.tab%d.action,"%s")' % (index, MENU_ACTION), True)
+        if icon == "icons/search.png" and action in standard_actions:
+            xbmc.executebuiltin("Skin.SetString(nuvio.tab%d.action,SetFocus(9500))" % index, True)
             count += 1
-    xbmc.executebuiltin("Skin.SetString(lucent.ai.search.migrated,1)", True)
-    xbmc.log("[skin.lucent] AI search: migrated %d default search tabs" % count, xbmc.LOGINFO)
+    xbmc.executebuiltin("Skin.SetString(lucent.ai.inline.migrated,1)", True)
+    xbmc.log("[skin.lucent] AI inline home search: migrated %d default tabs" %
+             count, xbmc.LOGINFO)
+
 
 class SearchDialog(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
