@@ -15,7 +15,7 @@ for episode 22, and never launch an unrelated series.
 import json
 import re
 import traceback
-from datetime import date, datetime
+from datetime import date
 
 
 def _integer(value, default=0):
@@ -36,21 +36,48 @@ def _normalized(text):
     return re.sub(r"\s+", " ", str(text or "").strip()).casefold()
 
 
-def _valid_today(episode, today=None):
-    """Exclude clearly future episodes; accept unparseable dates as unknown."""
-    raw = str(episode.get("firstaired") or episode.get("premiered") or "").strip()
+def _release_date(value):
+    """Parse Kodi/Stream4Me release dates without datetime.strptime().
+
+    Kodi runs Python as an embedded interpreter. On some Kodi builds,
+    datetime.strptime() can raise TypeError even for valid dates. This
+    parser uses only integer fields and the built-in date constructor.
+    Unrecognized dates are unknown, not a reason to reject an episode.
+    """
+    raw = str(value or "").strip()
     if not raw:
-        return True
-    day = None
-    for fmt in ("%Y-%m-%d", "%d.%m.%Y", "%d/%m/%Y"):
-        try:
-            day = datetime.strptime(raw[:10], fmt).date()
-            break
-        except ValueError:
-            continue
+        return None
+    # Kodi's JSON-RPC uses ISO YYYY-MM-DD (sometimes with a time suffix).
+    match = re.match(r"^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|[T\s])", raw)
+    if match:
+        y, m, d = map(int, match.groups())
+    else:
+        # Locale-formatted date on Android/Italian Kodi (DD.MM.YYYY or DD/MM/YYYY).
+        match = re.match(r"^(\d{1,2})[./](\d{1,2})[./](\d{4})(?:$|\s)", raw)
+        if not match:
+            return None
+        d, m, y = map(int, match.groups())
+    try:
+        return date(y, m, d)
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def _valid_today(episode, today=None):
+    """Exclude only confirmed future episodes, never unparseable dates."""
+    if not isinstance(episode, dict):
+        return False
+    day = _release_date(episode.get("firstaired") or episode.get("premiered"))
     if day is None:
         return True
-    return day <= (date.fromisoformat(today) if today else date.today())
+    try:
+        today_date = _release_date(today) if today is not None else date.today()
+        if today_date is None:
+            today_date = date.today()
+        return day <= today_date
+    except (TypeError, ValueError, OverflowError):
+        # A date-format problem should NEVER block playback.
+        return True
 
 
 def _episode_order(ep):

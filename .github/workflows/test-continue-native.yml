@@ -7,6 +7,7 @@ on:
       - feature/continue-kodi-library-context-2.1.45.4
       - feature/continue-episode-metadata-fix
       - feature/continue-library-trace-2.1.45.6
+      - fix/kodi-python-strptime-continue-2.1.45.7
     paths:
       - "scripts/continue_native.py"
       - "scripts/info.py"
