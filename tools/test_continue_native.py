@@ -79,13 +79,13 @@ class FakeKodi:
         if m:
             i = int(m.group(1))
             row = self.tabs[i] if i < len(self.tabs) else {}
-            return str(row.get(m.group(2), ""))
+            return str(row.get(m.group(2), self.labels.get(name, "")))
         m = re.fullmatch(r"Container\(5601\).ListItemAbsolute\((\d+)\)\.(.*)", name)
         if m:
             i = int(m.group(1))
             season = self.season_episodes.get(self.selected_season, [])
             row = season[i] if i < len(season) else {}
-            return str(row.get(m.group(2), ""))
+            return str(row.get(m.group(2), self.labels.get(name, "")))
         if name == "Container(56).NumItems":
             return str(len(self.tabs))
         if name == "Container(5601).NumItems" and self.tabs:
