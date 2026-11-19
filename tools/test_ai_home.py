@@ -137,4 +137,49 @@ assert len(node.findall("content/item")) == 16
 assert panel.count('Property(ai.home.result.16.') >= 3
 assert node.findtext("onback") == "RunScript(special://skin/scripts/ai_home.py,reset)"
 
-print("Lucent AI Home: native cards, HD art, multi-title search, reset, focus OK")
+
+# No more focus loss on X: SetFocus must execute BEFORE reset and the button
+# must stay alive if Kodi hasn't transferred focus yet.
+clear = next(c for c in controls if c.get("id") == "9502")
+assert clear.findtext("label") in (None, "")
+assert [n.text for n in clear.findall("onclick")] == [
+    "SetFocus(9500)", "RunScript(special://skin/scripts/ai_home.py,reset)"]
+assert "Control.HasFocus(9502)" in clear.findtext("visible")
+assert 'icons/close.png' in panel and '<label>×</label>' not in panel
+assert 'rr20_edge.png' in panel and '<visible>Control.HasFocus(9500)</visible>' in panel
+search_control = next(c for c in controls if c.get("id") == "9500")
+assert search_control.find("texturefocus").get("colordiffuse") == "focus"
+assert 'def _focus_search():' in source
+assert 'xbmc.executebuiltin("SetFocus(9500)", True)' in source
+assert source.index("_focus_search()", source.index("def reset_search():")) < source.index(
+    '_put("ai.home.mode", "suggestions")',source.index("def reset_search():"))
+assert "from ai_cast_core import person_intent, find_person, credit_rows" in source
+assert "def _verified_person_search(person, intent):" in source
+assert '"movie_credits"' in source and '"tv_credits"' in source
+assert "rows, message = _verified_person_search(person, intent)" in source
+assert "if person:" in source
+from ai_cast_core import person_intent, find_person, credit_rows
+actor = person_intent("Cerca il film con Robert Pattinson del 2026")
+assert actor == {"name":"Robert Pattinson", "role":"actor"}
+assert person_intent("Consigliami una serie con Pedro Pascal uscita nel 2025") == (
+    {"name":"Pedro Pascal","role":"actor"})
+assert person_intent("Un film diretto da Christopher Nolan del 2026") == (
+    {"name":"Christopher Nolan","role":"director"})
+assert person_intent("Vorrei un film action del 2026") is None
+assert find_person([{"id":4,"name":"Robert Pattinson","popularity":10,
+                     "known_for_department":"Acting"}],
+                   "Robert Pattinson")["id"] == 4
+assert find_person([{"id":4,"name":"Robert Downey Jr."}], "Robert Pattinson") is None
+cast_intent={"year":2026,"kind":"film","genre":None,"today":"2026-11-19","released":False}
+credits={"cast":[{"title":"Verified Film", "release_date":"2026-01-20",
+                  "genre_ids":[28], "poster_path":"/abcdef.jpg"},
+                 {"title":"Other Year","release_date":"2024-01-20"}],
+         "crew":[{"title":"Wrong Crew Only","release_date":"2026-01-20","job":"Director"}]}
+rows=credit_rows(credits,"film","actor",cast_intent)
+assert len(rows)==1 and rows[0]["title"]=="Verified Film" and rows[0]["year"]=="2026"
+assert not credit_rows({"cast":[{"title":"Old Movie","release_date":"2024-01-20"}]},
+                       "film","actor",cast_intent)
+assert not credit_rows({"crew":[{"title":"Other Job","release_date":"2026-04-10",
+                                 "job":"Writer"}]}, "film","director",cast_intent)
+
+print("Lucent AI Home: focus-safe reset, static clear icon, visible search focus, verified actor credits OK")

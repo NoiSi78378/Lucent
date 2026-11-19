@@ -481,7 +481,7 @@
         <label>$INFO[Window(home).Property(ai.home.query)]</label>
         <font>font27</font><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <textoffsetx>75</textoffsetx><aligny>center</aligny>
-        <texturefocus border="30" colordiffuse="card">rr20.png</texturefocus>
+        <texturefocus border="30" colordiffuse="focus">rr20.png</texturefocus>
         <texturenofocus border="30" colordiffuse="glass_strong">rr20.png</texturenofocus>
         <onclick>RunScript(special://skin/scripts/ai_home.py,input)</onclick>
         <onleft>9000</onleft>
@@ -490,20 +490,34 @@
         <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown>
         <ondown>9510</ondown>
       </control>
+      <!-- Native Lucent luminous outline: the search bar visibly has focus. -->
+      <control type="image">
+        <left>213</left><top>243</top><width>1535</width><height>93</height>
+        <texture border="30" colordiffuse="focus">rr20_edge.png</texture>
+        <visible>Control.HasFocus(9500)</visible>
+      </control>
       <control type="image">
         <left>236</left><top>268</top><width>40</width><height>40</height>
         <texture colordiffuse="text">icons/search.png</texture>
       </control>
-      <!-- Contextual clear control inside the search bar, not an extra action row. -->
+      <!-- Never destroy the focused button: focus moves to 9500 before reset.
+           The OR guard keeps this reachable if a slow device hasn't yet moved focus. -->
       <control type="button" id="9502">
         <left>1677</left><top>259</top><width>58</width><height>59</height>
-        <label>×</label><font>font27</font><align>center</align><aligny>center</aligny>
-        <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
-        <texturefocus border="20" colordiffuse="card">rr20.png</texturefocus>
+        <label></label>
+        <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
         <texturenofocus border="20" colordiffuse="glass_strong">rr20.png</texturenofocus>
-        <onleft>9500</onleft><onright>9502</onright><onup>9500</onup><ondown>9550</ondown>
+        <onleft>9500</onleft><onright>9500</onright><onup>9500</onup>
+        <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown>
+        <ondown>9510</ondown>
+        <onclick>SetFocus(9500)</onclick>
         <onclick>RunScript(special://skin/scripts/ai_home.py,reset)</onclick>
-        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>
+        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results) | Control.HasFocus(9502)</visible>
+      </control>
+      <control type="image">
+        <left>1692</left><top>274</top><width>28</width><height>28</height>
+        <texture colordiffuse="FFFFFFFF">icons/close.png</texture>
+        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results) | Control.HasFocus(9502)</visible>
       </control>
       <control type="label">
         <left>220</left><top>346</top><width>1500</width><height>31</height>

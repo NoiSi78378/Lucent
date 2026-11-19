@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from ai_art_core import catalogue_art, normalize, tmdb_art, backdrop_full
 from ai_intent_core import understand, GENRE_IT
 from ai_exact_core import candidate, merge_candidates
+from ai_cast_core import person_intent, find_person, credit_rows
 from ai_search import (_ai_request, _discover, _add_artwork, _live_epg, _art_key,
                        _json_art, _settings, _save_key, stream4me_url, KEY_DIR, _rpc)
 
@@ -217,12 +218,26 @@ def refresh():
                 "Suggerimenti non disponibili, ma puoi comunque cercare con Lucent AI.")
 
 
+def _focus_search():
+    """Never hide a focused result/clear control before Home has another focus.
+
+    The button's XML also runs SetFocus synchronously before RunScript, while
+    the clear button remains visible if Kodi has not yet transferred focus.
+    """
+    try:
+        xbmc.executebuiltin("SetFocus(9500)", True)
+    except (RuntimeError, TypeError):
+        pass
+
+
 def reset_search():
-    """Return to the original discovery rows; cache and API key stay untouched."""
+    """Return to discovery without losing remote/keyboard navigation."""
+    _focus_search()
     _fill("result", [])
     _put("ai.home.query", PLACEHOLDER)
     _put("ai.home.mode", "suggestions")
     _status(CLOSE_SEARCH)
+    _focus_search()
 
 
 def input_search():
@@ -303,6 +318,42 @@ def _exact_titles(prompt):
              "reason": "Non presente nei cataloghi: cerca il titolo in Stream4Me."}]
 
 
+def _verified_person_search(person, intent):
+    """Find credited actor/director titles, never substituting guessed year matches.
+
+    TMDb credentials are configured through Lucent skin's existing
+    Integrations setting and remain exclusively inside the Kodi profile.
+    """
+    key = _art_key()
+    if not key:
+        return [], ("Per cercare film con un attore o regista, configura la Key "
+                    "TMDb nelle Impostazioni skin > Integrazioni. "
+                    "La Key OpenRouter da sola non verifica i cast.")
+    args = urllib.parse.urlencode({
+        "api_key": key, "query": person["name"], "language": "it-IT",
+        "include_adult": "false", "page": 1})
+    results = _json_art("https://api.themoviedb.org/3/search/person?" + args, timeout=6)
+    matched = find_person(results.get("results") or [], person["name"], person["role"])
+    if not matched or not matched.get("id"):
+        return [], "Impossibile verificare l'identità di %s su TMDb." % person["name"]
+    pid = str(int(matched["id"]))
+    kinds = ("film", "serie") if not intent.get("kind") else (intent["kind"],)
+    rows = []
+    for kind in kinds:
+        resource = "movie_credits" if kind == "film" else "tv_credits"
+        url = "https://api.themoviedb.org/3/person/%s/%s?%s" % (
+            pid, resource, urllib.parse.urlencode({"api_key": key, "language": "it-IT"}))
+        credits = _json_art(url, timeout=6)
+        rows.extend(credit_rows(credits, kind, person["role"], intent))
+    rows.sort(key=lambda row: (row["kind"] != "film", -(float(row.get("rating") or 0))))
+    if rows:
+        return rows[:SLOTS], ("Titoli con %s verificati nei crediti TMDb" %
+                             person["name"])
+    period = " del %s" % intent["year"] if intent.get("year") else ""
+    return [], ("Nessun titolo%s con %s verificato nei crediti TMDb." %
+                (period, person["name"]))
+
+
 def _run_query(prompt):
     from ai_search import _art_key
     intent = understand(prompt)
@@ -316,26 +367,36 @@ def _run_query(prompt):
                        if rows[0].get("kind") != "titolo"
                        else "Titolo non indicizzato · ricerca Stream4Me disponibile.")
         else:
-            verified = _discover(intent, _art_key()) if intent.get("year") else []
-            key = (_settings().get("openrouter_key") or "").strip()
-            suggestions, message = [], ""
-            if key and len(verified) < 4:
-                try:
-                    suggestions, message = _ai_request(prompt, key, intent)
-                except RuntimeError as err:
-                    if not verified:
-                        raise
-                    message = "Catalogo verificato."
-            elif not key and not verified:
-                _status("Imposta la chiave OpenRouter nelle impostazioni della skin.")
-                return
-            progress.update(65, "Lucent AI", "Verifico genere, anno e copertine...")
-            rows = _add_artwork(verified + suggestions, intent)
-            if intent.get("year"):
-                label = GENRE_IT.get(intent.get("genre"), "qualsiasi genere")
-                message = "Risultati verificati · %s · %s" % (label, intent["year"])
+            person = person_intent(prompt)
+            if person:
+                progress.update(35, "Lucent AI", "Verifico cast e crediti di %s..." % person["name"])
+                rows, message = _verified_person_search(person, intent)
+                if not rows:
+                    _fill("result", [])
+                    _put("ai.home.mode", "suggestions")
+                    _status(message)
+                    return
             else:
-                message = message or "Risultati AI verificati."
+                verified = _discover(intent, _art_key()) if intent.get("year") else []
+                key = (_settings().get("openrouter_key") or "").strip()
+                suggestions, message = [], ""
+                if key and len(verified) < 4:
+                    try:
+                        suggestions, message = _ai_request(prompt, key, intent)
+                    except RuntimeError as err:
+                        if not verified:
+                            raise
+                        message = "Catalogo verificato."
+                elif not key and not verified:
+                    _status("Imposta la chiave OpenRouter nelle impostazioni della skin.")
+                    return
+                progress.update(65, "Lucent AI", "Verifico genere, anno e copertine...")
+                rows = _add_artwork(verified + suggestions, intent)
+                if intent.get("year"):
+                    label = GENRE_IT.get(intent.get("genre"), "qualsiasi genere")
+                    message = "Risultati verificati · %s · %s" % (label, intent["year"])
+                else:
+                    message = message or "Risultati AI verificati."
         if not rows:
             _fill("result", [])
             _put("ai.home.mode", "suggestions")
