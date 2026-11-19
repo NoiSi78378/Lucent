@@ -600,6 +600,18 @@
             <texture colordiffuse="text">icons/list.png</texture>
             <visible>Skin.HasSetting(lucent.touch) + !ControlGroup(9050).HasFocus</visible>
         </control>
+
+        <!-- Touch only: accessible Back button while browsing any media list. -->
+        <control type="button" id="9048">
+            <left>1680</left><top>996</top><width>196</width><height>60</height>
+            <label>$LOCALIZE[31909]</label>
+            <font>font12_bold</font><align>center</align><aligny>center</align>
+            <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+            <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+            <texturenofocus border="30" colordiffuse="D9141824">pill60.png</texturenofocus>
+            <onclick>Action(Back)</onclick>
+            <visible>Skin.HasSetting(lucent.touch) + !ControlGroup(9050).HasFocus</visible>
+        </control>
         <!-- Side menu with view and window options: press left (or up) in a list -->
         <control type="group">
             <visible allowhiddenfocus="true">ControlGroup(9050).HasFocus</visible>
@@ -667,6 +679,18 @@
                     <onback condition="Control.IsVisible(55)">55</onback>
                     <onback condition="Control.IsVisible(56)">56</onback>
                     <onback condition="Control.IsVisible(57)">57</onback><onback condition="Control.IsVisible(54)">54</onback><onback condition="Control.IsVisible(70)">70</onback><onback condition="Control.IsVisible(71)">71</onback><onback condition="Control.IsVisible(72)">72</onback><onback condition="Control.IsVisible(73)">73</onback><onback condition="Control.IsVisible(74)">74</onback><onback condition="Control.IsVisible(75)">75</onback><onback condition="Control.IsVisible(76)">76</onback><onback condition="Control.IsVisible(77)">77</onback><onback condition="Control.IsVisible(78)">78</onback><onback condition="Control.IsVisible(79)">79</onback><onback condition="Control.IsVisible(80)">80</onback><onback condition="Control.IsVisible(81)">81</onback><onback condition="Control.IsVisible(82)">82</onback><onback condition="Control.IsVisible(83)">83</onback><onback condition="Control.IsVisible(84)">84</onback><onback condition="Control.IsVisible(85)">85</onback><onback condition="Control.IsVisible(86)">86</onback><onback condition="Control.IsVisible(87)">87</onback>
+
+                <!-- Touch only: close side drawer without using a physical Back key. -->
+                <control type="button" id="9046">
+                    <width>200</width><height>66</height>
+                    <label>$LOCALIZE[31908]</label>
+                    <font>font12_bold</font><align>center</align><aligny>center</align>
+                    <textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+                    <texturefocus border="30" colordiffuse="focus">pill60.png</texturefocus>
+                    <texturenofocus border="30" colordiffuse="card">pill60.png</texturenofocus>
+                    <onclick>Action(Back)</onclick>
+                    <visible>Skin.HasSetting(lucent.touch)</visible>
+                </control>
                 <control type="label" id="9051">
                     <width>556</width>
                     <height>58</height>
