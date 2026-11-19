@@ -47,7 +47,9 @@ def _valid_today(episode, today=None):
             break
         except ValueError:
             continue
-    return day is None or day <= date.fromisoformat(today) if today else day is None or day <= date.today()
+    if day is None:
+        return True
+    return day <= (date.fromisoformat(today) if today else date.today())
 
 
 def _episode_order(ep):
@@ -139,8 +141,7 @@ def _show_context(xbmc):
 def _matches_show(show, titles, identifiers):
     ids = show.get("uniqueid") or {}
     for key, incoming in identifiers.items():
-        actual = str(ids.get(key) or show.get("imdbnumber") if key == "imdb"
-                     else ids.get(key) or "")
+        actual = str(ids.get(key) or (show.get("imdbnumber") if key == "imdb" else "") or "")
         if actual and incoming and actual != incoming:
             return False
     # An explicit matching ID is stronger than localized display names.
@@ -247,7 +248,8 @@ def _row(xbmc, control_id, index, season_hint=0):
         file_path = get("FileNameAndPath")
         playable = get("Property(IsPlayable)").lower() in ("1", "true")
         is_folder = _label(xbmc, stem + "IsFolder").lower() in ("1", "true")
-        if not showname or is_folder or not (file_path or playable):
+        pattern = re.search(r"(?:s\d{1,2}e\d{1,3}|\b\d{1,2}x\d{1,3}\b)", title, re.IGNORECASE)
+        if is_folder or not (file_path or playable) or not (showname or pattern):
             return None
     return {"index": index, "title": title,
             "season": season, "episode": episode,
@@ -268,8 +270,14 @@ def _season_tabs(xbmc):
     tabs = []
     for i in range(total):
         stem = f"Container(56).ListItemAbsolute({i})."
+        item = _gui_listitem(56, i)
         name = _label(xbmc, stem + "Label")
-        season = _integer(_label(xbmc, stem + "Season"))
+        if not name and item:
+            try:
+                name = item.getLabel() or ""
+            except Exception:
+                pass
+        season = _integer(_label(xbmc, stem + "Season") or _tag_value(item, "getSeason"))
         if not season:
             match = re.search(r"(?:stagione|season)\s*(\d+)", name, re.IGNORECASE)
             season = int(match.group(1)) if match else 0
