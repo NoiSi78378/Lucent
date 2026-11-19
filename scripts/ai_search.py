@@ -53,45 +53,89 @@ def _save_key(key):
     os.replace(tmp, KEY_FILE)
 
 def _ai_request(prompt, key):
-    data = {
-        "model": MODEL,
-        "messages": [
-            {"role": "system", "content": (
-                "Sei Lucent, consulente di film e serie TV. Rispondi SEMPRE in italiano e SOLO "
-                "con JSON valido: {\"message\":\"breve spiegazione\","
-                "\"titles\":[{\"title\":\"titolo reale\",\"year\":2024,"
-                "\"type\":\"movie o tvshow\",\"reason\":\"perché consigliarlo\"}]}. "
-                "Se la persona chiede un titolo preciso, restituisci quel titolo. Se chiede "
-                "consigli, suggerisci al massimo 5 titoli di opere realmente esistenti, senza "
-                "inventare date o disponibilità. NON affermare mai di aver verificato "
-                "Stream4Me, siti streaming o programmi TV. NON includere URL o comandi."
+    system_prompt = (
+        "Sei Lucent, esperto di film e serie TV. Rispondi in italiano con SOLO "
+        "un oggetto JSON valido con chiavi message (breve testo) e titles (array "
+        "di massimo 5 elementi). Ogni elemento ha title (nome esatto di un'opera "
+        "reale), year (anno, se noto), type (movie o tvshow), reason (breve motivo). "
+        "Per un titolo preciso restituisci quello. Per consigli proponi opere "
+        "reali e pertinenti. Non inventare disponibilità su Stream4Me o in TV. "
+        "Non includere link, comandi o altri campi."
+    )
+    last_reason = "empty"
+    for attempt in range(2):
+        # First use JSON-constrained routing; fall back to a simpler prompt if
+        # the free provider does not support JSON mode or emits empty text.
+        messages = [
+            {"role": "system", "content": system_prompt if attempt == 0 else (
+                "Consiglia fino a cinque film o serie reali in italiano. "
+                "Rispondi SOLO con una lista numerata di titoli, uno per riga. "
+                "Esempio: 1. Severance\n2. Dark\n3. Fallout. Non aggiungere link."
             )},
             {"role": "user", "content": prompt},
-        ],
-        "max_tokens": 700, "temperature": 0.35
-    }
-    request = urllib.request.Request(
-        API_URL, data=json.dumps(data, ensure_ascii=False).encode("utf-8"),
-        headers={"Authorization": "Bearer " + key, "Content-Type": "application/json",
-                 "HTTP-Referer": "https://github.com/NoiSi78378/Lucent-ITA",
-                 "X-Title": "Lucent AI Search"},
-        method="POST")
-    try:
-        with urllib.request.urlopen(request, timeout=19) as reply:
-            output = json.loads(reply.read(300000).decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        if error.code == 429:
-            raise RuntimeError("Modello gratuito occupato o limite OpenRouter raggiunto.") from None
-        if error.code in (401, 403):
-            raise RuntimeError("Chiave OpenRouter non valida o senza accesso.") from None
-        raise RuntimeError("OpenRouter HTTP " + str(error.code)) from None
-    except (urllib.error.URLError, TimeoutError):
-        raise RuntimeError("OpenRouter non raggiungibile. Riprova o cerca direttamente.") from None
-    try:
-        content = output["choices"][0]["message"]["content"]
-        return parse_ai(content)
-    except (KeyError, IndexError, TypeError, ValueError):
-        raise RuntimeError("Il modello non ha restituito titoli leggibili. Riprova.") from None
+        ]
+        data = {
+            "model": MODEL, "messages": messages,
+            "max_tokens": 1600 if attempt == 0 else 1100,
+            "temperature": 0.25,
+        }
+        if attempt == 0:
+            data["response_format"] = {"type": "json_object"}
+            data["provider"] = {"require_parameters": True}
+        request = urllib.request.Request(
+            API_URL, data=json.dumps(data, ensure_ascii=False).encode("utf-8"),
+            headers={"Authorization": "Bearer " + key, "Content-Type": "application/json",
+                     "HTTP-Referer": "https://github.com/NoiSi78378/Lucent-ITA",
+                     "X-Title": "Lucent AI Search"},
+            method="POST")
+        try:
+            with urllib.request.urlopen(request, timeout=22) as reply:
+                output = json.loads(reply.read(300000).decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            if attempt == 0 and error.code in (400, 422):
+                # A free provider may reject the structured-output parameter.
+                last_reason = "format"
+                continue
+            if error.code == 429:
+                raise RuntimeError("Modello gratuito occupato o limite OpenRouter raggiunto.") from None
+            if error.code in (401, 403):
+                raise RuntimeError("Chiave OpenRouter non valida o senza accesso.") from None
+            if error.code == 402:
+                raise RuntimeError("OpenRouter richiede credito o non consente questa richiesta.") from None
+            raise RuntimeError("OpenRouter HTTP " + str(error.code)) from None
+        except (urllib.error.URLError, TimeoutError, OSError):
+            raise RuntimeError("OpenRouter non raggiungibile. Riprova o cerca direttamente.") from None
+
+        if not isinstance(output, dict):
+            last_reason = "invalid-response"
+            continue
+        if output.get("error"):
+            # Do not expose remote error payloads, prompt, or API key in Kodi logs.
+            raise RuntimeError("OpenRouter ha restituito un errore del servizio.")
+        choices = output.get("choices") or []
+        choice = choices[0] if isinstance(choices, list) and choices else {}
+        if not isinstance(choice, dict):
+            choice = {}
+        message = choice.get("message") or {}
+        if not isinstance(message, dict):
+            message = {}
+        try:
+            rows, summary = parse_ai(message.get("content"))
+            if rows:
+                return rows, summary
+            last_reason = "no-titles"
+        except (ValueError, TypeError):
+            last_reason = "unreadable"
+        # Log metadata only: never include the response, user query or API key.
+        xbmc.log("[skin.lucent] AI response attempt=%d result=%s finish=%s model=%s" % (
+            attempt + 1, last_reason, str(choice.get("finish_reason") or "?")[:25],
+            str(output.get("model") or "?")[:75]), xbmc.LOGWARNING)
+
+    raise RuntimeError(
+        "OpenRouter ha risposto senza titoli utilizzabili dopo due tentativi. "
+        "Prova un'altra richiesta o un modello diverso."
+    )
+
 
 def _live_epg(titles):
     """Read ONLY current Kodi PVR EPG, never infer live schedules from a model."""

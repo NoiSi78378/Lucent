@@ -17,6 +17,19 @@ rows, message = parse_ai('z ```json\n{"message":"Ecco","titles":[{"title":"John 
 assert len(rows) == 2 and rows[1]["kind"] == "serie" and rows[0]["year"] == "2014"
 assert message == "Ecco"
 assert rows[0]["title"] == "John Wick" and rows[1]["title"] == "Silo"
+# Free-router regressions: JSON arrays, localized keys and plain numbered titles.
+rows, _ = parse_ai('[{"title":"Severance","type":"tvshow"},{"titolo":"Dark","type":"serie"}]')
+assert [x["title"] for x in rows] == ["Severance", "Dark"]
+assert all(x["kind"] == "serie" for x in rows)
+rows, _ = parse_ai('{"messaggio":"Prova queste","consigli":[], "titoli":[{"titolo":"Fallout","type":"tv"}]}')
+assert len(rows) == 1 and rows[0]["title"] == "Fallout"
+rows, _ = parse_ai("Ecco delle serie simili:\n1. **Severance** - mistero\n2. Dark (2017)\n3. Fallout: fantascienza")
+assert [x["title"] for x in rows] == ["Severance", "Dark", "Fallout"]
+rows, _ = parse_ai('Risultati:\n- Andor\n- Black Mirror')
+assert [x["title"] for x in rows] == ["Andor", "Black Mirror"]
+for invalid in ("", "   ", None, "Nessuna idea disponibile."):
+    try: parse_ai(invalid); raise AssertionError("invalid AI response accepted")
+    except ValueError: pass
 assert matches_live("Il padrino", "Il Padrino (film)") and not matches_live("azione", "Film d'azione")
 assert is_default_search("icons/search.png","VideoLibrary.Search")
 assert not is_default_search("icons/search.png","ActivateWindow(Settings)")
