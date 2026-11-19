@@ -488,9 +488,32 @@ def _play_directory_entry(xbmc, chosen, selected_season, selected_path):
         return True
 
     if str(chosen.get("filetype") or "") == "directory":
-        # A folder cannot be passed to Player.Open as though it were an
-        # episode file. Open the actual source directory instead.
+        # A plugin may expose the *episode itself* as a directory (for source
+        # selection). Prefer selecting the original row, not treating the URL
+        # as a movie file.
         if target.startswith(("plugin://", "videodb://", "library://")):
+            for season, tab_index in _season_tabs(xbmc):
+                if season == chosen["season"]:
+                    xbmc.executebuiltin("Control.SetFocus(56,%d,absolute)" % tab_index)
+                    xbmc.sleep(350)
+                    for _ in range(7):
+                        try:
+                            if xbmc.getCondVisibility("Container(5601).IsUpdating"):
+                                xbmc.sleep(200)
+                                continue
+                        except Exception:
+                            pass
+                        break
+                    count = _integer(_label(xbmc, "Container(5601).NumItems"))
+                    if count > chosen["index"]:
+                        xbmc.executebuiltin(
+                            "Control.SetFocus(5601,%d,absolute)" % chosen["index"])
+                        xbmc.sleep(150)
+                        xbmc.executebuiltin("Action(Select)")
+                        LAST_DIAGNOSTIC["step"] = "selected-other-season"
+                        return True
+            # When a remote script cannot see GUI list metadata, use the
+            # *actual episode folder* as a safe navigation target.
             xbmc.executebuiltin('ActivateWindow(Videos,"%s",return)' % target.replace('"', '%22'))
             LAST_DIAGNOSTIC["step"] = "episode-folder"
             return True
