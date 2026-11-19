@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Lucent touch navigation: 80x80 hit area with consistent back action.
+     Hidden for remotes. Kodi's Back action honors the window stack. -->
+<includes>
+    <include name="LucentTouchNavigation">
+        <param name="left">12</param>
+        <param name="top">28</param>
+        <param name="icon">icons/arrow_left.png</param>
+        <param name="label">$LOCALIZE[31909]</param>
+        <definition>
+            <control type="group">
+                <left>$PARAM[left]</left>
+                <top>$PARAM[top]</top>
+                <width>80</width>
+                <height>80</height>
+                <visible>Skin.HasSetting(lucent.touch)</visible>
+                <control type="button" id="9087">
+                    <left>0</left><top>0</top><width>80</width><height>80</height>
+                    <label>$PARAM[label]</label>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <texturefocus border="30" colordiffuse="F0323B4D">pill60.png</texturefocus>
+                    <texturenofocus border="30" colordiffuse="C018202B">pill60.png</texturenofocus>
+                    <onclick>Action(Back)</onclick>
+                </control>
+                <control type="image">
+                    <left>23</left><top>23</top><width>34</width><height>34</height>
+                    <aspectratio>keep</aspectratio>
+                    <texture colordiffuse="text">$PARAM[icon]</texture>
+                </control>
+            </control>
+        </definition>
+    </include>
+</includes>

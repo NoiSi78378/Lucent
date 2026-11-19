@@ -175,5 +175,7 @@
                 <visible>Control.IsVisible(2)</visible>
             </control>
         </control>
+        <!-- Touch: consistent Back navigation without changing remote focus. -->
+        <include content="LucentTouchNavigation"/>
     </controls>
 </window>

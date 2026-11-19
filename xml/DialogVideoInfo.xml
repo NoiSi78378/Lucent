@@ -2333,5 +2333,7 @@
         </control>
 
         <include>Clock</include>
+        <!-- Touch: consistent Back navigation without changing remote focus. -->
+        <include content="LucentTouchNavigation"/>
     </controls>
 </window>

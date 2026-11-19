@@ -50,7 +50,7 @@
             <control type="label" id="2">
                 <left>760</left>
                 <top>36</top>
-                <width>190</width>
+                <width>116</width>
                 <height>56</height>
                 <align>right</align>
                 <font>font10</font>
@@ -285,6 +285,11 @@
                 <label>$LOCALIZE[222]</label>
             </control>
             </control>
+            <!-- Touch: dismiss this chooser inside the panel. -->
+            <include content="LucentTouchNavigation">
+                <param name="left">890</param><param name="top">18</param>
+                <param name="icon">icons/close.png</param><param name="label">$LOCALIZE[31908]</param>
+            </include>
         </control>
         <control type="group">
             <left>1100</left>

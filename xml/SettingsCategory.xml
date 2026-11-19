@@ -145,5 +145,7 @@
         </control>
 
         <include content="SettingTemplates"><param name="width">1200</param><param name="cpos">1110</param></include>
+        <!-- Touch: consistent Back navigation without changing remote focus. -->
+        <include content="LucentTouchNavigation"/>
     </controls>
 </window>

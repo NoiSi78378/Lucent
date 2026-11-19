@@ -1176,5 +1176,7 @@
                 <visible>String.IsEqual(Container(9000).ListItem.Property(cat),about)</visible>
             </control>
         </control>
+        <!-- Touch: consistent Back navigation without changing remote focus. -->
+        <include content="LucentTouchNavigation"/>
     </controls>
 </window>

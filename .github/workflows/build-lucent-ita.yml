@@ -25,6 +25,7 @@ jobs:
         run: |
           python tools/test_touch_mode.py
           python tools/test_touch_home.py
+          python tools/test_touch_nav.py
       - name: Check Italian strings and XML
         run: |
           python tools/audit_italian.py

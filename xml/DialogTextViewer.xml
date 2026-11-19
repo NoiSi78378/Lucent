@@ -17,7 +17,7 @@
         <control type="label" id="1">
             <left>56</left>
             <top>34</top>
-            <width>1488</width>
+            <width>1408</width>
             <height>56</height>
             <font>font32</font>
             <label></label>
@@ -44,6 +44,11 @@
                 <top>134</top>
                 <height>770</height>
             </control>
+            <!-- Touch: close button inside the modal header. -->
+            <include content="LucentTouchNavigation">
+                <param name="left">1500</param><param name="top">18</param>
+                <param name="icon">icons/close.png</param><param name="label">$LOCALIZE[31908]</param>
+            </include>
         </control>
     </controls>
 </window>

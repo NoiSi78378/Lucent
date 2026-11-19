@@ -44,6 +44,7 @@ jobs:
           python tools/test_continue_directory.py
           python tools/test_touch_mode.py
           python tools/test_touch_home.py
+          python tools/test_touch_nav.py
       - name: Build independent Kodi skin
         run: |
           mkdir -p "$RUNNER_TEMP/package/skin.lucent.ita"

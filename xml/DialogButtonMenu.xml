@@ -20,7 +20,7 @@
             <control type="label">
                 <left>48</left>
                 <top>32</top>
-                <width>504</width>
+                <width>422</width>
                 <height>56</height>
                 <font>font32</font>
                 <label>$LOCALIZE[31009]</label>
@@ -215,6 +215,11 @@
                     <visible>[true] + !Skin.HasSetting(lucent.pm.hide.settings)</visible>
                 </control>
             </control>
+            <!-- Touch: close button inside the modal header. -->
+            <include content="LucentTouchNavigation">
+                <param name="left">504</param><param name="top">18</param>
+                <param name="icon">icons/close.png</param><param name="label">$LOCALIZE[31908]</param>
+            </include>
         </control>
     </controls>
 </window>

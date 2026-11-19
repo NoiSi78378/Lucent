@@ -1210,5 +1210,7 @@
 <control type="label"><left>150</left><top>1020</top><width>700</width><height>36</height><font>font_tiny</font><textcolor>text5</textcolor><label>$INFO[Window.Property(sport.t.hint_all)]</label><visible>String.IsEqual(Window.Property(sport.view),all)</visible></control>
 </control>
 </control>
+<!-- Touch: accessible Back without a physical key. -->
+<include content="LucentTouchNavigation"/>
 </controls>
 </window>

@@ -254,5 +254,7 @@
             <visible>Container.IsUpdating + Integer.IsEqual(Container.NumItems,0)</visible>
             <include content="Spinner"><param name="size">64</param></include>
         </control>
+        <!-- Touch: consistent Back navigation without changing remote focus. -->
+        <include content="LucentTouchNavigation"/>
     </controls>
 </window>

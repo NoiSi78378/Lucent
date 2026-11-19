@@ -202,5 +202,7 @@
         </control>
         <include content="AddonSettingTemplates"/>
         <include content="AddonCategoryTemplate"/>
+        <!-- Touch: Back in the unused right margin to avoid covering content. -->
+        <include content="LucentTouchNavigation"><param name="left">1816</param></include>
     </controls>
 </window>

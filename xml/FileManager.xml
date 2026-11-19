@@ -322,5 +322,7 @@
                 <visible>Control.IsVisible(21)</visible>
             </control>
         </control>
+    <!-- Touch: accessible Back without a physical key. -->
+    <include content="LucentTouchNavigation"/>
     </controls>
 </window>

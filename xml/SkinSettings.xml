@@ -762,5 +762,7 @@
                 <height>760</height>
             </control>
         </control>
+        <!-- Touch: consistent Back navigation without changing remote focus. -->
+        <include content="LucentTouchNavigation"/>
     </controls>
 </window>
