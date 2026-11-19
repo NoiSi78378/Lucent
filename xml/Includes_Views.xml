@@ -3343,7 +3343,7 @@
                         <texturenofocus border="32" colordiffuse="glass_strong">pill64.png</texturenofocus>
                         <label>▶  $LOCALIZE[31565]</label>
                         <onfocus>RunScript(special://skin/scripts/agenda.py,state56)</onfocus>
-                        <onclick>RunScript(special://skin/scripts/info.py,resumeshow,$ESCINFO[Container(56).ListItem.TVShowTitle],$ESCINFO[Container.FolderPath],$ESCINFO[Container(56).ListItem.FolderPath],$ESCINFO[Container(56).ListItem.TvShowDBID],$ESCINFO[Container.ShowTitle],$ESCINFO[Container(56).ListItem.Season])</onclick>
+                        <onclick>RunScript(special://skin/scripts/info.py,resumeshow,$ESCINFO[Container(56).ListItem.TVShowTitle],$ESCINFO[Container.FolderPath],$ESCINFO[Container(56).ListItem.FolderPath],$ESCINFO[Container(56).ListItem.TvShowDBID],$ESCINFO[Container.ShowTitle],$ESCINFO[Container(56).ListItem.Season],$ESCINFO[Container(56).ListItem.Label],$ESCINFO[Container(56).ListItem.Property(WatchedEpisodes)])</onclick>
                     </control>
                     <control type="button" id="5612">
                         <onback>SetFocus(56)</onback>
