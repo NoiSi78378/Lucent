@@ -368,6 +368,8 @@ def sync():
         set_string(name + ".label", tr(dict(options).get(skin_string(name), options[0][1])))
     watched_label()
     osd_label()
+    import touchmode
+    set_string("lucent.touch.mode.label", touchmode.label())
     osd_order_label()
 
 
@@ -467,7 +469,8 @@ def reset_all():
     if xbmcgui.Dialog().yesno(HEADING, tr(("Restore all skin settings? Your menu and widgets stay as they are.",
                                            "Alle skin-instellingen herstellen? Je menu en widgets blijven zoals ze zijn."))):
         for name in ("nuvio.accent", "nuvio.accent.label", "nuvio.landscape", "nuvio.watched", "lucent.watched.colour", "lucent.watched.size", "nuvio.glow",
-                     "nuvio.pauseinfo", "nuvio.posterfocus", "nuvio.trailer.delay", "lucent.osdclose") + tuple(f"lucent.osd.slot{n}" for n in range(1, 9)):
+                     "nuvio.pauseinfo", "nuvio.posterfocus", "nuvio.trailer.delay", "lucent.osdclose",
+                     "lucent.touch.mode", "lucent.touch.mode.label") + tuple(f"lucent.osd.slot{n}" for n in range(1, 9)):
             set_string(name, "")
         for name in ("nuvio.amoled", "nuvio.posterlabels.hide", "nuvio.sideicons.hide", "nuvio.fulldate",
                      "nuvio.fullbackdrop", "nuvio.info.hideratings", "nuvio.info.hidetrailer", "nuvio.hideclock",
@@ -475,6 +478,7 @@ def reset_all():
             set_bool(name, False)
         kodi_set("lookandfeel.skinzoom", 0)
         apply_colours()
+        __import__("touchmode").apply()
         sync()
 
 
@@ -531,6 +535,7 @@ if __name__ == "__main__":
     what = sys.argv[1] if len(sys.argv) > 1 else "sync"
     {
         "sync": sync, "accent": pick_accent, "amoled": toggle_amoled, "zoom": pick_zoom,
+        "touchmode": lambda: __import__("touchmode").pick(),
         "ssdim": toggle_dim, "sstime": pick_time, "sslevel": pick_level, "logos": explain_logos,
         "landscape": lambda: pick_option("nuvio.landscape", LANDSCAPE, tr(("Landscape posters", "Liggende posters"))),
         "watched": pick_watched,
