@@ -44,4 +44,36 @@ startup = (r / "scripts/startup.py").read_text(encoding="utf-8")
 assert 'ai_search.install_menu' in startup
 home_source = (r / "xml/Home.xml").read_text(encoding="utf-8")
 assert "ai_search.py,setupmenu" in home_source
-print("Lucent AI: verified Stream4Me route, URL encoding, JSON parsing, EPG title matching, UI and menu")
+
+# Artwork and visual contracts: no extra key required, exact-title matching.
+from ai_art_core import choose_record, tmdb_art, catalogue_art, metadata_label, safe_image
+assert choose_record([{"name":"Silo", "first_air_date":"2023-05-05"}], "Silo")["name"] == "Silo"
+assert choose_record([{"name":"Snowpiercer", "first_air_date":"2020-01-01"},
+                      {"name":"Snowpiercer", "first_air_date":"2013-01-01"}],
+                     "Snowpiercer", "2020")["first_air_date"].startswith("2020")
+assert choose_record([{"name":"Silo 2"}], "Silo") is None
+assert choose_record([{"original_name":"La casa di carta", "name":"Money Heist"}],
+                     "La casa di carta")
+assert tmdb_art({"poster_path":"/abc123.jpg", "backdrop_path":"/xyz789.jpg",
+                 "first_air_date":"2023-01-01", "vote_average":8.24}) == {
+    "poster":"https://image.tmdb.org/t/p/w342/abc123.jpg",
+    "backdrop":"https://image.tmdb.org/t/p/w780/xyz789.jpg",
+    "year":"2023", "rating":"8.2"}
+assert catalogue_art({"poster":"https://images.metahub.space/poster/test",
+                      "name":"Silo", "year":"2023", "imdbRating":"8.1"},
+                     "cinemeta")["poster"].startswith("https://")
+assert catalogue_art({"name":"Silo", "image":{"medium":"https://static.tvmaze.com/i.jpg"},
+                      "premiered":"2023-01-01"}, "tvmaze")["year"] == "2023"
+assert not safe_image("javascript:alert(1)") and not safe_image("http://not-secure.test/img")
+assert metadata_label({"kind":"serie","year":"2023","rating":"8.2"}) == "SERIE TV  ·  2023  ·  ★ 8.2"
+ai_ui = r / "xml/Lucent_AISearch.xml"
+xml_source = ai_ui.read_text(encoding="utf-8")
+assert '<orientation>horizontal</orientation>' in xml_source
+assert "ListItem.Art(poster)" in xml_source and "Container(50).ListItem.Property(reason)" in xml_source
+assert "rr20_edge.png" in xml_source and "mask_poster.png" in xml_source
+assert not any(int(c.findtext("width","0")) > 1920 for c in ui.iter("control") if c.find("width") is not None and c.findtext("width","0").isdigit())
+script = (r/"scripts/ai_search.py").read_text(encoding="utf-8")
+assert "_add_artwork(rows)" in script and 'item.setArt(artwork)' in script
+assert "stream4me_url(title)" in script and "self.setFocusId(50)" in script
+
+print("Lucent AI: verified search, posters, exact metadata and horizontal cards")

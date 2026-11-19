@@ -89,43 +89,98 @@
             <font>font12</font><textcolor>text3</textcolor>
             <label>$INFO[Window.Property(ai.status)]</label>
         </control>
+        <!-- Cinematic poster row: Kodi ListItem.Art(poster) uses asynchronously loaded artwork. -->
         <control type="list" id="50">
-            <left>142</left><top>525</top><width>1635</width><height>420</height>
-            <orientation>vertical</orientation>
-            <scrolltime tween="cubic" easing="out">180</scrolltime>
+            <left>142</left><top>522</top><width>1635</width><height>365</height>
+            <orientation>horizontal</orientation>
+            <scrolltime tween="cubic" easing="out">200</scrolltime>
             <onup>12</onup><ondown>50</ondown>
-            <itemlayout width="1635" height="100">
+            <itemlayout width="322" height="362">
                 <control type="image">
-                    <left>20</left><top>15</top><width>68</width><height>68</height>
-                    <aspectratio>keep</aspectratio><texture>$INFO[ListItem.Icon]</texture>
+                    <left>4</left><top>3</top><width>310</width><height>355</height>
+                    <texture border="26" colordiffuse="card">rr20.png</texture>
+                </control>
+                
+                <control type="image">
+                    <left>65</left><top>14</top><width>190</width><height>266</height>
+                    <texture border="20" colordiffuse="glass_strong">rr20.png</texture>
+                </control>
+                <control type="image">
+                    <left>133</left><top>113</top><width>54</width><height>54</height>
+                    <aspectratio>keep</aspectratio>
+                    <texture colordiffuse="text3">$INFO[ListItem.Icon]</texture>
+                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                </control>
+                <control type="image">
+                    <left>65</left><top>14</top><width>190</width><height>266</height>
+                    <aspectratio>scale</aspectratio>
+                    <texture diffuse="mask_poster.png" background="true">$INFO[ListItem.Art(poster)]</texture>
+                    <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>110</left><top>12</top><width>1470</width><height>40</height>
-                    <font>font_label</font><textcolor>text</textcolor><label>$INFO[ListItem.Label]</label>
+                    <left>16</left><top>290</top><width>290</width><height>35</height>
+                    <font>font_label_bold</font><textcolor>text</textcolor>
+                    <align>center</align><aligny>center</aligny><scroll>true</scroll>
+                    <label>$INFO[ListItem.Label]</label>
                 </control>
                 <control type="label">
-                    <left>110</left><top>52</top><width>1470</width><height>34</height>
-                    <font>font12</font><textcolor>text3</textcolor><label>$INFO[ListItem.Label2]</label>
+                    <left>17</left><top>324</top><width>288</width><height>29</height>
+                    <font>font12</font><textcolor>text3</textcolor>
+                    <align>center</align><aligny>center</aligny><scroll>true</scroll>
+                    <label>$INFO[ListItem.Label2]</label>
                 </control>
             </itemlayout>
-            <focusedlayout width="1635" height="100">
+            <focusedlayout width="322" height="362">
                 <control type="image">
-                    <left>0</left><top>3</top><width>1630</width><height>94</height>
-                    <texture border="24" colordiffuse="focus">rr20.png</texture>
+                    <left>4</left><top>3</top><width>310</width><height>355</height>
+                    <texture border="26" colordiffuse="glass_strong">rr20.png</texture>
                 </control>
                 <control type="image">
-                    <left>20</left><top>15</top><width>68</width><height>68</height>
-                    <aspectratio>keep</aspectratio><texture>$INFO[ListItem.Icon]</texture>
+                    <left>3</left><top>2</top><width>312</width><height>357</height>
+                    <texture border="26" colordiffuse="focus">rr20_edge.png</texture>
+                </control>
+                <control type="image">
+                    <left>65</left><top>14</top><width>190</width><height>266</height>
+                    <texture border="20" colordiffuse="glass_strong">rr20.png</texture>
+                </control>
+                <control type="image">
+                    <left>133</left><top>113</top><width>54</width><height>54</height>
+                    <aspectratio>keep</aspectratio>
+                    <texture colordiffuse="text3">$INFO[ListItem.Icon]</texture>
+                    <visible>String.IsEmpty(ListItem.Art(poster))</visible>
+                </control>
+                <control type="image">
+                    <left>65</left><top>14</top><width>190</width><height>266</height>
+                    <aspectratio>scale</aspectratio>
+                    <texture diffuse="mask_poster.png" background="true">$INFO[ListItem.Art(poster)]</texture>
+                    <visible>!String.IsEmpty(ListItem.Art(poster))</visible>
                 </control>
                 <control type="label">
-                    <left>110</left><top>12</top><width>1470</width><height>40</height>
-                    <font>font_label</font><textcolor>on_focus</textcolor><label>$INFO[ListItem.Label]</label>
+                    <left>16</left><top>290</top><width>290</width><height>35</height>
+                    <font>font_label_bold</font><textcolor>text</textcolor>
+                    <align>center</align><aligny>center</aligny><scroll>true</scroll>
+                    <label>$INFO[ListItem.Label]</label>
                 </control>
                 <control type="label">
-                    <left>110</left><top>52</top><width>1470</width><height>34</height>
-                    <font>font12</font><textcolor>on_focus</textcolor><label>$INFO[ListItem.Label2]</label>
+                    <left>17</left><top>324</top><width>288</width><height>29</height>
+                    <font>font12</font><textcolor>text</textcolor>
+                    <align>center</align><aligny>center</aligny><scroll>true</scroll>
+                    <label>$INFO[ListItem.Label2]</label>
                 </control>
             </focusedlayout>
+        </control>
+        <!-- One clean, full-width detail line follows the focused poster. -->
+        <control type="image">
+            <left>142</left><top>903</top><width>1635</width><height>62</height>
+            <texture border="22" colordiffuse="glass_strong">rr20.png</texture>
+            <visible>Control.HasFocus(50)</visible>
+        </control>
+        <control type="label">
+            <left>173</left><top>911</top><width>1580</width><height>46</height>
+            <font>font12</font><textcolor>text</textcolor>
+            <aligny>center</aligny><scroll>true</scroll>
+            <label>$INFO[Container(50).ListItem.Property(reason)]</label>
+            <visible>Control.HasFocus(50)</visible>
         </control>
         <control type="label">
             <left>145</left><top>974</top><width>1590</width><height>34</height>

@@ -9,7 +9,9 @@ import json
 import os
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
+import time
 
 import xbmc
 import xbmcgui
@@ -17,6 +19,7 @@ import xbmcvfs
 
 sys.path.insert(0, os.path.dirname(__file__))
 from ai_search_core import is_default_search, matches_live, parse_ai, stream4me_url
+from ai_art_core import choose_record, catalogue_art, tmdb_art, normalize, metadata_label
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "openrouter/free"
@@ -137,6 +140,155 @@ def _ai_request(prompt, key):
     )
 
 
+
+# Catalogue endpoints provide artwork only, never streaming availability.
+# Kodi and TMDb are preferred; Cinemeta and TVmaze work without extra keys.
+ART_CACHE = os.path.join(KEY_DIR, "art_cache.json")
+ART_TTL = 14 * 86400
+NO_ART_TTL = 24 * 3600
+
+
+def _read_art_cache():
+    try:
+        with open(ART_CACHE, "r", encoding="utf-8") as handle:
+            result = json.load(handle)
+            return result if isinstance(result, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_art_cache(cache):
+    try:
+        os.makedirs(KEY_DIR, exist_ok=True)
+        now = time.time()
+        fresh = {k: v for k, v in cache.items()
+                 if isinstance(v, dict) and now - v.get("t", 0) < ART_TTL}
+        fresh = dict(sorted(fresh.items(), key=lambda pair: pair[1].get("t", 0))[-350:])
+        tmp = ART_CACHE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as handle:
+            json.dump(fresh, handle, ensure_ascii=False)
+        os.replace(tmp, ART_CACHE)
+    except (OSError, ValueError, TypeError):
+        xbmc.log("[skin.lucent] AI artwork cache unavailable", xbmc.LOGDEBUG)
+
+
+def _json_art(url, timeout=3):
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "Lucent-ITA/AI-Search"})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read(200000).decode("utf-8"))
+    except (urllib.error.HTTPError, urllib.error.URLError, OSError, ValueError, TimeoutError):
+        return {}
+
+
+def _art_key():
+    """Reuse the TMDb key of this skin; the OpenRouter key is unrelated."""
+    for path in ("special://profile/addon_data/skin.lucent/tmdb_key.txt",
+                 "special://profile/addon_data/skin.lucent.ita/tmdb_key.txt"):
+        try:
+            with xbmcvfs.File(path) as handle:
+                value = (handle.read() or "").strip()
+            if value:
+                return value
+        except (OSError, RuntimeError):
+            pass
+    return ""
+
+
+def _local_art(row):
+    """Use real Kodi library posters first, including Stream4Me library imports."""
+    media_type = "TVShows" if row.get("kind") == "serie" else "Movies"
+    method = "VideoLibrary.Get" + media_type
+    result_key = "tvshows" if media_type == "TVShows" else "movies"
+    try:
+        entries = _rpc(method, {
+            "filter": {"field": "title", "operator": "contains", "value": row["title"]},
+            "properties": ["title", "year", "art"],
+            "limits": {"start": 0, "end": 30}
+        }).get(result_key) or []
+        match = choose_record(entries, row["title"], row.get("year") or "")
+        if match:
+            art = match.get("art") or {}
+            return {"poster": art.get("poster") or art.get("thumb") or "",
+                    "backdrop": art.get("fanart") or "",
+                    "year": str(match.get("year") or ""), "rating": ""}
+    except (RuntimeError, ValueError, KeyError, TypeError):
+        pass
+    return {}
+
+
+def _remote_art(row, tmdb_key):
+    title = row["title"]
+    types = ("tv", "movie") if row.get("kind") == "serie" else ("movie", "tv")
+    for media in types:
+        if tmdb_key:
+            params = urllib.parse.urlencode(
+                {"api_key": tmdb_key, "query": title, "language": "it-IT", "page": 1})
+            data = _json_art("https://api.themoviedb.org/3/search/%s?%s" % (media, params))
+            match = choose_record(data.get("results") or [], title, row.get("year"))
+            if match:
+                art = tmdb_art(match)
+                if art.get("poster"):
+                    return art
+        kind = "series" if media == "tv" else "movie"
+        encoded = urllib.parse.quote(title, safe="")
+        data = _json_art("https://v3-cinemeta.strem.io/catalog/%s/top/search=%s.json" %
+                         (kind, encoded))
+        match = choose_record(data.get("metas") or [], title, row.get("year"))
+        if match:
+            art = catalogue_art(match, "cinemeta")
+            if art.get("poster"):
+                return art
+        if media == "tv":
+            data = _json_art("https://api.tvmaze.com/search/shows?q=" + encoded)
+            match = choose_record(data if isinstance(data, list) else [],
+                                  title, row.get("year"))
+            if match:
+                art = catalogue_art(match, "tvmaze")
+                if art.get("poster"):
+                    return art
+    return {}
+
+
+def _add_artwork(rows):
+    """Enrich at most five recommendations, with negative cache and time budget."""
+    if not rows:
+        return rows
+    cache = _read_art_cache()
+    now = time.time()
+    deadline = time.monotonic() + 21
+    key = _art_key()
+    changed = False
+    for row in rows[:5]:
+        if row.get("kind") == "live":
+            continue
+        lookup = row.get("kind", "") + "|" + normalize(row.get("title"))
+        if not lookup.strip("|"):
+            continue
+        art = _local_art(row)
+        if not art.get("poster"):
+            cached = cache.get(lookup) or {}
+            cached_art = cached.get("art") or {}
+            ttl = ART_TTL if cached_art.get("poster") else NO_ART_TTL
+            if now - cached.get("t", 0) < ttl:
+                art = cached_art
+            elif time.monotonic() < deadline:
+                art = _remote_art(row, key)
+                cache[lookup] = {"t": now, "art": art}
+                changed = True
+        if art.get("poster"):
+            row["poster"] = art["poster"]
+        if art.get("backdrop"):
+            row["backdrop"] = art["backdrop"]
+        if art.get("year"):
+            row["year"] = art["year"]
+        if art.get("rating"):
+            row["rating"] = art["rating"]
+    if changed:
+        _save_art_cache(cache)
+    return rows
+
+
 def _live_epg(titles):
     """Read ONLY current Kodi PVR EPG, never infer live schedules from a model."""
     if not xbmc.getCondVisibility("Pvr.HasTVChannels"):
@@ -228,11 +380,20 @@ class SearchDialog(xbmcgui.WindowXMLDialog):
         for row in rows:
             live = row.get("kind") == "live"
             title = ("IN ONDA  ·  " if live else "") + row["title"]
-            label2 = row.get("reason") or ("Da cercare in Stream4Me · " + row.get("kind","film"))
-            if not live and row.get("year"):
-                label2 = str(row["year"]) + "  ·  " + label2
-            item = xbmcgui.ListItem(title, label2, offscreen=True)
-            item.setArt({"icon": "special://skin/media/icons/tv.png" if live else "special://skin/media/icons/movies.png"})
+            meta = metadata_label(row)
+            detail = row.get("reason") or ("Cerca questo titolo in Stream4Me" if not live
+                                           else "Trasmissione in diretta")
+            item = xbmcgui.ListItem(title, meta, offscreen=True)
+            icon = "special://skin/media/icons/tv.png" if live else "special://skin/media/icons/movies.png"
+            poster = row.get("poster") or ""
+            artwork = {"icon": icon}
+            if poster:
+                artwork.update({"poster": poster, "thumb": poster})
+            if row.get("backdrop"):
+                artwork["fanart"] = row["backdrop"]
+            item.setArt(artwork)
+            item.setProperty("reason", detail)
+            item.setProperty("meta", meta)
             items.append(item)
         control = self.getControl(50)
         control.reset()
@@ -271,6 +432,8 @@ class SearchDialog(xbmcgui.WindowXMLDialog):
             if not rows:
                 self.setProperty("ai.status", "Nessun suggerimento. Riprova con un titolo o un genere più preciso.")
                 return
+            progress.update(65, "Lucent AI", "Recupero le locandine...")
+            rows = _add_artwork(rows)
             live, _ = _live_epg([row["title"] for row in rows])
             self._list(live + rows, (message or "Suggerimenti AI") +
                        " · Seleziona un titolo per cercarlo davvero in Stream4Me.")
