@@ -14,6 +14,7 @@ for episode 22, and never launch an unrelated series.
 """
 import json
 import re
+import traceback
 from datetime import date, datetime
 
 
@@ -198,7 +199,10 @@ def _library_episodes(xbmc, showid):
                   tvshowid=showid, limits={"start": 0, "end": 3000},
                   properties=["season", "episode", "firstaired", "resume",
                               "playcount", "lastplayed", "file"])
-    return result.get("episodes") or []
+    episodes = result.get("episodes") or []
+    if not isinstance(episodes, list):
+        raise TypeError("episodes-not-list")
+    return [e for e in episodes if isinstance(e, dict)]
 
 
 def _gui_listitem(control_id, index):
@@ -370,7 +374,7 @@ LAST_DIAGNOSTIC = {"step": "init", "library_id": 0, "folder_items": 0, "view_ite
 def diagnosis():
     """Short non-sensitive detail for debugging a failed Continue press."""
     d = LAST_DIAGNOSTIC
-    return ("C5 %s / serie %s / cartella %s / righe %s / tipo %s / episodi %s / errore %s" %
+    return ("C6 %s / serie %s / cartella %s / righe %s / tipo %s / episodi %s / errore %s" %
             (d.get("step", "?"), d.get("library_id", 0),
              d.get("folder_items", 0), d.get("view_items", 0),
              d.get("file_type", "-"), d.get("episode_meta", 0), d.get("error", "-")))
@@ -598,23 +602,36 @@ def run(context=None):
     LAST_DIAGNOSTIC["library_id"] = int(showid or 0)
     if showid:
         try:
+            LAST_DIAGNOSTIC["step"] = "library-fetch"
             episodes = _library_episodes(xbmc, showid)
+            LAST_DIAGNOSTIC["step"] = "library-select"
             chosen = next_unwatched(episodes)
             if chosen and _integer(chosen.get("episodeid")):
+                # VideoLibrary.GetEpisodes may return null/string for resume.
                 resume = chosen.get("resume") or {}
+                if not isinstance(resume, dict):
+                    resume = {}
                 continuing = _number(resume.get("position")) > 0
                 _log(xbmc, f"library show={showid}, S{chosen['season']}E{chosen['episode']}, resume={continuing}")
-                LAST_DIAGNOSTIC["step"] = "library-play"
+                LAST_DIAGNOSTIC["step"] = "library-open"
                 _rpc(xbmc, "Player.Open",
                      item={"episodeid": _integer(chosen["episodeid"])},
                      options={"resume": continuing})
+                LAST_DIAGNOSTIC["step"] = "library-played"
                 return True
             if episodes:
+                LAST_DIAGNOSTIC["step"] = "library-no-episode"
                 _log(xbmc, f"no remaining unwatched episodes for library show {showid}")
                 return False
         except Exception as error:
-            LAST_DIAGNOSTIC["error"] = type(error).__name__ + "-library"
-            _log(xbmc, f"library playback fallback: {error}")
+            point = traceback.extract_tb(error.__traceback__)[-1:]
+            lineno = point[0].lineno if point else 0
+            file = point[0].filename.rsplit("/", 1)[-1] if point else "?"
+            stage = LAST_DIAGNOSTIC.get("step", "unknown")
+            LAST_DIAGNOSTIC["error"] = "%s-%s-L%d" % (
+                type(error).__name__, file[:18], lineno)
+            _log(xbmc, "library stage=%s exception=%s: %s" %
+                 (stage, type(error).__name__, str(error)[:140]))
     # Read the selected season's actual Kodi directory even if the script
     # cannot see its on-screen GUI control or the show was not in the library.
     LAST_DIAGNOSTIC["step"] = "directory-lookup"
