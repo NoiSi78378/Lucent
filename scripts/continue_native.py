@@ -628,8 +628,8 @@ def run(context=None):
             lineno = point[0].lineno if point else 0
             file = point[0].filename.rsplit("/", 1)[-1] if point else "?"
             stage = LAST_DIAGNOSTIC.get("step", "unknown")
-            LAST_DIAGNOSTIC["error"] = "%s-%s-L%d" % (
-                type(error).__name__, file[:18], lineno)
+            LAST_DIAGNOSTIC["error"] = "%s@%s:%s:%d" % (
+                type(error).__name__, stage, file[:18], lineno)
             _log(xbmc, "library stage=%s exception=%s: %s" %
                  (stage, type(error).__name__, str(error)[:140]))
     # Read the selected season's actual Kodi directory even if the script
