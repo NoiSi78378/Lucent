@@ -76,4 +76,36 @@ script = (r/"scripts/ai_search.py").read_text(encoding="utf-8")
 assert "_add_artwork(rows)" in script and 'item.setArt(artwork)' in script
 assert "stream4me_url(title)" in script and "self.setFocusId(50)" in script
 
-print("Lucent AI: verified search, posters, exact metadata and horizontal cards")
+
+# Correct year semantics, direct-title handling and independent checks.
+import datetime
+from ai_intent_core import understand, year_eligible, genre_eligible
+today = datetime.date(2026, 11, 19)
+f = understand("Voglio vedere un film action uscito quest'anno", today)
+assert f["year"] == 2026 and f["genre"] == "action" and f["kind"] == "film"
+assert f["released"] and not f["direct"]
+assert understand("Consigliami una serie come Silo", today)["direct"] is False
+assert understand("un film simile a Silo", today)["direct"] is False
+assert understand("mammina", today)["direct"] is True
+assert understand("from", today)["direct"] is True
+assert understand("pirati dei caraibi", today)["direct"] is True
+assert understand("film action 2025", today)["year"] == 2025
+assert understand("film dell'anno scorso", today)["year"] == 2025
+assert not year_eligible({"year": "2026"}, f)  # LLM's own year cannot verify a film
+assert not year_eligible({"verified_year": "2025"}, f)
+assert not year_eligible({"verified_year": "2024"}, f)
+assert year_eligible({"verified_year": "2026"}, f)
+assert not genre_eligible({"genre_ids": [35, 18]}, f)
+assert genre_eligible({"genre_ids": [28, 53]}, f)
+assert genre_eligible({"genres": ["Action", "Thriller"]}, f)
+script = (r / "scripts/ai_search.py").read_text(encoding="utf-8")
+assert "_ai_request(self.prompt, key, intent)" in script
+assert "self.prompt.strip()" in script and "Ricerca per titolo esatto" in script
+assert "primary_release_date.gte" in script and "primary_release_date.lte" in script
+assert "row[\"verified_year\"]" in script and "year_eligible(row, intent)" in script
+assert "rows = _add_artwork(verified + suggestions, intent)" in script
+assert "Nessun titolo del %d verificabile" in script
+ui_string = (r/"xml/Lucent_AISearch.xml").read_text(encoding="utf-8")
+assert "Container(50).ListItem.Label" in ui_string
+
+print("Lucent AI: dates verified, direct titles, catalogue discovery, Stream4Me route and artwork")

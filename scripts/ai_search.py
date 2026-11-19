@@ -5,6 +5,7 @@ RunScript(special://skin/scripts/ai_search.py) opens the dialog.
 RunScript(special://skin/scripts/ai_search.py,setupmenu) migrates only standard Search tabs.
 No API key is embedded in the public skin or logged. Does not modify Stream4Me.
 """
+import datetime
 import json
 import os
 import sys
@@ -20,6 +21,7 @@ import xbmcvfs
 sys.path.insert(0, os.path.dirname(__file__))
 from ai_search_core import is_default_search, matches_live, parse_ai, stream4me_url
 from ai_art_core import choose_record, catalogue_art, tmdb_art, normalize, metadata_label
+from ai_intent_core import understand, year_eligible, genre_eligible
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "openrouter/free"
@@ -55,7 +57,17 @@ def _save_key(key):
         pass
     os.replace(tmp, KEY_FILE)
 
-def _ai_request(prompt, key):
+def _ai_request(prompt, key, intent=None):
+    intent = intent or understand(prompt)
+    today = intent["today"]
+    context = ("Data odierna " + today + ". Anno corrente " + today[:4] + ". ")
+    if intent.get("year"):
+        context += ("VINCOLO OBBLIGATORIO: proponi esclusivamente titoli realmente usciti "
+                    "nell'anno %d. Se non sei certo non inventarli. " % intent["year"])
+    if intent.get("kind"):
+        context += "Tipo richiesto: " + intent["kind"] + ". "
+    if intent.get("genre"):
+        context += "Genere richiesto: azione. "
     system_prompt = (
         "Sei Lucent, esperto di film e serie TV. Rispondi in italiano con SOLO "
         "un oggetto JSON valido con chiavi message (breve testo) e titles (array "
@@ -63,7 +75,8 @@ def _ai_request(prompt, key):
         "reale), year (anno, se noto), type (movie o tvshow), reason (breve motivo). "
         "Per un titolo preciso restituisci quello. Per consigli proponi opere "
         "reali e pertinenti. Non inventare disponibilità su Stream4Me o in TV. "
-        "Non includere link, comandi o altri campi."
+        "Non includere link, comandi o altri campi. Suggerisci fino a 8 titoli "
+        "per permettere la verifica delle uscite nei cataloghi."
     )
     last_reason = "empty"
     for attempt in range(2):
@@ -75,11 +88,11 @@ def _ai_request(prompt, key):
                 "Rispondi SOLO con una lista numerata di titoli, uno per riga. "
                 "Esempio: 1. Severance\n2. Dark\n3. Fallout. Non aggiungere link."
             )},
-            {"role": "user", "content": prompt},
+            {"role": "user", "content": context + "\nRichiesta: " + prompt},
         ]
         data = {
             "model": MODEL, "messages": messages,
-            "max_tokens": 1600 if attempt == 0 else 1100,
+            "max_tokens": 2000 if attempt == 0 else 2300,
             "temperature": 0.25,
         }
         if attempt == 0:
@@ -203,7 +216,7 @@ def _local_art(row):
     try:
         entries = _rpc(method, {
             "filter": {"field": "title", "operator": "contains", "value": row["title"]},
-            "properties": ["title", "year", "art"],
+            "properties": ["title", "year", "art", "genre"],
             "limits": {"start": 0, "end": 30}
         }).get(result_key) or []
         match = choose_record(entries, row["title"], row.get("year") or "")
@@ -211,13 +224,15 @@ def _local_art(row):
             art = match.get("art") or {}
             return {"poster": art.get("poster") or art.get("thumb") or "",
                     "backdrop": art.get("fanart") or "",
-                    "year": str(match.get("year") or ""), "rating": ""}
+                    "year": str(match.get("year") or ""), "rating": "",
+                    "genres": match.get("genre") or []}
     except (RuntimeError, ValueError, KeyError, TypeError):
         pass
     return {}
 
 
 def _remote_art(row, tmdb_key):
+    """Verify an exact film/TV title independently of the model's guessed date."""
     title = row["title"]
     types = ("tv", "movie") if row.get("kind") == "serie" else ("movie", "tv")
     for media in types:
@@ -228,7 +243,9 @@ def _remote_art(row, tmdb_key):
             match = choose_record(data.get("results") or [], title, row.get("year"))
             if match:
                 art = tmdb_art(match)
-                if art.get("poster"):
+                art["kind"] = "serie" if media == "tv" else "film"
+                art["genre_ids"] = match.get("genre_ids") or []
+                if art.get("poster") or art.get("year"):
                     return art
         kind = "series" if media == "tv" else "movie"
         encoded = urllib.parse.quote(title, safe="")
@@ -237,7 +254,9 @@ def _remote_art(row, tmdb_key):
         match = choose_record(data.get("metas") or [], title, row.get("year"))
         if match:
             art = catalogue_art(match, "cinemeta")
-            if art.get("poster"):
+            art["kind"] = "serie" if media == "tv" else "film"
+            art["genres"] = match.get("genres") or []
+            if art.get("poster") or art.get("year"):
                 return art
         if media == "tv":
             data = _json_art("https://api.tvmaze.com/search/shows?q=" + encoded)
@@ -245,48 +264,100 @@ def _remote_art(row, tmdb_key):
                                   title, row.get("year"))
             if match:
                 art = catalogue_art(match, "tvmaze")
-                if art.get("poster"):
+                art["kind"] = "serie"
+                art["genres"] = match.get("genres") or []
+                if art.get("poster") or art.get("year"):
                     return art
     return {}
 
 
-def _add_artwork(rows):
-    """Enrich at most five recommendations, with negative cache and time budget."""
+def _discover(intent, tmdb_key):
+    """Use TMDb's dated genre catalogue where possible, instead of guessing recent releases."""
+    if not (tmdb_key and intent.get("year") and intent.get("kind") == "film"):
+        return []
+    year = int(intent["year"])
+    params = {"api_key": tmdb_key, "language": "it-IT",
+              "sort_by": "popularity.desc", "page": 1,
+              "primary_release_date.gte": "%04d-01-01" % year,
+              "primary_release_date.lte": "%04d-12-31" % year}
+    if intent.get("genre") == "action":
+        params["with_genres"] = "28"
+    if intent.get("released") and year == int(intent["today"][:4]):
+        params["primary_release_date.lte"] = intent["today"]
+    data = _json_art("https://api.themoviedb.org/3/discover/movie?" +
+                     urllib.parse.urlencode(params), timeout=5)
+    rows = []
+    for item in data.get("results") or []:
+        if not isinstance(item, dict):
+            continue
+        art = tmdb_art(item)
+        if art.get("year") != str(year) or not art.get("poster"):
+            continue
+        if intent.get("genre") == "action" and 28 not in (item.get("genre_ids") or []):
+            continue
+        title = str(item.get("title") or item.get("original_title") or "").strip()
+        if not title:
+            continue
+        rows.append({"title": title, "kind": "film", "year": str(year),
+                     "verified_year": str(year), "rating": art.get("rating") or "",
+                     "poster": art.get("poster"), "backdrop": art.get("backdrop"),
+                     "genre_ids": item.get("genre_ids") or [],
+                     "reason": "Uscita %s verificata nel catalogo TMDb" % year})
+        if len(rows) >= 5:
+            break
+    return rows
+
+
+def _add_artwork(rows, intent=None):
+    """Add artwork and independent dates, never treating an AI year as verified."""
     if not rows:
-        return rows
+        return []
+    intent = intent or {}
     cache = _read_art_cache()
     now = time.time()
-    deadline = time.monotonic() + 21
+    deadline = time.monotonic() + 22
     key = _art_key()
     changed = False
-    for row in rows[:5]:
+    output = []
+    for row in rows[:8]:
         if row.get("kind") == "live":
+            output.append(row)
+            continue
+        if row.get("verified_year"):
+            if year_eligible(row, intent) and genre_eligible(row, intent):
+                output.append(row)
             continue
         lookup = row.get("kind", "") + "|" + normalize(row.get("title"))
         if not lookup.strip("|"):
             continue
         art = _local_art(row)
-        if not art.get("poster"):
+        if not (art.get("year") or art.get("poster")):
             cached = cache.get(lookup) or {}
             cached_art = cached.get("art") or {}
-            ttl = ART_TTL if cached_art.get("poster") else NO_ART_TTL
+            ttl = ART_TTL if (cached_art.get("poster") or cached_art.get("year")) else NO_ART_TTL
             if now - cached.get("t", 0) < ttl:
                 art = cached_art
             elif time.monotonic() < deadline:
                 art = _remote_art(row, key)
                 cache[lookup] = {"t": now, "art": art}
                 changed = True
-        if art.get("poster"):
-            row["poster"] = art["poster"]
-        if art.get("backdrop"):
-            row["backdrop"] = art["backdrop"]
-        if art.get("year"):
-            row["year"] = art["year"]
-        if art.get("rating"):
-            row["rating"] = art["rating"]
+        row["verified_year"] = str(art.get("year") or "")
+        row["year"] = row["verified_year"]  # Never display a date invented by the model.
+        for prop in ("poster", "backdrop", "rating", "genre_ids", "genres"):
+            if art.get(prop):
+                row[prop] = art[prop]
+        if art.get("kind"):
+            row["kind"] = art["kind"]
+        if intent.get("kind") and row.get("kind") != intent["kind"]:
+            continue
+        if not year_eligible(row, intent) or not genre_eligible(row, intent):
+            continue
+        output.append(row)
+        if len(output) >= 5:
+            break
     if changed:
         _save_art_cache(cache)
-    return rows
+    return output
 
 
 def _live_epg(titles):
@@ -421,6 +492,15 @@ class SearchDialog(xbmcgui.WindowXMLDialog):
     def _recommend(self):
         if not self.prompt and not self._text():
             return
+        intent = understand(self.prompt)
+        # "Mammina", "From" etc. are exact titles, NOT a request for suggestions.
+        # A click on the result uses the same working Stream4Me search as before.
+        if intent["direct"]:
+            row = {"title": self.prompt.strip(), "kind": "film",
+                   "year": "", "reason": "Premi OK per cercare esattamente questo titolo in Stream4Me."}
+            rows = _add_artwork([row])
+            self._list(rows, "Ricerca per titolo esatto · Premi OK per aprire i risultati Stream4Me.")
+            return
         key = (_settings().get("openrouter_key") or "").strip()
         if not key:
             xbmcgui.Dialog().ok("Lucent AI", "Inserisci prima la chiave OpenRouter con il pulsante 'Chiave OpenRouter'.")
@@ -428,17 +508,35 @@ class SearchDialog(xbmcgui.WindowXMLDialog):
         progress = xbmcgui.DialogProgressBG()
         progress.create("Lucent AI", "Sto preparando i suggerimenti...")
         try:
-            rows, message = _ai_request(self.prompt, key)
+            # A current-year genre request is best served by a dated catalogue when available.
+            verified = _discover(intent, _art_key()) if intent.get("year") else []
+            suggestions, message = [], ""
+            if len(verified) < 4:
+                try:
+                    suggestions, message = _ai_request(self.prompt, key, intent)
+                except RuntimeError:
+                    if not verified:
+                        raise
+                    message = "Suggerimenti verificati dal catalogo."
+            progress.update(65, "Lucent AI", "Verifico titoli, anni e copertine...")
+            rows = _add_artwork(verified + suggestions, intent)
             if not rows:
-                self.setProperty("ai.status", "Nessun suggerimento. Riprova con un titolo o un genere più preciso.")
+                if intent.get("year"):
+                    status = ("Nessun titolo del %d verificabile nei cataloghi. "
+                              "Non mostro film di altri anni: prova la ricerca Stream4Me."
+                              % intent["year"])
+                else:
+                    status = "Nessun titolo verificato; prova la ricerca diretta in Stream4Me."
+                self._list([], status)
                 return
-            progress.update(65, "Lucent AI", "Recupero le locandine...")
-            rows = _add_artwork(rows)
+            # Never repeat an inaccurate LLM summary for strict-year queries.
+            if intent.get("year"):
+                message = "Risultati verificati per l'anno %d." % intent["year"]
             live, _ = _live_epg([row["title"] for row in rows])
             self._list(live + rows, (message or "Suggerimenti AI") +
-                       " · Seleziona un titolo per cercarlo davvero in Stream4Me.")
+                       " · Premi OK su una copertina per cercare in Stream4Me.")
         except RuntimeError as error:
-            self.setProperty("ai.status", str(error) + " Ricerca diretta sempre disponibile.")
+            self._list([], str(error) + " · Puoi sempre cercare direttamente in Stream4Me.")
         finally:
             progress.close()
 

@@ -96,7 +96,7 @@ def parse_ai(content):
         media_type = str(entry.get("type") or entry.get("media_type") or "").lower()
         kind = "serie" if media_type in ("tvshow", "tv", "tv_show", "series", "serie", "serie tv") else "film"
         result.append({"title": title, "reason": reason, "year": year, "kind": kind})
-        if len(result) >= 5:
+        if len(result) >= 8:
             break
     if not result and isinstance(raw, dict):
         query = _clean(raw.get("query") or raw.get("ricerca"), 110)
