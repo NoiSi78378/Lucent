@@ -448,6 +448,21 @@
             <label>[B]TEST[/B]  mode: $INFO[Skin.String(nuvio.posterfocus)]  |  eigen: $INFO[Window(home).Property(nuvio.trailer.playing)]  |  [COLOR FF9EE7FF]$INFO[Window(home).Property(nuvio.trailer.dbg)][/COLOR]  |  decoder: $INFO[Player.Process(videodecoder)] $INFO[Player.Process(videohwdecoder),HW ,]  |  $INFO[Player.Process(videowidth)]x$INFO[Player.Process(videoheight)]</label>
             <visible>Skin.HasSetting(nuvio.trailer.test)</visible>
         </control>
+
+        <!-- Touch: open Home navigation by tapping the visible menu icon. -->
+        <control type="button" id="9088">
+            <left>24</left><top>64</top><width>98</width><height>96</height>
+            <label></label>
+            <texturefocus border="26" colordiffuse="focus">rr20.png</texturefocus>
+            <texturenofocus border="26" colordiffuse="card">rr20.png</texturenofocus>
+            <onclick>SetFocus(9000)</onclick>
+            <visible>Skin.HasSetting(lucent.touch) + !Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+        </control>
+        <control type="image">
+            <left>48</left><top>89</top><width>50</width><height>46</height>
+            <texture colordiffuse="text">icons/list.png</texture>
+            <visible>Skin.HasSetting(lucent.touch) + !Control.HasFocus(9000) + !System.HasVisibleModalDialog</visible>
+        </control>
         <include>ClockWeather</include>
     </controls>
 </window>
