@@ -3,10 +3,11 @@ name: Test native Continue without Lucent Video
 on:
   push:
     branches:
-      - feature/continue-native-2.2
+      - feature/netflix-continue-no-intro
     paths:
       - "scripts/continue_native.py"
       - "scripts/info.py"
+      - "xml/Startup.xml"
       - "tools/test_continue_native.py"
       - ".github/workflows/test-continue-native.yml"
   workflow_dispatch:
@@ -19,8 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate all Kodi skin Python syntax
-        run: python -m compileall -q scripts
+      - name: Validate all Kodi skin Python syntax and startup XML
+        run: |
+          python -m compileall -q scripts
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          doc=ET.parse("xml/Startup.xml").getroot()
+          assert not doc.findall(".//animation")
+          assert len(doc.findall("onload")) == 1
+          assert "ReplaceWindow(" in doc.findtext("onload")
+          assert not Path("scripts/introsound.py").exists()
+          for file in ("media/intro_bg.jpg", "media/intro_moon.png",
+                       "media/intro_star.png", "media/intro_name.png",
+                       "media/sounds/intro.wav"):
+              assert not Path(file).exists(), file
+          print("PASS: custom startup animation removed from code and package")
+          PY
       - name: Execute simulated Kodi library and Stream4Me Continue tests
         run: python tools/test_continue_native.py
       - name: Validate existing language and XML audit
