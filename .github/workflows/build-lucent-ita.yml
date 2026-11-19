@@ -7,6 +7,7 @@ on:
       - "addon.xml"
       - "scripts/**"
       - "language/resource.language.it_it/**"
+      - "tools/test_ai_search.py"
       - "tools/package_ita.py"
       - ".github/workflows/build-lucent-ita.yml"
 
