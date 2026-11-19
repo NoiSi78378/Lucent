@@ -126,13 +126,53 @@
             <visible>String.IsEqual(Skin.String(nuvio.posterfocus),window) + !String.IsEmpty(Window(home).Property(nuvio.trailer.playing)) + Player.HasVideo</visible>
         </control>
         <control type="group">
-            <visible>!$EXP[NuvioTrailerBg]</visible>
+            <visible>!$EXP[NuvioTrailerBg] + !String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
             <animation effect="fade" start="0" end="100" time="400">Visible</animation>
             <animation effect="fade" start="100" end="0" time="600">Hidden</animation>
             <animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
             <!-- Netflix style (setting off): picture shrinks into the top-right corner -->
             <animation effect="zoom" start="100" end="66.67" center="1920,0" time="300" tween="cubic" easing="out" condition="!Skin.HasSetting(nuvio.fullbackdrop)">Conditional</animation>
             <include>HomeBackdrops</include>
+        </control>
+        <control type="group">
+            <visible>String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>450</fadetime>
+                <texture background="true">$INFO[Window(home).Property(ai.home.pop.1.image)]</texture>
+            </control>
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(9510).ListItem.Property(backdrop)]</texture>
+                <visible>Control.HasFocus(9510)</visible>
+            </control>
+<control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(9520).ListItem.Property(backdrop)]</texture>
+                <visible>Control.HasFocus(9520)</visible>
+            </control>
+<control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(9530).ListItem.Property(backdrop)]</texture>
+                <visible>Control.HasFocus(9530)</visible>
+            </control>
+<control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(9540).ListItem.Property(backdrop)]</texture>
+                <visible>Control.HasFocus(9540)</visible>
+            </control>
+<control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>400</fadetime>
+                <texture background="true">$INFO[Container(9550).ListItem.Property(backdrop)]</texture>
+                <visible>Control.HasFocus(9550)</visible>
+            </control>
+            <!-- The same cinematic fade treatment as every other Lucent section. -->
+            <include>BackdropFades</include>
         </control>
         <control type="group">
             <visible>Skin.HasSetting(nuvio.fullbackdrop) + [!String.IsEqual(Skin.String(nuvio.posterfocus),window) | !$EXP[NuvioTrailerBg]]</visible>
@@ -240,7 +280,7 @@
         </control>
         <include>LucentPanelBg</include>
 
-        <include>PosterTint</include>
+        <control type="group"><visible>!String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible><include>PosterTint</include></control>
         <include>SeasonDecor</include>
         <!-- ============ Hero + rows (slide right while the side menu is open) ============ -->
         <control type="group">

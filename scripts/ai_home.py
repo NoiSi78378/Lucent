@@ -25,8 +25,9 @@ HOME = xbmcgui.Window(10000)
 CACHE_FILE = os.path.join(KEY_DIR, "home_suggestions.json")
 CACHE_SECONDS = 6 * 3600
 NOW = datetime.date.today
-SOURCES = ("pop", "new", "result")
+SOURCES = ("pop", "new", "tv", "top", "result")
 SLOTS = 5
+SUGGESTION_LIMIT = 24
 PLACEHOLDER = "Cerca un film, una serie o chiedi un consiglio..."
 CLOSE_SEARCH = "Tocca la barra e premi Invio per cercare con Lucent AI."
 
@@ -64,7 +65,7 @@ def _metadata(obj, source="cinemeta", media=None):
         sub += "  ·  " + year
     if rating:
         sub += "  ·  ★ " + rating
-    return {"title": title, "image": image, "kind": kind, "sub": sub}
+    return {"title": title, "image": image, "backdrop": image, "kind": kind, "sub": sub}
 
 
 def _read_cache():
@@ -73,7 +74,7 @@ def _read_cache():
             obj = json.load(fp)
         if (isinstance(obj, dict) and
                 time.time() - obj.get("time", 0) < CACHE_SECONDS and
-                obj.get("pop") and obj.get("new")):
+                obj.get("pop") and obj.get("new") and obj.get("tv") and obj.get("top")):
             return obj
     except (OSError, ValueError, TypeError):
         pass
@@ -92,75 +93,86 @@ def _write_cache(data):
 
 
 def _fetch_suggestions():
-    """Fetch curated metadata only. Popularity is NOT Stream4Me availability."""
+    """Four 16:9 discovery rows with pagination and an upper network deadline.
+
+    No OpenRouter calls. Cinemeta catalog/skip extras follow its public manifest.
+    No availability claims are made for any suggestion.
+    """
     today = NOW()
-    year = today.year
     key = _art_key()
-    pop, recent = [], []
+    deadline = time.monotonic() + 24
+    groups = {"pop": [], "new": [], "tv": [], "top": []}
+    seen = {name: set() for name in groups}
+
+    def add(group, item, source, media=None):
+        row = _metadata(item, source, media)
+        if not row:
+            return
+        fingerprint = normalize(row["title"]) + "|" + row["kind"]
+        if fingerprint in seen[group] or len(groups[group]) >= SUGGESTION_LIMIT:
+            return
+        if group == "new":
+            date = str(item.get("released") or item.get("release_date") or "")
+            if date[:10] and date[:10] > today.isoformat():
+                return
+            if row["sub"].find(str(today.year)) < 0 and row["sub"].find(str(today.year - 1)) < 0:
+                return
+        seen[group].add(fingerprint)
+        groups[group].append(row)
 
     if key:
-        trending = _json_art(
-            "https://api.themoviedb.org/3/trending/all/week?" +
-            urllib.parse.urlencode({"api_key": key, "language": "it-IT"}),
-            timeout=5)
-        for obj in trending.get("results") or []:
-            if obj.get("media_type") not in ("movie", "tv"):
-                continue
-            row = _metadata(obj, "tmdb")
-            if row:
-                pop.append(row)
-            if len(pop) >= SLOTS:
-                break
-        first = (today - datetime.timedelta(days=270)).isoformat()
-        params = {"api_key": key, "language": "it-IT", "sort_by": "primary_release_date.desc",
-                  "primary_release_date.gte": first,
-                  "primary_release_date.lte": today.isoformat(), "vote_count.gte": 3,
-                  "page": 1}
-        latest = _json_art(
-            "https://api.themoviedb.org/3/discover/movie?" +
-            urllib.parse.urlencode(params), timeout=5)
-        for obj in latest.get("results") or []:
-            row = _metadata(obj, "tmdb", "movie")
-            if row:
-                recent.append(row)
-            if len(recent) >= SLOTS:
-                break
+        first = (today - datetime.timedelta(days=290)).isoformat()
+        requests = (
+            ("pop", "https://api.themoviedb.org/3/trending/all/week", {}, None),
+            ("tv", "https://api.themoviedb.org/3/trending/tv/week", {}, "tv"),
+            ("top", "https://api.themoviedb.org/3/movie/top_rated", {}, "movie"),
+            ("new", "https://api.themoviedb.org/3/discover/movie",
+             {"sort_by": "primary_release_date.desc", "primary_release_date.gte": first,
+              "primary_release_date.lte": today.isoformat(), "vote_count.gte": 3}, "movie"),
+        )
+        for group, endpoint, extra, media in requests:
+            for page in (1, 2):
+                if time.monotonic() > deadline or len(groups[group]) >= SUGGESTION_LIMIT:
+                    break
+                params = dict(extra, api_key=key, language="it-IT", page=page)
+                answer = _json_art(endpoint + "?" + urllib.parse.urlencode(params), timeout=4)
+                for item in answer.get("results") or []:
+                    if not isinstance(item, dict) or item.get("media_type") == "person":
+                        continue
+                    add(group, item, "tmdb", media)
 
-    # Official Cinemeta movie/series/top and movie/year catalogs are public
-    # and require no extra API key. Keep names as "popular", not "live now".
-    for media in ("movie", "series"):
-        if len(pop) >= SLOTS:
-            break
-        catalog = _json_art(
-            "https://v3-cinemeta.strem.io/catalog/%s/top.json" % media, timeout=5)
-        for obj in (catalog.get("metas") or []) if isinstance(catalog, dict) else []:
-            row = _metadata(obj, "cinemeta", media)
-            if row and normalize(row["title"]) not in {normalize(x["title"]) for x in pop}:
-                pop.append(row)
-            if len(pop) >= SLOTS:
+    # Public fallback or additional suggestions. Each catalogue has a real
+    # cursor (skip), so right-scrolling shows genuinely different titles.
+    catalogues = {
+        "pop": [("movie", "top"), ("series", "top")],
+        "new": [("movie", "year/genre=%d" % today.year),
+                ("movie", "year/genre=%d" % (today.year - 1))],
+        "tv": [("series", "top")],
+        "top": [("movie", "imdbRating")],
+    }
+    for group, queries in catalogues.items():
+        for media, category in queries:
+            for skip in (0, 20, 40):
+                if time.monotonic() > deadline or len(groups[group]) >= SUGGESTION_LIMIT:
+                    break
+                base = "https://v3-cinemeta.strem.io/catalog/%s/%s" % (media, category)
+                path = base + ("/skip=%d.json" % skip if skip and "/" not in category
+                               else "&skip=%d.json" % skip if skip else ".json")
+                data = _json_art(path, timeout=4)
+                if not isinstance(data, dict):
+                    continue
+                for item in data.get("metas") or []:
+                    if isinstance(item, dict):
+                        add(group, item, "cinemeta", media)
+            if len(groups[group]) >= SUGGESTION_LIMIT:
                 break
-
-    for selected_year in (year, year - 1):
-        if len(recent) >= SLOTS:
-            break
-        catalog = _json_art(
-            "https://v3-cinemeta.strem.io/catalog/movie/year/genre=%d.json" % selected_year,
-            timeout=5)
-        for obj in (catalog.get("metas") or []) if isinstance(catalog, dict) else []:
-            released = str(obj.get("released") or obj.get("release_date") or "")
-            if released and released[:10] > today.isoformat():
-                continue
-            row = _metadata(obj, "cinemeta", "movie")
-            if row and row["sub"].find(str(selected_year)) >= 0 \
-                    and normalize(row["title"]) not in {normalize(x["title"]) for x in recent}:
-                recent.append(row)
-            if len(recent) >= SLOTS:
-                break
-    return {"time": time.time(), "pop": pop[:SLOTS], "new": recent[:SLOTS]}
+    groups["time"] = time.time()
+    return groups
 
 
 def _fill(name, rows):
-    for i in range(1, SLOTS + 1):
+    limit = SLOTS if name == "result" else SUGGESTION_LIMIT
+    for i in range(1, limit + 1):
         row = rows[i - 1] if i <= len(rows) else {}
         prefix = "ai.home.%s.%d." % (name, i)
         for field in ("title", "sub", "image", "poster", "kind", "reason"):
@@ -174,20 +186,20 @@ def refresh():
         _put("ai.home.mode", "suggestions")
     cache = _read_cache()
     if cache:
-        _fill("pop", cache["pop"])
-        _fill("new", cache["new"])
+        for group in ("pop", "new", "tv", "top"):
+            _fill(group, cache.get(group) or [])
         if not HOME.getProperty("ai.home.status"):
             _status(CLOSE_SEARCH)
         return
-    _status("Carico i suggerimenti più popolari...")
+    _status("Carico i suggerimenti del momento...")
     data = _fetch_suggestions()
-    _fill("pop", data["pop"])
-    _fill("new", data["new"])
-    if data["pop"] and data["new"]:
+    for group in ("pop", "new", "tv", "top"):
+        _fill(group, data.get(group) or [])
+    if data["pop"] or data["new"] or data["tv"] or data["top"]:
         _write_cache(data)
     if HOME.getProperty("ai.home.mode") != "results":
-        _status(CLOSE_SEARCH if (data["pop"] or data["new"]) else
-                "Suggerimenti temporaneamente non disponibili. La ricerca rimane utilizzabile.")
+        _status(CLOSE_SEARCH if any(data.get(group) for group in ("pop","new","tv","top")) else
+                "Suggerimenti non disponibili, ma puoi comunque cercare con Lucent AI.")
 
 
 def input_search():
@@ -253,7 +265,8 @@ def _run_query(prompt):
             if rating:
                 sub += "  ·  ★ " + rating
             result.append({"title": row["title"], "sub": sub,
-                           "poster": row.get("poster") or "", "kind": kind,
+                           "poster": row.get("poster") or "", "image": row.get("backdrop") or row.get("poster") or "",
+                           "kind": kind,
                            "reason": row.get("reason") or ""})
         _fill("result", result)
         _put("ai.home.mode", "results")
@@ -273,7 +286,7 @@ def _run_query(prompt):
 
 
 def open_title(source, index):
-    if source not in SOURCES or not 1 <= index <= SLOTS:
+    if source not in SOURCES or not 1 <= index <= (SLOTS if source == "result" else SUGGESTION_LIMIT):
         return
     title = HOME.getProperty("ai.home.%s.%d.title" % (source, index)).strip()
     if not title:
