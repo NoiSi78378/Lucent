@@ -98,7 +98,7 @@ jobs:
         run: |
           python - <<'PY'
           import hashlib, time, urllib.error, urllib.request, xml.etree.ElementTree as ET, io, zipfile
-          base="https://noisi78378.github.io/Lucent/"
+          base="https://noisi78378.github.io/Lucent-ITA/"
           def fetch(path):
               url=base+path
               req=urllib.request.Request(url,headers={"User-Agent":"Kodi/21.0"})
