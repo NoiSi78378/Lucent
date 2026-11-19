@@ -75,6 +75,8 @@ def next_unwatched(episodes, today=None):
     partial = []
     for ep in rows:
         resume = ep.get("resume") or {}
+        if not isinstance(resume, dict):
+            resume = {}
         position = _number(resume.get("position"))
         total = _number(resume.get("total"))
         pct = _number(ep.get("percent"))
@@ -306,11 +308,16 @@ def _focus(xbmc, ctrl, index):
     xbmc.executebuiltin(f"Control.SetFocus({ctrl},{index},absolute)")
 
 
-def _choose_on_screen(xbmc):
+def _choose_on_screen(xbmc, context=None):
     """Scan the real season folders, not an all-series/all-seasons grouping."""
     tabs = _season_tabs(xbmc)
+    context = list(context or []) + [""] * 9
     if not tabs:
-        season = _integer(_label(xbmc, "Container(56).ListItem.Season"))
+        season = (_integer(context[5]) or _integer(_label(xbmc, "Container(56).ListItem.Season")))
+        if not season:
+            name = context[6] or _label(xbmc, "Container(56).ListItem.Label")
+            match = re.search(r"(?:stagione|season)\\s*(\\d+)", name, re.IGNORECASE)
+            season = int(match.group(1)) if match else 0
         rows = _onscreen_episodes(xbmc, season)
         chosen = next_unwatched(rows)
         if chosen:
@@ -357,15 +364,16 @@ def _choose_on_screen(xbmc):
 
 
 # Safe diagnostics are kept in memory for the calling UI, never transmitted.
-LAST_DIAGNOSTIC = {"step": "init", "library_id": 0, "folder_items": 0, "view_items": 0}
+LAST_DIAGNOSTIC = {"step": "init", "library_id": 0, "folder_items": 0, "view_items": 0, "error": "", "file_type": "", "episode_meta": 0}
 
 
 def diagnosis():
     """Short non-sensitive detail for debugging a failed Continue press."""
     d = LAST_DIAGNOSTIC
-    return ("C4 %s / serie %s / cartella %s / righe %s" %
+    return ("C5 %s / serie %s / cartella %s / righe %s / tipo %s / episodi %s / errore %s" %
             (d.get("step", "?"), d.get("library_id", 0),
-             d.get("folder_items", 0), d.get("view_items", 0)))
+             d.get("folder_items", 0), d.get("view_items", 0),
+             d.get("file_type", "-"), d.get("episode_meta", 0), d.get("error", "-")))
 
 
 def _directory_fallback(xbmc, context):
@@ -447,7 +455,7 @@ def run(context=None):
     """True if playback was requested; False if none can safely be selected."""
     import xbmc
     LAST_DIAGNOSTIC.update(step="library-lookup", library_id=0,
-                           folder_items=0, view_items=0)
+                           folder_items=0, view_items=0, error="", file_type="", episode_meta=0)
     showid = _find_library_show(xbmc, context)
     LAST_DIAGNOSTIC["library_id"] = int(showid or 0)
     if showid:
@@ -467,6 +475,7 @@ def run(context=None):
                 _log(xbmc, f"no remaining unwatched episodes for library show {showid}")
                 return False
         except Exception as error:
+            LAST_DIAGNOSTIC["error"] = type(error).__name__ + "-library"
             _log(xbmc, f"library playback fallback: {error}")
     # Read the selected season's actual Kodi directory even if the script
     # cannot see its on-screen GUI control or the show was not in the library.
@@ -477,7 +486,7 @@ def run(context=None):
     # existing addon, never a synthetic Lucent Video or TMDb Helper URL.
     LAST_DIAGNOSTIC["step"] = "view-lookup"
     LAST_DIAGNOSTIC["view_items"] = _integer(_label(xbmc, "Container(5601).NumItems"))
-    result = _choose_on_screen(xbmc)
+    result = _choose_on_screen(xbmc, context)
     if not result:
         _log(xbmc, "no identifiable playable episodes; refusing to launch a different title")
     return result
