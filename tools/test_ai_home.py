@@ -90,7 +90,7 @@ assert '"backdrop": backdrop_full(image)' in source
 assert "Upgrade the existing 2.1.45.22 thumbnail-only cache automatically." in source
 assert '"backdrop": backdrop_full(row.get("backdrop") or "")' in source
 assert 'for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason"):' in source
-assert panel.count('<property name="backdrop">') == 101
+assert panel.count('<property name="backdrop">') == 112
 assert 'Property(ai.home.pop.1.backdrop)' in panel
 assert 'Property(ai.home.result.1.backdrop)' in panel
 assert '<include name="LucentAISearchBackdropTitle">' in panel
@@ -103,4 +103,38 @@ for id in (9510,9520,9530,9540,9550):
     assert 'Control.HasFocus(%s)' % id in panel
     assert 'Container(%s).ListItem.Property(backdrop)' % id in home
 
-print("Lucent AI Home: native cards, HD background variants, title overlay and cache migration OK")
+
+from ai_exact_core import candidate, merge_candidates
+silo_tv = {"name":"Silo", "year":2023, "poster":"https://example.org/silo-tv.jpg",
+           "background":"https://example.org/silo-tv-bg.jpg", "imdbRating":"8.1"}
+silo_movie = {"name":"Silo", "year":2015, "poster":"https://example.org/silo-movie.jpg",
+              "imdbRating":"7.3"}
+silo_tv_item = candidate("silo", silo_tv, "serie", "cinemeta")
+silo_movie_item = candidate("Silo", silo_movie, "film", "cinemeta")
+assert silo_tv_item and silo_movie_item
+assert silo_tv_item["kind"] == "serie" and silo_movie_item["kind"] == "film"
+assert candidate("Silo", {"name":"Silo 2","year":2020}, "film", "cinemeta") is None
+assert candidate("Silo", {"name":"Silo", "year":2023}, "serie", "cinemeta")["year"] == "2023"
+assert candidate("Silo", {"name":"Silo", "year":2015}, "film", "cinemeta")["year"] == "2015"
+assert candidate("Silo", {"show":{"name":"Silo", "premiered":"2023-05-05"}}, "serie", "tvmaze")["year"] == "2023"
+merged = merge_candidates([silo_movie_item, silo_tv_item, dict(silo_tv_item)], limit=16)
+assert len(merged) == 2 and merged[0]["kind"] == "serie"
+assert set((r["kind"],r["year"]) for r in merged) == {("serie","2023"),("film","2015")}
+assert "def _exact_titles(prompt):" in source
+assert '("serie", "series", "tv", "TVShows", "tvshows")' in source
+assert '("film", "movie", "movie", "Movies", "movies")' in source
+assert "_exact_titles(prompt)" in source
+assert 'SLOTS = 16' in source
+assert "def reset_search():" in source
+assert '"ai.home.mode", "suggestions"' in source
+assert "elif action == \"reset\":" in source
+assert 'RunScript(special://skin/scripts/ai_home.py,reset)' in panel
+assert '<control type="button" id="9502">' in panel
+assert "<focusedcolor>FFFFFFFF</focusedcolor>" in panel
+assert "<focusedcolor>on_focus</focusedcolor>" not in panel[panel.index('<control type="button" id="9500">'):panel.index('<control type="button" id="9502">')]
+node = next(c for c in controls if c.get("id")=="9550")
+assert len(node.findall("content/item")) == 16
+assert panel.count('Property(ai.home.result.16.') >= 3
+assert node.findtext("onback") == "RunScript(special://skin/scripts/ai_home.py,reset)"
+
+print("Lucent AI Home: native cards, HD art, multi-title search, reset, focus OK")

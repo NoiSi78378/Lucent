@@ -18,15 +18,16 @@ import xbmcgui
 sys.path.insert(0, os.path.dirname(__file__))
 from ai_art_core import catalogue_art, normalize, tmdb_art, backdrop_full
 from ai_intent_core import understand, GENRE_IT
+from ai_exact_core import candidate, merge_candidates
 from ai_search import (_ai_request, _discover, _add_artwork, _live_epg, _art_key,
-                       _json_art, _settings, _save_key, stream4me_url, KEY_DIR)
+                       _json_art, _settings, _save_key, stream4me_url, KEY_DIR, _rpc)
 
 HOME = xbmcgui.Window(10000)
 CACHE_FILE = os.path.join(KEY_DIR, "home_suggestions.json")
 CACHE_SECONDS = 6 * 3600
 NOW = datetime.date.today
 SOURCES = ("pop", "new", "tv", "top", "result")
-SLOTS = 5
+SLOTS = 16
 SUGGESTION_LIMIT = 24
 PLACEHOLDER = "Cerca un film, una serie o chiedi un consiglio..."
 CLOSE_SEARCH = "Tocca la barra e premi Invio per cercare con Lucent AI."
@@ -216,6 +217,14 @@ def refresh():
                 "Suggerimenti non disponibili, ma puoi comunque cercare con Lucent AI.")
 
 
+def reset_search():
+    """Return to the original discovery rows; cache and API key stay untouched."""
+    _fill("result", [])
+    _put("ai.home.query", PLACEHOLDER)
+    _put("ai.home.mode", "suggestions")
+    _status(CLOSE_SEARCH)
+
+
 def input_search():
     default = HOME.getProperty("ai.home.query")
     if default == PLACEHOLDER:
@@ -224,10 +233,74 @@ def input_search():
         "Lucent AI · Cosa vuoi guardare?", defaultt=default,
         type=xbmcgui.INPUT_ALPHANUM)
     if not query or not query.strip():
+        # Clearing the search box also restores discovery. Kodi returns an empty
+        # value when the keyboard is cancelled; the explicit X always works.
+        if default:
+            reset_search()
         return
     query = query.strip()[:250]
     _put("ai.home.query", query)
     _run_query(query)
+
+
+def _exact_titles(prompt):
+    """Search BOTH movie and TV indexes, independently of OpenRouter.
+
+    Keep differently dated or typed titles separate; 'Silo' must not become
+    only the 2015 movie because that happened to be the first lookup.
+    """
+    rows = []
+    deadline = time.monotonic() + 17
+    searches = (("serie", "series", "tv", "TVShows", "tvshows"),
+                ("film", "movie", "movie", "Movies", "movies"))
+    for kind, catalog_kind, tmdb_kind, library_kind, result_key in searches:
+        try:
+            results = _rpc("VideoLibrary.Get" + library_kind, {
+                "filter": {"field": "title", "operator": "contains", "value": prompt},
+                "properties": ["title", "year", "art", "rating"],
+                "limits": {"start": 0, "end": 40}
+            }).get(result_key) or []
+            for item in results:
+                match = candidate(prompt, item, kind, "kodi")
+                if match:
+                    rows.append(match)
+        except (RuntimeError, ValueError, TypeError):
+            pass
+        # Cinemeta is available without an API key.
+        if time.monotonic() < deadline:
+            url = "https://v3-cinemeta.strem.io/catalog/%s/top/search=%s.json" % (
+                catalog_kind, urllib.parse.quote(prompt, safe=""))
+            data = _json_art(url, timeout=4)
+            for item in (data.get("metas") or []) if isinstance(data, dict) else []:
+                match = candidate(prompt, item, kind, "cinemeta")
+                if match:
+                    rows.append(match)
+        tmdb_key = _art_key()
+        if tmdb_key and time.monotonic() < deadline:
+            params = urllib.parse.urlencode({
+                "api_key": tmdb_key, "query": prompt, "language": "it-IT",
+                "include_adult": "false", "page": 1})
+            data = _json_art("https://api.themoviedb.org/3/search/%s?%s" %
+                             (tmdb_kind, params), timeout=4)
+            for item in (data.get("results") or []) if isinstance(data, dict) else []:
+                match = candidate(prompt, item, kind, "tmdb")
+                if match:
+                    rows.append(match)
+    # TVmaze can find shows omitted by Cinemeta, without an API key.
+    if not any(x["kind"] == "serie" for x in rows) and time.monotonic() < deadline:
+        data = _json_art("https://api.tvmaze.com/search/shows?q=" +
+                         urllib.parse.quote(prompt, safe=""), timeout=4)
+        for item in data if isinstance(data, list) else []:
+            match = candidate(prompt, item, "serie", "tvmaze")
+            if match:
+                rows.append(match)
+    found = merge_candidates(rows, SLOTS)
+    if found:
+        return found
+    # Even an unindexed exact title still has a working Stream4Me route.
+    return [{"title": prompt, "kind": "titolo", "year": "", "rating": "",
+             "poster": "", "backdrop": "",
+             "reason": "Non presente nei cataloghi: cerca il titolo in Stream4Me."}]
 
 
 def _run_query(prompt):
@@ -238,9 +311,10 @@ def _run_query(prompt):
     _status("Ricerca in corso...")
     try:
         if intent["direct"]:
-            rows = _add_artwork([{"title": prompt, "kind": "film",
-                                  "reason": "Cerca il titolo esatto in Stream4Me."}], intent)
-            message = "Ricerca per titolo esatto."
+            rows = _exact_titles(prompt)
+            message = ("Titoli corrispondenti: %d · Film e serie TV" % len(rows)
+                       if rows[0].get("kind") != "titolo"
+                       else "Titolo non indicizzato · ricerca Stream4Me disponibile.")
         else:
             verified = _discover(intent, _art_key()) if intent.get("year") else []
             key = (_settings().get("openrouter_key") or "").strip()
@@ -273,7 +347,8 @@ def _run_query(prompt):
             kind = row.get("kind") or "film"
             year = str(row.get("year") or "")
             rating = str(row.get("rating") or "")
-            sub = ("SERIE TV" if kind == "serie" else "FILM")
+            sub = ("SERIE TV" if kind == "serie" else
+                   "FILM" if kind == "film" else "RICERCA TITOLO")
             if year:
                 sub += "  ·  " + year
             if rating:
@@ -343,6 +418,8 @@ def main():
         refresh()
     elif action == "input":
         input_search()
+    elif action == "reset":
+        reset_search()
     elif action == "open" and len(sys.argv) > 3:
         try:
             open_title(sys.argv[2], int(sys.argv[3]))

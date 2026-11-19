@@ -479,18 +479,31 @@
       <control type="button" id="9500">
         <left>215</left><top>245</top><width>1530</width><height>89</height>
         <label>$INFO[Window(home).Property(ai.home.query)]</label>
-        <font>font27</font><textcolor>text</textcolor><focusedcolor>on_focus</focusedcolor>
+        <font>font27</font><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <textoffsetx>75</textoffsetx><aligny>center</aligny>
         <texturefocus border="30" colordiffuse="card">rr20.png</texturefocus>
         <texturenofocus border="30" colordiffuse="glass_strong">rr20.png</texturenofocus>
         <onclick>RunScript(special://skin/scripts/ai_home.py,input)</onclick>
-        <onleft>9000</onleft><onright>9500</onright><onup>9000</onup>
+        <onleft>9000</onleft>
+        <onright condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9502</onright>
+        <onright>9500</onright><onup>9000</onup>
         <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown>
         <ondown>9510</ondown>
       </control>
       <control type="image">
         <left>236</left><top>268</top><width>40</width><height>40</height>
         <texture colordiffuse="text">icons/search.png</texture>
+      </control>
+      <!-- Contextual clear control inside the search bar, not an extra action row. -->
+      <control type="button" id="9502">
+        <left>1677</left><top>259</top><width>58</width><height>59</height>
+        <label>×</label><font>font27</font><align>center</align><aligny>center</aligny>
+        <textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+        <texturefocus border="20" colordiffuse="card">rr20.png</texturefocus>
+        <texturenofocus border="20" colordiffuse="glass_strong">rr20.png</texturenofocus>
+        <onleft>9500</onleft><onright>9502</onright><onup>9500</onup><ondown>9550</ondown>
+        <onclick>RunScript(special://skin/scripts/ai_home.py,reset)</onclick>
+        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>
       </control>
       <control type="label">
         <left>220</left><top>346</top><width>1500</width><height>31</height>
@@ -1413,6 +1426,7 @@
    <left>198</left><top>486</top><width>1600</width><height>440</height>
    <orientation>horizontal</orientation><scrolltime>230</scrolltime>
    <onleft>9000</onleft><onup>9500</onup><ondown>9550</ondown>
+   <onback>RunScript(special://skin/scripts/ai_home.py,reset)</onback>
    <itemlayout width="316" height="435"><control type="image">
     <left>3</left><top>2</top><width>308</width><height>427</height>
     <texture border="26" colordiffuse="card">rr20.png</texture>
@@ -1495,6 +1509,94 @@
      <property name="backdrop">$INFO[Window(home).Property(ai.home.result.5.backdrop)]</property>
      <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,5)</onclick>
      <visible>!String.IsEmpty(Window(home).Property(ai.home.result.5.title))</visible>
+   </item>
+<item id="6">
+     <label>$INFO[Window(home).Property(ai.home.result.6.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.6.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.6.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.6.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,6)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.6.title))</visible>
+   </item>
+<item id="7">
+     <label>$INFO[Window(home).Property(ai.home.result.7.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.7.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.7.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.7.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,7)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.7.title))</visible>
+   </item>
+<item id="8">
+     <label>$INFO[Window(home).Property(ai.home.result.8.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.8.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.8.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.8.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,8)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.8.title))</visible>
+   </item>
+<item id="9">
+     <label>$INFO[Window(home).Property(ai.home.result.9.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.9.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.9.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.9.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,9)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.9.title))</visible>
+   </item>
+<item id="10">
+     <label>$INFO[Window(home).Property(ai.home.result.10.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.10.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.10.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.10.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,10)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.10.title))</visible>
+   </item>
+<item id="11">
+     <label>$INFO[Window(home).Property(ai.home.result.11.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.11.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.11.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.11.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,11)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.11.title))</visible>
+   </item>
+<item id="12">
+     <label>$INFO[Window(home).Property(ai.home.result.12.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.12.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.12.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.12.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,12)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.12.title))</visible>
+   </item>
+<item id="13">
+     <label>$INFO[Window(home).Property(ai.home.result.13.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.13.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.13.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.13.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,13)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.13.title))</visible>
+   </item>
+<item id="14">
+     <label>$INFO[Window(home).Property(ai.home.result.14.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.14.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.14.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.14.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,14)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.14.title))</visible>
+   </item>
+<item id="15">
+     <label>$INFO[Window(home).Property(ai.home.result.15.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.15.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.15.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.15.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,15)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.15.title))</visible>
+   </item>
+<item id="16">
+     <label>$INFO[Window(home).Property(ai.home.result.16.title)]</label>
+     <label2>$INFO[Window(home).Property(ai.home.result.16.sub)]</label2>
+     <thumb>$INFO[Window(home).Property(ai.home.result.16.poster)]</thumb>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.16.backdrop)]</property>
+     <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,16)</onclick>
+     <visible>!String.IsEmpty(Window(home).Property(ai.home.result.16.title))</visible>
    </item></content>
  </control>
         <control type="label"><left>216</left><top>936</top><width>1510</width><height>43</height>
