@@ -272,37 +272,68 @@ def _remote_art(row, tmdb_key):
 
 
 def _discover(intent, tmdb_key):
-    """Use TMDb's dated genre catalogue where possible, instead of guessing recent releases."""
-    if not (tmdb_key and intent.get("year") and intent.get("kind") == "film"):
+    """Use dated, independent catalogue results, not a model's memory of releases."""
+    if not (intent.get("year") and intent.get("kind") == "film"):
         return []
     year = int(intent["year"])
-    params = {"api_key": tmdb_key, "language": "it-IT",
-              "sort_by": "popularity.desc", "page": 1,
-              "primary_release_date.gte": "%04d-01-01" % year,
-              "primary_release_date.lte": "%04d-12-31" % year}
-    if intent.get("genre") == "action":
-        params["with_genres"] = "28"
-    if intent.get("released") and year == int(intent["today"][:4]):
-        params["primary_release_date.lte"] = intent["today"]
-    data = _json_art("https://api.themoviedb.org/3/discover/movie?" +
-                     urllib.parse.urlencode(params), timeout=5)
     rows = []
-    for item in data.get("results") or []:
-        if not isinstance(item, dict):
+    if tmdb_key:
+        params = {"api_key": tmdb_key, "language": "it-IT",
+                  "sort_by": "popularity.desc", "page": 1,
+                  "primary_release_date.gte": "%04d-01-01" % year,
+                  "primary_release_date.lte": "%04d-12-31" % year}
+        if intent.get("genre") == "action":
+            params["with_genres"] = "28"
+        if intent.get("released") and year == int(intent["today"][:4]):
+            params["primary_release_date.lte"] = intent["today"]
+        data = _json_art("https://api.themoviedb.org/3/discover/movie?" +
+                         urllib.parse.urlencode(params), timeout=5)
+        for item in data.get("results") or []:
+            if not isinstance(item, dict):
+                continue
+            art = tmdb_art(item)
+            if art.get("year") != str(year) or not art.get("poster"):
+                continue
+            if intent.get("genre") == "action" and 28 not in (item.get("genre_ids") or []):
+                continue
+            title = str(item.get("title") or item.get("original_title") or "").strip()
+            if not title:
+                continue
+            rows.append({"title": title, "kind": "film", "year": str(year),
+                         "verified_year": str(year), "rating": art.get("rating") or "",
+                         "poster": art.get("poster"), "backdrop": art.get("backdrop"),
+                         "genre_ids": item.get("genre_ids") or [],
+                         "reason": "Anno verificato nel catalogo TMDb"})
+            if len(rows) >= 5:
+                return rows
+
+    # Public Cinemeta catalog as a fallback when a personal TMDb key is absent.
+    # It is never used to claim that a title is playable on Stream4Me.
+    genre_path = "genre=Action" if intent.get("genre") == "action" else "top"
+    catalog = "https://v3-cinemeta.strem.io/catalog/movie/top/%s.json" % genre_path if genre_path != "top" else "https://v3-cinemeta.strem.io/catalog/movie/top.json"
+    data = _json_art(catalog, timeout=5)
+    seen = {normalize(row["title"]) for row in rows}
+    for item in data.get("metas") or []:
+        if not isinstance(item, dict) or str(item.get("year") or "")[:4] != str(year):
             continue
-        art = tmdb_art(item)
-        if art.get("year") != str(year) or not art.get("poster"):
+        title = str(item.get("name") or "").strip()
+        art = catalogue_art(item, "cinemeta")
+        if not title or not art.get("poster") or normalize(title) in seen:
             continue
-        if intent.get("genre") == "action" and 28 not in (item.get("genre_ids") or []):
-            continue
-        title = str(item.get("title") or item.get("original_title") or "").strip()
-        if not title:
-            continue
+        if intent.get("genre") == "action" and item.get("genres"):
+            labels = [str(name).casefold() for name in item.get("genres") or []]
+            if not any("action" in name or "azione" in name for name in labels):
+                continue
+        if intent.get("released"):
+            dated = str(item.get("released") or item.get("release_date") or "")
+            if dated and dated[:10] > intent["today"]:
+                continue
+        seen.add(normalize(title))
         rows.append({"title": title, "kind": "film", "year": str(year),
-                     "verified_year": str(year), "rating": art.get("rating") or "",
-                     "poster": art.get("poster"), "backdrop": art.get("backdrop"),
-                     "genre_ids": item.get("genre_ids") or [],
-                     "reason": "Uscita %s verificata nel catalogo TMDb" % year})
+                     "verified_year": str(year), "poster": art.get("poster"),
+                     "backdrop": art.get("backdrop"), "rating": art.get("rating"),
+                     "genres": item.get("genres") or [],
+                     "reason": "Anno verificato nel catalogo Cinemeta"})
         if len(rows) >= 5:
             break
     return rows

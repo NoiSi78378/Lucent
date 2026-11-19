@@ -73,7 +73,7 @@ assert "ListItem.Art(poster)" in xml_source and "Container(50).ListItem.Property
 assert "rr20_edge.png" in xml_source and "mask_poster.png" in xml_source
 assert not any(int(c.findtext("width","0")) > 1920 for c in ui.iter("control") if c.find("width") is not None and c.findtext("width","0").isdigit())
 script = (r/"scripts/ai_search.py").read_text(encoding="utf-8")
-assert "_add_artwork(rows)" in script and 'item.setArt(artwork)' in script
+assert "_add_artwork(" in script and 'item.setArt(artwork)' in script
 assert "stream4me_url(title)" in script and "self.setFocusId(50)" in script
 
 
@@ -102,6 +102,7 @@ script = (r / "scripts/ai_search.py").read_text(encoding="utf-8")
 assert "_ai_request(self.prompt, key, intent)" in script
 assert "self.prompt.strip()" in script and "Ricerca per titolo esatto" in script
 assert "primary_release_date.gte" in script and "primary_release_date.lte" in script
+assert "v3-cinemeta.strem.io/catalog/movie/top" in script
 assert "row[\"verified_year\"]" in script and "year_eligible(row, intent)" in script
 assert "rows = _add_artwork(verified + suggestions, intent)" in script
 assert "Nessun titolo del %d verificabile" in script
