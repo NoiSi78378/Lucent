@@ -1305,11 +1305,11 @@ msgctxt "#31542"
 msgid "done at"
 msgstr ""
 
-msgctxt "#31543"
+
 msgid "Intro at start"
 msgstr ""
 
-msgctxt "#31544"
+
 msgid "The star and the moon of Lucent when Kodi starts (about 6 seconds)"
 msgstr ""
 
@@ -2355,11 +2355,11 @@ msgctxt "#31883"
 msgid "FINALE"
 msgstr ""
 
-msgctxt "#31886"
+
 msgid "Sound with the intro"
 msgstr ""
 
-msgctxt "#31887"
+
 msgid "A warm sound with the intro when Kodi starts"
 msgstr ""
 
