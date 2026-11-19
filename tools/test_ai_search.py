@@ -39,7 +39,7 @@ ids = {int(c.get("id")):c for c in ui.iter("control") if c.get("id")}
 assert {10,11,12,13,14,50,90}.issubset(ids)
 assert int(ids[10].findtext("height")) >= 72
 menu = (r / "scripts/menu.py").read_text(encoding="utf-8")
-assert menu.count("RunScript(special://skin/scripts/ai_search.py)") >= 2
+assert menu.count('tab("t_search", "search", "SetFocus(9500)")') >= 2
 startup = (r / "scripts/startup.py").read_text(encoding="utf-8")
 assert 'ai_search.install_menu' in startup
 home_source = (r / "xml/Home.xml").read_text(encoding="utf-8")
