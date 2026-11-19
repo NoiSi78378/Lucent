@@ -148,7 +148,8 @@ assert "Control.HasFocus(9502)" in clear.findtext("visible")
 assert 'icons/close.png' in panel and '<label>×</label>' not in panel
 assert 'rr20_edge.png' in panel and '<visible>Control.HasFocus(9500)</visible>' in panel
 search_control = next(c for c in controls if c.get("id") == "9500")
-assert search_control.find("texturefocus").get("colordiffuse") == "focus"
+assert search_control.find("texturefocus").get("colordiffuse") == "glass_strong"
+assert "rr20_edge.png" in panel  # border highlights while glass remains dark
 assert 'def _focus_search():' in source
 assert 'xbmc.executebuiltin("SetFocus(9500)", True)' in source
 assert source.index("_focus_search()", source.index("def reset_search():")) < source.index(

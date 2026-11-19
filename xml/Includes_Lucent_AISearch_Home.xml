@@ -481,7 +481,7 @@
         <label>$INFO[Window(home).Property(ai.home.query)]</label>
         <font>font27</font><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <textoffsetx>75</textoffsetx><aligny>center</aligny>
-        <texturefocus border="30" colordiffuse="focus">rr20.png</texturefocus>
+        <texturefocus border="30" colordiffuse="glass_strong">rr20.png</texturefocus>
         <texturenofocus border="30" colordiffuse="glass_strong">rr20.png</texturenofocus>
         <onclick>RunScript(special://skin/scripts/ai_home.py,input)</onclick>
         <onleft>9000</onleft>
