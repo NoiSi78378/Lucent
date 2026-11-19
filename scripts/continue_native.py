@@ -48,12 +48,12 @@ def _release_date(value):
     if not raw:
         return None
     # Kodi's JSON-RPC uses ISO YYYY-MM-DD (sometimes with a time suffix).
-    match = re.match(r"^(\\d{4})-(\\d{1,2})-(\\d{1,2})(?:$|[T\\s])", raw)
+    match = re.match(r"^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|[T\s])", raw)
     if match:
         y, m, d = map(int, match.groups())
     else:
         # Locale-formatted date on Android/Italian Kodi (DD.MM.YYYY or DD/MM/YYYY).
-        match = re.match(r"^(\\d{1,2})[./](\\d{1,2})[./](\\d{4})(?:$|\\s)", raw)
+        match = re.match(r"^(\d{1,2})[./](\d{1,2})[./](\d{4})(?:$|\s)", raw)
         if not match:
             return None
         d, m, y = map(int, match.groups())
@@ -78,6 +78,7 @@ def _valid_today(episode, today=None):
     except (TypeError, ValueError, OverflowError):
         # A date-format problem should NEVER block playback.
         return True
+
 
 def _episode_order(ep):
     return (_integer(ep.get("season")), _integer(ep.get("episode")))
