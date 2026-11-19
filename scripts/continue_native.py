@@ -75,6 +75,8 @@ def next_unwatched(episodes, today=None):
     partial = []
     for ep in rows:
         resume = ep.get("resume") or {}
+        if not isinstance(resume, dict):
+            resume = {}
         position = _number(resume.get("position"))
         total = _number(resume.get("total"))
         pct = _number(ep.get("percent"))
@@ -306,11 +308,16 @@ def _focus(xbmc, ctrl, index):
     xbmc.executebuiltin(f"Control.SetFocus({ctrl},{index},absolute)")
 
 
-def _choose_on_screen(xbmc):
+def _choose_on_screen(xbmc, context=None):
     """Scan the real season folders, not an all-series/all-seasons grouping."""
     tabs = _season_tabs(xbmc)
+    context = list(context or []) + [""] * 9
     if not tabs:
-        season = _integer(_label(xbmc, "Container(56).ListItem.Season"))
+        season = (_integer(context[5]) or _integer(_label(xbmc, "Container(56).ListItem.Season")))
+        if not season:
+            name = context[6] or _label(xbmc, "Container(56).ListItem.Label")
+            match = re.search(r"(?:stagione|season)\\s*(\\d+)", name, re.IGNORECASE)
+            season = int(match.group(1)) if match else 0
         rows = _onscreen_episodes(xbmc, season)
         chosen = next_unwatched(rows)
         if chosen:
@@ -357,84 +364,223 @@ def _choose_on_screen(xbmc):
 
 
 # Safe diagnostics are kept in memory for the calling UI, never transmitted.
-LAST_DIAGNOSTIC = {"step": "init", "library_id": 0, "folder_items": 0, "view_items": 0}
+LAST_DIAGNOSTIC = {"step": "init", "library_id": 0, "folder_items": 0, "view_items": 0, "error": "", "file_type": "", "episode_meta": 0}
 
 
 def diagnosis():
     """Short non-sensitive detail for debugging a failed Continue press."""
     d = LAST_DIAGNOSTIC
-    return ("C4 %s / serie %s / cartella %s / righe %s" %
+    return ("C5 %s / serie %s / cartella %s / righe %s / tipo %s / episodi %s / errore %s" %
             (d.get("step", "?"), d.get("library_id", 0),
-             d.get("folder_items", 0), d.get("view_items", 0)))
+             d.get("folder_items", 0), d.get("view_items", 0),
+             d.get("file_type", "-"), d.get("episode_meta", 0), d.get("error", "-")))
+
+
+def _files_for(xbmc, folder):
+    """Ask Kodi for video metadata, keeping the error category for diagnostics."""
+    props = ["title", "season", "episode", "playcount", "resume",
+             "firstaired", "lastplayed", "showtitle", "watchedepisodes"]
+    try:
+        result = _rpc(xbmc, "Files.GetDirectory", directory=folder,
+                      media="video", properties=props)
+    except Exception as error:
+        LAST_DIAGNOSTIC["error"] = type(error).__name__ + "-filesprops"
+        _log(xbmc, "Files.GetDirectory with properties: " + str(error)[:130])
+        try:
+            result = _rpc(xbmc, "Files.GetDirectory", directory=folder, media="video")
+        except Exception as fallback_error:
+            LAST_DIAGNOSTIC["error"] = type(fallback_error).__name__ + "-files"
+            return []
+    return result.get("files") or []
+
+
+def _extract_season(item, fallback=0):
+    number = _integer(item.get("season"))
+    if number:
+        return number
+    text = str(item.get("label") or item.get("title") or "")
+    match = re.search(r"(?:stagione|season)\s*(\d+)\b", text, re.IGNORECASE)
+    return int(match.group(1)) if match else fallback
+
+
+def _episode_tiles(items, season, watched_hint=0):
+    """Extract episodes from the selected season, including add-on folders.
+
+    Stream4Me often exposes playable episode *directories* rather than
+    JSON-RPC files, and may omit the episode field even though Kodi renders E1,
+    E2, etc. Ordinal recovery is allowed only in a known season directory,
+    never in a mixed list of shows or seasons.
+    """
+    if not season:
+        return []
+    possible = []
+    for ix, item in enumerate(items):
+        if not isinstance(item, dict) or not item.get("file"):
+            continue
+        kind = str(item.get("type") or "").lower()
+        filetype = str(item.get("filetype") or "").lower()
+        label = str(item.get("label") or item.get("title") or "")
+        if kind in ("tvshow", "season", "movie") or not label or label == "..":
+            continue
+        if re.search(r"^(?:\*\s*)?(?:tutte le stagioni|all seasons|stagione\s+\d+|season\s+\d+)$",
+                     label.strip(), re.IGNORECASE):
+            continue
+        if filetype and filetype not in ("file", "directory"):
+            continue
+        number = _integer(item.get("episode"))
+        if not number:
+            match = re.search(r"\bS\d{1,2}\s*E(\d{1,3})\b|\bE(\d{1,3})\b", label, re.IGNORECASE)
+            if match:
+                number = _integer(match.group(1) or match.group(2))
+        possible.append((ix, item, number, filetype))
+    if not possible:
+        return []
+    # If Kodi provided no episode numbers at all, the directory itself is an
+    # explicit SEASON and must only contain episode entries. Use its listing
+    # order and number rows E1..En. Never infer from the all-seasons root.
+    known = [n for _, _, n, _ in possible if n > 0]
+    if known and len(known) != len(possible):
+        # Mixed metadata is ambiguous: don't auto-play an incorrect episode.
+        return []
+    if len(known) != len(set(known)):
+        return []
+    raw_watched = [_integer(row.get("playcount")) for _, row, _, _ in possible]
+    contiguous_watch_hint = (not any(raw_watched)) and watched_hint > 0
+    out = []
+    for ordinal, (ix, row, number, filetype) in enumerate(possible, start=1):
+        epnumber = number or ordinal
+        ep = dict(row)
+        ep.update(season=season, episode=epnumber, index=ix, filetype=filetype)
+        if contiguous_watch_hint and ordinal <= watched_hint:
+            ep["playcount"] = 1
+        resume = ep.get("resume")
+        if not isinstance(resume, dict):
+            ep["resume"] = {}
+        out.append(ep)
+    LAST_DIAGNOSTIC["episode_meta"] += sum(1 for _, _, number, _ in possible if number)
+    return out
+
+
+def _safe_season_root(path, showid):
+    """Only visit Kodi's directory for this *one* series."""
+    match = re.fullmatch(r"videodb://tvshows/[^/]+/(\d+)/?", str(path or ""))
+    return bool(match and showid and int(match.group(1)) == showid)
+
+
+def _play_directory_entry(xbmc, chosen, selected_season, selected_path):
+    """Use native library playback or the same add-on entry as manual OK."""
+    target = str(chosen.get("file") or "")
+    if not target:
+        return False
+    resume = chosen.get("resume") or {}
+    if not isinstance(resume, dict):
+        resume = {}
+    continuing = _number(resume.get("position")) > 0
+
+    # On the season currently shown, let Kodi click the *same* plugin entry
+    # the user clicks by hand. This also handles source-picker subfolders.
+    if (str(chosen.get("filetype") or "") == "directory"
+            and selected_season == chosen["season"]
+            and str(chosen.get("folder") or "") == selected_path):
+        xbmc.executebuiltin("Control.SetFocus(5601,%d,absolute)" % chosen["index"])
+        xbmc.sleep(180)
+        xbmc.executebuiltin("Action(Select)")
+        LAST_DIAGNOSTIC["step"] = "selected-episode"
+        return True
+
+    if str(chosen.get("filetype") or "") == "directory":
+        # A plugin may expose the *episode itself* as a directory (for source
+        # selection). Prefer selecting the original row, not treating the URL
+        # as a movie file.
+        if target.startswith(("plugin://", "videodb://", "library://")):
+            for season, tab_index in _season_tabs(xbmc):
+                if season == chosen["season"]:
+                    xbmc.executebuiltin("Control.SetFocus(56,%d,absolute)" % tab_index)
+                    xbmc.sleep(350)
+                    for _ in range(7):
+                        try:
+                            if xbmc.getCondVisibility("Container(5601).IsUpdating"):
+                                xbmc.sleep(200)
+                                continue
+                        except Exception:
+                            pass
+                        break
+                    count = _integer(_label(xbmc, "Container(5601).NumItems"))
+                    if count > chosen["index"]:
+                        xbmc.executebuiltin(
+                            "Control.SetFocus(5601,%d,absolute)" % chosen["index"])
+                        xbmc.sleep(150)
+                        xbmc.executebuiltin("Action(Select)")
+                        LAST_DIAGNOSTIC["step"] = "selected-other-season"
+                        return True
+            # When a remote script cannot see GUI list metadata, use the
+            # *actual episode folder* as a safe navigation target.
+            xbmc.executebuiltin('ActivateWindow(Videos,"%s",return)' % target.replace('"', '%22'))
+            LAST_DIAGNOSTIC["step"] = "episode-folder"
+            return True
+        return False
+
+    _rpc(xbmc, "Player.Open",
+         item={"file": target}, options={"resume": continuing})
+    LAST_DIAGNOSTIC["step"] = "episode-file"
+    return True
 
 
 def _directory_fallback(xbmc, context):
-    """Read the *selected season* through Kodi, not from fragile GUI labels.
+    """Use Kodi's real series/season folder instead of guessing URLs."""
+    context = list(context or []) + [""] * 10
+    root, selected_path, season_string, seen_string = (
+        context[1], context[2], context[5], context[7])
+    selected_season = _integer(season_string)
+    seen = _integer(seen_string)
+    showid = _integer(LAST_DIAGNOSTIC.get("library_id"))
 
-    For Kodi/Stream4Me library and add-on folders, Files.GetDirectory returns
-    real episode metadata. Play only a real FILE item with S/E metadata.
-    Never play a show tile or folder based on an E22 count.
-    """
-    context = list(context or [])
-    context += [""] * max(0, 6 - len(context))
-    _, _, explicit_season_path, _, _, explicit_season = context[:6]
-    folders = [
-        explicit_season_path,
-        _label(xbmc, "Container(56).ListItem.FolderPath"),
-    ]
-    season = _integer(explicit_season) or _integer(
-        _label(xbmc, "Container(56).ListItem.Season"))
-    for folder in dict.fromkeys(folders):
-        if not folder or not folder.startswith(("videodb://", "plugin://", "library://")):
+    # Prefer scanning all seasons via the original Kodi TV-show folder.
+    # This is necessary when the user is currently on season 2 but has not
+    # watched any episode of season 1 (as in the supplied Silo screenshot).
+    season_folders = []
+    if _safe_season_root(root, showid):
+        folder_entries = _files_for(xbmc, root)
+        for item in folder_entries:
+            if not isinstance(item, dict):
+                continue
+            season = _extract_season(item)
+            path = str(item.get("file") or "")
+            if season > 0 and path and str(item.get("filetype") or "") == "directory":
+                season_folders.append((season, path, _integer(item.get("watchedepisodes"))))
+        season_folders = sorted(set(season_folders))
+    if selected_path and selected_season > 0 and not any(
+            path == selected_path for _, path, _ in season_folders):
+        season_folders.append((selected_season, selected_path, seen))
+
+    if not season_folders and selected_path and selected_season:
+        season_folders = [(selected_season, selected_path, seen)]
+    all_rows = []
+    # Never follow unrestricted plugin directory roots: only individual
+    # seasons explicitly present in this series' Kodi folder.
+    for season, folder, watched in sorted(season_folders)[:20]:
+        if not folder.startswith(("videodb://", "plugin://", "library://")):
             continue
-        # The generic TV-show root would include unrelated series.
-        if folder.startswith("videodb://tvshows/") and not re.search(
-                r"videodb://tvshows/[^/]+/\d+/", folder):
-            continue
-        try:
-            details = _rpc(xbmc, "Files.GetDirectory", directory=folder,
-                           media="video", properties=[
-                               "title", "season", "episode", "playcount",
-                               "resume", "firstaired", "file", "lastplayed",
-                               "showtitle"])
-        except Exception as error:
-            _log(xbmc, "directory API failed: %s" % str(error)[:130])
-            try:
-                details = _rpc(xbmc, "Files.GetDirectory",
-                               directory=folder, media="video")
-            except Exception:
-                continue
-        items = details.get("files") or []
-        LAST_DIAGNOSTIC["folder_items"] = len(items)
-        rows = []
-        for ep in items:
-            # Files.GetDirectory marks actual playable files as filetype=file.
-            # Directory entries are a further navigation level, not videos.
-            if str(ep.get("filetype") or "") != "file":
-                continue
-            if ep.get("type") in ("tvshow", "season", "movie"):
-                continue
-            number = _integer(ep.get("episode"))
-            current_season = _integer(ep.get("season")) or season
-            if number <= 0 or current_season <= 0:
-                continue
-            if not ep.get("file"):
-                continue
-            rows.append(dict(ep, season=current_season, episode=number))
-        chosen = next_unwatched(rows)
-        if not chosen:
-            continue
-        # File based playback also works for imported .strm items. A plugin
-        # resolves its own source; no Lucent-specific player is required.
-        resume = chosen.get("resume") or {}
-        continuing = _number(resume.get("position")) > 0
-        LAST_DIAGNOSTIC["step"] = "directory-play"
-        _log(xbmc, "directory matched S%02dE%02d" %
-             (chosen["season"], chosen["episode"]))
-        _rpc(xbmc, "Player.Open",
-             item={"file": chosen["file"]},
-             options={"resume": continuing})
-        return True
+        items = _files_for(xbmc, folder)
+        LAST_DIAGNOSTIC["folder_items"] += len(items)
+        if items and not LAST_DIAGNOSTIC["file_type"]:
+            first = items[0]
+            if isinstance(first, dict):
+                LAST_DIAGNOSTIC["file_type"] = (
+                    str(first.get("filetype") or "?")[:12] + ":"
+                    + str(first.get("type") or "?")[:12])
+        # For selected season trust the label shown in Lucent, which reports
+        # watched episodes even when Files.GetDirectory omits playcount.
+        if folder == selected_path and not watched:
+            watched = seen
+        for item in _episode_tiles(items, season, watched):
+            item["folder"] = folder
+            all_rows.append(item)
+    chosen = next_unwatched(all_rows)
+    if chosen:
+        _log(xbmc, "directory selected S%02dE%02d of %d" %
+             (chosen["season"], chosen["episode"], len(all_rows)))
+        return _play_directory_entry(xbmc, chosen, selected_season, selected_path)
     return False
 
 
@@ -447,7 +593,7 @@ def run(context=None):
     """True if playback was requested; False if none can safely be selected."""
     import xbmc
     LAST_DIAGNOSTIC.update(step="library-lookup", library_id=0,
-                           folder_items=0, view_items=0)
+                           folder_items=0, view_items=0, error="", file_type="", episode_meta=0)
     showid = _find_library_show(xbmc, context)
     LAST_DIAGNOSTIC["library_id"] = int(showid or 0)
     if showid:
@@ -467,6 +613,7 @@ def run(context=None):
                 _log(xbmc, f"no remaining unwatched episodes for library show {showid}")
                 return False
         except Exception as error:
+            LAST_DIAGNOSTIC["error"] = type(error).__name__ + "-library"
             _log(xbmc, f"library playback fallback: {error}")
     # Read the selected season's actual Kodi directory even if the script
     # cannot see its on-screen GUI control or the show was not in the library.
@@ -477,7 +624,7 @@ def run(context=None):
     # existing addon, never a synthetic Lucent Video or TMDb Helper URL.
     LAST_DIAGNOSTIC["step"] = "view-lookup"
     LAST_DIAGNOSTIC["view_items"] = _integer(_label(xbmc, "Container(5601).NumItems"))
-    result = _choose_on_screen(xbmc)
+    result = _choose_on_screen(xbmc, context)
     if not result:
         _log(xbmc, "no identifiable playable episodes; refusing to launch a different title")
     return result

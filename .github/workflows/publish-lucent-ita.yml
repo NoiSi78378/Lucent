@@ -40,6 +40,8 @@ jobs:
           python tools/audit_italian.py > /tmp/lucent-ita-audit.log
           python tools/coverage_italian.py
           python tools/smoke_italian.py
+          python tools/test_continue_native.py
+          python tools/test_continue_directory.py
       - name: Build independent Kodi skin
         run: |
           mkdir -p "$RUNNER_TEMP/package/skin.lucent.ita"

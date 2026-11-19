@@ -5,12 +5,14 @@ on:
     branches:
       - feature/netflix-continue-no-intro
       - feature/continue-kodi-library-context-2.1.45.4
+      - feature/continue-episode-metadata-fix
     paths:
       - "scripts/continue_native.py"
       - "scripts/info.py"
       - "xml/Startup.xml"
       - "xml/Includes_Views.xml"
       - "tools/test_continue_native.py"
+      - "tools/test_continue_directory.py"
       - ".github/workflows/test-continue-native.yml"
   workflow_dispatch:
 
@@ -40,7 +42,9 @@ jobs:
           print("PASS: custom startup animation removed from code and package")
           PY
       - name: Execute simulated Kodi library and Stream4Me Continue tests
-        run: python tools/test_continue_native.py
+        run: |
+          python tools/test_continue_native.py
+          python tools/test_continue_directory.py
       - name: Validate existing language and XML audit
         run: |
           python tools/audit_italian.py >/tmp/audit.txt
