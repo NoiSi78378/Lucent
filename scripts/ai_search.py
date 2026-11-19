@@ -379,6 +379,10 @@ def _add_artwork(rows, intent=None):
                 row[prop] = art[prop]
         if art.get("kind"):
             row["kind"] = art["kind"]
+        # Do not display AI-invented titles in recommendation lists.
+        # Exact-title searches must remain clickable even without metadata.
+        if not intent.get("direct") and not (art.get("year") or art.get("poster")):
+            continue
         if intent.get("kind") and row.get("kind") != intent["kind"]:
             continue
         if not year_eligible(row, intent) or not genre_eligible(row, intent):
@@ -529,7 +533,7 @@ class SearchDialog(xbmcgui.WindowXMLDialog):
         if intent["direct"]:
             row = {"title": self.prompt.strip(), "kind": "film",
                    "year": "", "reason": "Premi OK per cercare esattamente questo titolo in Stream4Me."}
-            rows = _add_artwork([row])
+            rows = _add_artwork([row], intent)
             self._list(rows, "Ricerca per titolo esatto · Premi OK per aprire i risultati Stream4Me.")
             return
         key = (_settings().get("openrouter_key") or "").strip()

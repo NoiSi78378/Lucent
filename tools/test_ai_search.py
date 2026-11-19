@@ -106,6 +106,8 @@ assert "v3-cinemeta.strem.io/catalog/movie/top" in script
 assert "row[\"verified_year\"]" in script and "year_eligible(row, intent)" in script
 assert "rows = _add_artwork(verified + suggestions, intent)" in script
 assert "Nessun titolo del %d verificabile" in script
+assert 'if not intent.get("direct") and not (art.get("year") or art.get("poster"))' in script
+assert 'rows = _add_artwork([row], intent)' in script
 ui_string = (r/"xml/Lucent_AISearch.xml").read_text(encoding="utf-8")
 assert "Container(50).ListItem.Label" in ui_string
 
