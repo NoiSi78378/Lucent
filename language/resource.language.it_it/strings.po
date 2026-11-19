@@ -1305,11 +1305,11 @@ msgctxt "#31542"
 msgid "done at"
 msgstr "terminato alle"
 
-msgctxt "#31543"
+
 msgid "Intro at start"
 msgstr "Introduzione all'avvio"
 
-msgctxt "#31544"
+
 msgid "The star and the moon of Lucent when Kodi starts (about 6 seconds)"
 msgstr "La stella e la luna di Lucent all'avvio di Kodi (circa 6 secondi)"
 
@@ -2355,11 +2355,11 @@ msgctxt "#31883"
 msgid "FINALE"
 msgstr "FINALE"
 
-msgctxt "#31886"
+
 msgid "Sound with the intro"
 msgstr "Audio all'avvio"
 
-msgctxt "#31887"
+
 msgid "A warm sound with the intro when Kodi starts"
 msgstr "Suono caldo durante l'introduzione all'avvio di Kodi"
 
