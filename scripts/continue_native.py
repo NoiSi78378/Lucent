@@ -479,7 +479,8 @@ def _play_directory_entry(xbmc, chosen, selected_season, selected_path):
 
     # On the season currently shown, let Kodi click the *same* plugin entry
     # the user clicks by hand. This also handles source-picker subfolders.
-    if (selected_season == chosen["season"]
+    if (str(chosen.get("filetype") or "") == "directory"
+            and selected_season == chosen["season"]
             and str(chosen.get("folder") or "") == selected_path):
         xbmc.executebuiltin("Control.SetFocus(5601,%d,absolute)" % chosen["index"])
         xbmc.sleep(180)
