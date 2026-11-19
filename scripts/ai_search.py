@@ -58,9 +58,9 @@ def _ai_request(prompt, key):
         "messages": [
             {"role": "system", "content": (
                 "Sei Lucent, consulente di film e serie TV. Rispondi SEMPRE in italiano e SOLO "
-                "con JSON valido: {\\\"message\\\":\\\"breve spiegazione\\\","
-                "\\\"titles\\\":[{\\\"title\\\":\\\"titolo reale\\\",\\\"year\\\":2024,"
-                "\\\"type\\\":\\\"movie o tvshow\\\",\\\"reason\\\":\\\"perché consigliarlo\\\"}]}. "
+                "con JSON valido: {\"message\":\"breve spiegazione\","
+                "\"titles\":[{\"title\":\"titolo reale\",\"year\":2024,"
+                "\"type\":\"movie o tvshow\",\"reason\":\"perché consigliarlo\"}]}. "
                 "Se la persona chiede un titolo preciso, restituisci quel titolo. Se chiede "
                 "consigli, suggerisci al massimo 5 titoli di opere realmente esistenti, senza "
                 "inventare date o disponibilità. NON affermare mai di aver verificato "
