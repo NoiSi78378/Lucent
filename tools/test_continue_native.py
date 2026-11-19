@@ -162,6 +162,33 @@ class ContinueIntegrationTests(unittest.TestCase):
         self.assertIn(("Player.Open", {"item": {"episodeid": 101},
                           "options": {"resume": False}}), kodi.calls)
 
+    def test_library_non_object_resume_does_not_break_playback(self):
+        """Some providers store a non-dict resume; select the next episode."""
+        kodi = self.use(FakeKodi(
+            labels={"Container.ShowTitle": "FROM"},
+            shows=[{"tvshowid": 50, "title": "FROM"}],
+            episodes=[
+                dict(ep(1, 1, watched=1), episodeid=100),
+                dict(ep(1, 2), episodeid=101, resume="00:00:30")]))
+        self.assertTrue(target.run())
+        self.assertIn(("Player.Open", {"item": {"episodeid": 101},
+                       "options": {"resume": False}}), kodi.calls)
+
+    def test_library_fetch_exception_identifies_stage(self):
+        """A provider's exception must name the failing API stage."""
+        class KodiBroken(FakeKodi):
+            def executeJSONRPC(self, raw):
+                if json.loads(raw)["method"] == "VideoLibrary.GetEpisodes":
+                    raise TypeError("mock provider TypeError")
+                return super().executeJSONRPC(raw)
+        kodi = self.use(KodiBroken(
+            labels={"Container.ShowTitle": "FROM",
+                    "ListItem.TvShowDBID": "50"},
+            direct={50: {"title": "FROM"}}))
+        self.assertFalse(target.run())
+        self.assertIn("TypeError", target.diagnosis())
+        self.assertIn("library-fetch", target.diagnosis())
+
     def test_library_partial_resume(self):
         kodi = self.use(FakeKodi(
             labels={"Container.ShowTitle": "FROM"},
