@@ -1,146 +1,224 @@
 #!/usr/bin/env python3
-"""Offline regression tests for the season-page Continue button.
+"""Regression tests for Lucent ITA's Netflix-style Continue, without Kodi.
 
-Never needs installed Kodi, internet, Lucent Video or Stream4Me.
+Covers starting from zero, resume, next episode, next season, and the exact
+bug where the screen contains TV-show tiles ("Squid Game" E22, "FROM" E40)
+rather than playable episodes. No dependency on Lucent Video.
 """
 import json
 import pathlib
+import re
 import sys
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-import continue_native as target  # noqa: E402
+import continue_native as target
 
 
-def ep(season, episode, watched=0, position=0, total=1800, aired="2025-01-01", **extra):
+def ep(season, episode, watched=0, position=0, total=1800,
+       aired="2025-01-01", **extra):
     return dict(season=season, episode=episode, playcount=watched,
                 resume={"position": position, "total": total},
                 firstaired=aired, **extra)
 
 
-class ContinueSelectionTests(unittest.TestCase):
-    def test_start_first_episode_when_never_watched(self):
-        self.assertEqual(target.next_unwatched([
-            ep(2, 1), ep(1, 2), ep(1, 1)])["episode"], 1)
+class SelectionTests(unittest.TestCase):
+    def test_series_from_zero(self):
+        item = target.next_unwatched([ep(2, 1), ep(1, 2), ep(1, 1)])
+        self.assertEqual(target._episode_order(item), (1, 1))
 
-    def test_resume_unfinished_before_new_episodes(self):
-        result = target.next_unwatched([
-            ep(1, 1, watched=1), ep(1, 2, position=640),
-            ep(1, 3), ep(2, 1)])
-        self.assertEqual(target._episode_order(result), (1, 2))
+    def test_one_watched_next_episode(self):
+        item = target.next_unwatched([ep(1, 1, watched=1), ep(1, 2)])
+        self.assertEqual(target._episode_order(item), (1, 2))
 
-    def test_next_episode_after_last_watched(self):
-        result = target.next_unwatched([
-            ep(1, 1, watched=1), ep(1, 2, watched=1), ep(1, 3)])
-        self.assertEqual(target._episode_order(result), (1, 3))
+    def test_resume_unfinished_even_with_playcount_one(self):
+        item = target.next_unwatched([ep(1, 1, watched=1, position=420),
+                                      ep(1, 2)])
+        self.assertEqual(target._episode_order(item), (1, 1))
 
-    def test_next_season_not_first_episode_again(self):
-        result = target.next_unwatched([
-            ep(1, 1, watched=1), ep(1, 2, watched=1), ep(2, 1)])
-        self.assertEqual(target._episode_order(result), (2, 1))
+    def test_next_season(self):
+        item = target.next_unwatched([ep(1, 1, watched=1),
+                                      ep(1, 2, watched=1), ep(2, 1)])
+        self.assertEqual(target._episode_order(item), (2, 1))
 
-    def test_all_watched_never_auto_restarts(self):
+    def test_fully_watched_does_not_randomly_restart(self):
         self.assertIsNone(target.next_unwatched([
             ep(1, 1, watched=1), ep(1, 2, watched=1)]))
 
-    def test_future_episodes_are_ignored(self):
-        self.assertIsNone(target.next_unwatched([ep(1, 1, aired="2035-01-01")],
-                                                 today="2026-11-18"))
+    def test_no_unreleased_episodes(self):
+        self.assertIsNone(target.next_unwatched([ep(1, 1, aired="2036-01-01")],
+                                                 today="2026-11-19"))
 
-    def test_specials_excluded_when_season_one_exists(self):
-        result = target.next_unwatched([ep(0, 1), ep(1, 1)])
-        self.assertEqual(target._episode_order(result), (1, 1))
+    def test_specials_are_lower_priority_than_season_one(self):
+        item = target.next_unwatched([ep(0, 1), ep(1, 1)])
+        self.assertEqual(target._episode_order(item), (1, 1))
 
-    def test_dont_restart_watched_when_only_unwatched_are_earlier(self):
-        self.assertIsNone(target.next_unwatched([
-            ep(1, 1), ep(1, 2, watched=1)]))
+    def test_localized_first_air_date(self):
+        self.assertTrue(target._valid_today({"firstaired": "17.09.2021"}, "2026-11-19"))
 
 
 class FakeKodi:
     LOGINFO = 1
-    def __init__(self, labels=None, episodes=None, shows=None, direct=None):
+
+    def __init__(self, labels=None, shows=None, direct=None, episodes=None,
+                 tabs=None, season_episodes=None):
         self.labels = labels or {}
-        self.episodes = episodes or []
         self.shows = shows or []
         self.direct = direct or {}
+        self.episodes = episodes or []
+        self.tabs = tabs or []
+        self.season_episodes = season_episodes or {}
+        self.selected_season = None
         self.builtins = []
         self.calls = []
-        self.notifications = []
+
     def getInfoLabel(self, name):
+        m = re.fullmatch(r"Container\(56\).ListItemAbsolute\((\d+)\)\.(.*)", name)
+        if m:
+            i = int(m.group(1))
+            row = self.tabs[i] if i < len(self.tabs) else {}
+            return str(row.get(m.group(2), ""))
+        m = re.fullmatch(r"Container\(5601\).ListItemAbsolute\((\d+)\)\.(.*)", name)
+        if m:
+            i = int(m.group(1))
+            season = self.season_episodes.get(self.selected_season, [])
+            row = season[i] if i < len(season) else {}
+            return str(row.get(m.group(2), ""))
+        if name == "Container(56).NumItems":
+            return str(len(self.tabs))
+        if name == "Container(5601).NumItems" and self.tabs:
+            return str(len(self.season_episodes.get(self.selected_season, [])))
         return str(self.labels.get(name, ""))
-    def sleep(self, ms):
+
+    def getCondVisibility(self, name):
+        return False
+
+    def executebuiltin(self, cmd):
+        self.builtins.append(cmd)
+        m = re.match(r"Control.SetFocus\(56,(\d+),absolute\)", cmd)
+        if m:
+            self.selected_season = int(m.group(1))
+
+    def sleep(self, _ms):
         pass
-    def executebuiltin(self, action):
-        self.builtins.append(action)
-    def log(self, msg, level):
+
+    def log(self, _message, _level):
         pass
+
     def executeJSONRPC(self, raw):
-        req = json.loads(raw)
-        method = req["method"]
-        self.calls.append((method, req["params"]))
-        if method == "VideoLibrary.GetTVShowDetails":
-            sid = req["params"]["tvshowid"]
-            ret = self.direct.get(sid, {})
-            return json.dumps({"jsonrpc":"2.0","id":1,"result":{"tvshowdetails":ret}})
+        request = json.loads(raw)
+        method, params = request["method"], request.get("params") or {}
+        self.calls.append((method, params))
         if method == "VideoLibrary.GetTVShows":
-            return json.dumps({"jsonrpc":"2.0","id":1,"result":{"tvshows":self.shows}})
-        if method == "VideoLibrary.GetEpisodes":
-            return json.dumps({"jsonrpc":"2.0","id":1,"result":{"episodes":self.episodes}})
-        if method == "Player.Open":
-            return json.dumps({"jsonrpc":"2.0","id":1,"result":"OK"})
-        return json.dumps({"jsonrpc":"2.0","id":1,"error":{"code":-32601,"message":"Unknown method"}})
+            result = {"tvshows": self.shows}
+        elif method == "VideoLibrary.GetTVShowDetails":
+            result = {"tvshowdetails": self.direct.get(params["tvshowid"], {})}
+        elif method == "VideoLibrary.GetEpisodes":
+            result = {"episodes": self.episodes}
+        elif method == "Player.Open":
+            result = "OK"
+        else:
+            return json.dumps({"jsonrpc": "2.0", "id": 1,
+                               "error": {"code": -32601, "message": "Unknown"}})
+        return json.dumps({"jsonrpc": "2.0", "id": 1, "result": result})
 
 
 class ContinueIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.old = sys.modules.get("xbmc")
+
     def tearDown(self):
         if self.old is None:
             sys.modules.pop("xbmc", None)
         else:
             sys.modules["xbmc"] = self.old
 
-    def test_library_episode_uses_native_player(self):
-        kodi = FakeKodi(
-            labels={"Container(5698).ListItem.DBID":"12",
-                    "Container(5698).ListItem.UniqueID(tmdb)":"9988",
-                    "Container.ShowTitle":"Serie di prova"},
-            direct={12: {"title":"Serie di prova","uniqueid":{"tmdb":"9988"}}},
-            episodes=[
-                dict(ep(1, 1, watched=1), episodeid=301),
-                dict(ep(1, 2, position=100), episodeid=302)])
+    def use(self, kodi):
         sys.modules["xbmc"] = kodi
-        self.assertTrue(target.run())
-        opened = [params for name, params in kodi.calls if name == "Player.Open"]
-        self.assertEqual(opened, [{"item":{"episodeid":302},"options":{"resume":True}}])
-        self.assertFalse(any("lucent" in str(x).lower() for x in kodi.builtins))
+        return kodi
 
-    def test_addon_only_episodes_use_actual_visible_kodi_list(self):
-        # No library match. A season supplied by Stream4Me has playable rows
-        # loaded in container 5601. Select its next unwatched row normally.
-        props = {"Container(5601).NumItems":"3",
-                 "Container(56).ListItem.Season":"1"}
-        for i, seen in enumerate([1, 1, 0]):
-            stem=f"Container(5601).ListItemAbsolute({i})."
-            props[stem+"Label"]=f"Episodio {i+1}"
-            props[stem+"Episode"]=str(i+1)
-            props[stem+"PlayCount"]=str(seen)
-        kodi=FakeKodi(labels=props)
-        sys.modules["xbmc"]=kodi
+    def test_library_from_zero_no_tmdb_id(self):
+        kodi = self.use(FakeKodi(
+            labels={"Container.ShowTitle": "FROM"},
+            shows=[{"tvshowid": 50, "title": "FROM"}],
+            episodes=[dict(ep(1, 1), episodeid=100),
+                      dict(ep(1, 2), episodeid=101)]))
         self.assertTrue(target.run())
-        self.assertEqual(kodi.builtins, ["Control.SetFocus(5601,2,absolute)", "Action(Select)"])
+        self.assertIn(("Player.Open", {"item": {"episodeid": 100},
+                          "options": {"resume": False}}), kodi.calls)
 
-    def test_nothing_to_play_does_not_invoke_lucent_video(self):
-        kodi = FakeKodi(labels={"Container(5601).NumItems":"0"})
-        sys.modules["xbmc"]=kodi
+    def test_library_next_day_next_episode(self):
+        kodi = self.use(FakeKodi(
+            labels={"Container.ShowTitle": "FROM",
+                    "ListItem.TvShowDBID": "50"},
+            direct={50: {"title": "FROM"}},
+            episodes=[dict(ep(1, 1, watched=1), episodeid=100),
+                      dict(ep(1, 2), episodeid=101)]))
+        self.assertTrue(target.run())
+        self.assertIn(("Player.Open", {"item": {"episodeid": 101},
+                          "options": {"resume": False}}), kodi.calls)
+
+    def test_library_partial_resume(self):
+        kodi = self.use(FakeKodi(
+            labels={"Container.ShowTitle": "FROM"},
+            shows=[{"tvshowid": 50, "title": "FROM"}],
+            episodes=[dict(ep(1, 1, position=650), episodeid=100),
+                      dict(ep(1, 2), episodeid=101)]))
+        self.assertTrue(target.run())
+        self.assertIn(("Player.Open", {"item": {"episodeid": 100},
+                          "options": {"resume": True}}), kodi.calls)
+
+    def test_addon_seasons_from_zero_with_grouped_show_tiles(self):
+        tabs = [{"Label": "* Tutte le stagioni"},
+                {"Label": "Stagione 1"}, {"Label": "Stagione 2"}]
+        season_rows = {
+            0: [{"Label": "Squid Game", "DBType": "tvshow",
+                 "Episode": "22", "Season": "1"},
+                {"Label": "FROM", "DBType": "tvshow",
+                 "Episode": "40", "Season": "1"}],
+            1: [{"Label": "Episodio uno", "DBType": "episode",
+                 "Episode": "1", "Season": "1", "PlayCount": "0"},
+                {"Label": "Episodio due", "DBType": "episode",
+                 "Episode": "2", "Season": "1", "PlayCount": "0"}],
+            2: [{"Label": "Episodio uno", "DBType": "episode",
+                 "Episode": "1", "Season": "2", "PlayCount": "0"}],
+        }
+        kodi = self.use(FakeKodi(tabs=tabs, season_episodes=season_rows))
+        self.assertTrue(target.run())
+        self.assertEqual(kodi.builtins[-2:],
+                         ["Control.SetFocus(5601,0,absolute)", "Action(Select)"])
+        self.assertFalse(any("plugin.video.lucent" in x for x in kodi.builtins))
+
+    def test_addon_next_season(self):
+        tabs = [{"Label": "Stagione 1"}, {"Label": "Stagione 2"}]
+        rows = {
+            0: [{"Label": "Episodio uno", "DBType": "episode", "Episode": "1",
+                 "Season": "1", "PlayCount": "1"}],
+            1: [{"Label": "Episodio uno", "DBType": "episode", "Episode": "1",
+                 "Season": "2", "PlayCount": "0"}]}
+        kodi = self.use(FakeKodi(tabs=tabs, season_episodes=rows))
+        self.assertTrue(target.run())
+        self.assertEqual(kodi.selected_season, 1)
+        self.assertEqual(kodi.builtins[-2:],
+                         ["Control.SetFocus(5601,0,absolute)", "Action(Select)"])
+
+    def test_show_tiles_do_not_count_as_episodes(self):
+        kodi = self.use(FakeKodi(labels={"Container(5601).NumItems": "2",
+                                         "Container(56).ListItem.Season": "1",
+            "Container(5601).ListItemAbsolute(0).Label": "Squid Game",
+            "Container(5601).ListItemAbsolute(0).Episode": "22",
+            "Container(5601).ListItemAbsolute(0).DBType": "tvshow",
+            "Container(5601).ListItemAbsolute(1).Label": "FROM",
+            "Container(5601).ListItemAbsolute(1).Episode": "40",
+            "Container(5601).ListItemAbsolute(1).DBType": "tvshow"}))
         self.assertFalse(target.run())
-        self.assertFalse(any("plugin.video.lucent" in str(x) for x in kodi.builtins))
+        self.assertNotIn("Action(Select)", kodi.builtins)
 
-    def test_ambiguous_title_does_not_guess_library_show(self):
-        kodi = FakeKodi(
-            labels={"Container.ShowTitle":"Same Name"},
-            shows=[{"tvshowid":1,"title":"Same Name"}, {"tvshowid":2,"title":"Same Name"}])
+    def test_ambiguous_same_name_does_not_pick_random_show(self):
+        kodi = FakeKodi(labels={"Container.ShowTitle": "Same Name"},
+                         shows=[{"title": "Same Name", "tvshowid": 1},
+                                {"title": "Same Name", "tvshowid": 2}])
         self.assertIsNone(target._find_library_show(kodi))
 
 

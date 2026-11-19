@@ -153,13 +153,9 @@ msgctxt "#31067"
 msgid "Skin settings"
 msgstr "Skin-instellingen"
 
-
-
-
 msgctxt "#31071"
 msgid "System"
 msgstr "Systeem"
-
 
 msgctxt "#31076"
 msgid "Pause"
@@ -300,7 +296,6 @@ msgstr "Profielen"
 msgctxt "#31137"
 msgid "Advanced"
 msgstr "Geavanceerd"
-
 
 msgctxt "#31140"
 msgid "Theme"
@@ -502,7 +497,6 @@ msgctxt "#31198"
 msgid "Bitrate"
 msgstr "Bitrate"
 
-
 msgctxt "#31200"
 msgid "HDR"
 msgstr "HDR"
@@ -527,13 +521,9 @@ msgctxt "#31205"
 msgid "Queue"
 msgstr "Wachtrij"
 
-
-
 msgctxt "#31208"
 msgid "Buffer"
 msgstr "Buffer"
-
-
 
 msgctxt "#31212"
 msgid "CPU clock"
@@ -615,7 +605,6 @@ msgctxt "#31240"
 msgid "Log in automatically on startup"
 msgstr "Automatisch inloggen bij het opstarten"
 
-
 msgctxt "#31243"
 msgid "Channel down"
 msgstr "Kanaal omlaag"
@@ -636,11 +625,9 @@ msgctxt "#31247"
 msgid "left"
 msgstr "over"
 
-
 msgctxt "#31249"
 msgid "LIVE"
 msgstr "LIVE"
-
 
 msgctxt "#31254"
 msgid "Films and series from this studio"
@@ -662,9 +649,6 @@ msgctxt "#31263"
 msgid "Preferred audio and subtitle language"
 msgstr "Voorkeurstaal voor audio en ondertitels"
 
-
-
-
 msgctxt "#31267"
 msgid "Library, file lists and how your media is shown"
 msgstr "Bibliotheek, bestandslijsten en hoe je media getoond wordt"
@@ -676,8 +660,6 @@ msgstr "Bibliotheek bijwerken, bekeken tonen en extra plaatjes"
 msgctxt "#31269"
 msgid "Video library: titles, flags, actors and trailers"
 msgstr "Videobibliotheek: titels, vlaggen, acteurs en trailers"
-
-
 
 msgctxt "#31272"
 msgid "File lists: hide extensions, sort, delete and rename"
@@ -763,7 +745,6 @@ msgctxt "#31292"
 msgid "Shut down when idle, wake-on-LAN"
 msgstr "Uitschakelen bij niets doen, wake-on-LAN"
 
-
 msgctxt "#31294"
 msgid "Debug logging for problems"
 msgstr "Debuglogboek bij problemen"
@@ -772,13 +753,9 @@ msgctxt "#31295"
 msgid "Remote control, sharing and streaming between devices"
 msgstr "Bediening op afstand, delen en streamen tussen apparaten"
 
-
 msgctxt "#31297"
 msgid "Control from a phone app or web browser"
 msgstr "Bediening via een telefoon-app of webbrowser"
-
-
-
 
 msgctxt "#31301"
 msgid "Install, update and manage add-ons"
@@ -832,7 +809,6 @@ msgctxt "#31313"
 msgid "Profiles for every person in the house"
 msgstr "Profielen voor iedereen in huis"
 
-
 msgctxt "#31315"
 msgid "Kodi version, CPU, memory, storage and network"
 msgstr "Kodi-versie, processor, geheugen, opslag en netwerk"
@@ -840,7 +816,6 @@ msgstr "Kodi-versie, processor, geheugen, opslag en netwerk"
 msgctxt "#31316"
 msgid "What Kodi did recently, with errors"
 msgstr "Wat Kodi de laatste tijd deed, met fouten"
-
 
 msgctxt "#31318"
 msgid "Theme, layout, info page, integrations and more"
@@ -857,7 +832,6 @@ msgstr "Beeld kalibreren"
 msgctxt "#31321"
 msgid "Fix black edges or a picture that falls off the screen"
 msgstr "Zwarte randen of beeld dat buiten de tv valt oplossen"
-
 
 msgctxt "#31400"
 msgid "Closed"
@@ -939,7 +913,6 @@ msgctxt "#31420"
 msgid "How dark the screen gets"
 msgstr "Hoe donker het scherm wordt"
 
-
 msgctxt "#31422"
 msgid "Title under every poster"
 msgstr "Titel onder elke poster"
@@ -975,7 +948,6 @@ msgstr "Hoe lang wachten voordat de trailer start"
 msgctxt "#31430"
 msgid "Quality and login of the YouTube add-on"
 msgstr "Kwaliteit en login van de YouTube-add-on"
-
 
 msgctxt "#31432"
 msgid "Glow around the card that has the focus"
@@ -1028,7 +1000,6 @@ msgstr "Tabs van het zijmenu en de rijen op het startscherm"
 msgctxt "#31444"
 msgid "Put the tabs and rows back the way they were"
 msgstr "Tabs en rijen terugzetten zoals ze waren"
-
 
 msgctxt "#31446"
 msgid "Video, sound and refresh rate of Kodi's player"
@@ -1230,7 +1201,6 @@ msgctxt "#31525"
 msgid "Lucent is a skin for Kodi. Kodi is a trademark of the XBMC Foundation."
 msgstr "Lucent is een skin voor Kodi. Kodi is een handelsmerk van de XBMC Foundation."
 
-
 msgctxt "#31330"
 msgid "About Lucent"
 msgstr "Over Lucent"
@@ -1246,8 +1216,6 @@ msgstr "Nu op updates controleren"
 msgctxt "#31333"
 msgid "Look for a new version of Lucent"
 msgstr "Zoeken naar een nieuwe versie van Lucent"
-
-
 
 msgctxt "#31336"
 msgid "What's new"
@@ -1304,14 +1272,6 @@ msgstr "gekeken"
 msgctxt "#31542"
 msgid "done at"
 msgstr "klaar om"
-
-msgctxt "#31543"
-msgid "Intro at start"
-msgstr "Intro bij het opstarten"
-
-msgctxt "#31544"
-msgid "The star and the moon of Lucent when Kodi starts (about 6 seconds)"
-msgstr "De ster en de maan van Lucent als Kodi start (ongeveer 6 seconden)"
 
 msgctxt "#31545"
 msgid "Tonight for you"
@@ -1456,7 +1416,6 @@ msgstr "Kijk de volgende"
 msgctxt "#31596"
 msgid "Collection"
 msgstr "Collectie"
-
 
 msgctxt "#31612"
 msgid "Available groups"
@@ -1646,8 +1605,6 @@ msgctxt "#31661"
 msgid "On: posters 15% bigger, without names. Off: the old, smaller posters, with the next row peeking in"
 msgstr "Aan: posters 15% groter, zonder namen. Uit: de oude, kleinere posters, waarbij de volgende rij net zichtbaar is"
 
-
-
 msgctxt "#31669"
 msgid "Maintenance"
 msgstr "Onderhoud"
@@ -1656,11 +1613,9 @@ msgctxt "#31670"
 msgid "Free up space: old pictures, add-on zip files and temporary files; also once a month by itself"
 msgstr "Ruimte vrijmaken: oude afbeeldingen, zip-bestanden van add-ons en tijdelijke bestanden; ook elke maand vanzelf"
 
-
 msgctxt "#31671"
 msgid "Skip"
 msgstr "Overslaan"
-
 
 msgctxt "#31672"
 msgid "OK to skip  ·  Back to keep watching"
@@ -1841,7 +1796,6 @@ msgstr "Stand"
 msgctxt "#31717"
 msgid "Positions"
 msgstr "Posities"
-
 
 msgctxt "#31719"
 msgid "Next on"
@@ -2354,14 +2308,6 @@ msgstr "PREMIÈRE"
 msgctxt "#31883"
 msgid "FINALE"
 msgstr "FINALE"
-
-msgctxt "#31886"
-msgid "Sound with the intro"
-msgstr "Geluid bij de intro"
-
-msgctxt "#31887"
-msgid "A warm sound with the intro when Kodi starts"
-msgstr "Een warme klank bij de intro als Kodi start"
 
 msgctxt "#31890"
 msgid "You have no favourites yet"
