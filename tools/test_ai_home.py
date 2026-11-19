@@ -50,7 +50,7 @@ assert "<control type=\"grouplist\" id=\"9501\">" in panel
 assert "SUGGESTION_LIMIT = 24" in source
 assert '"top": [], "tv": []' not in source or True
 assert '"tv": [], "top": []' in source
-assert '"skip=%d"' in source and "genre=%d" in source
+assert "skip=%d.json" in source and "genre=%d" in source
 assert "def _run_query(prompt):" in source and "_ai_request(prompt, key, intent)" in source
 assert "rows = _add_artwork(verified + suggestions, intent)" in source
 assert 'ActivateWindow(Videos,"%s",return)' in source
