@@ -102,10 +102,16 @@ def _label(xbmc, name):
     return str(xbmc.getInfoLabel(name) or "").strip()
 
 
-def _show_context(xbmc):
+def _show_context(xbmc, context=None):
     """Look at the *series*, never confuse a season's database ID with it."""
     label = lambda key: _label(xbmc, key)
+    context = list(context or [])
+    context += [""] * max(0, 5 - len(context))
+    explicit_title, root_path, season_path, explicit_id, explicit_show_title = context[:5]
     titles = []
+    for direct in (explicit_title, explicit_show_title):
+        if direct and direct not in titles:
+            titles.append(direct)
     for expression in ("Container.ShowTitle", "ListItem.TVShowTitle",
                        "Container(56).ListItem.TVShowTitle",
                        "Container.FolderName", "ListItem.Title"):
@@ -123,6 +129,8 @@ def _show_context(xbmc):
                 identifiers[kind] = val
                 break
     candidates = []
+    if str(explicit_id).isdigit() and int(explicit_id) > 0:
+        candidates.append(int(explicit_id))
     for expr in ("Container(56).ListItem.TvShowDBID",
                  "ListItem.TvShowDBID", "ListItem.DBID"):
         if expr == "ListItem.DBID" and label("ListItem.DBType") != "tvshow":
@@ -131,8 +139,10 @@ def _show_context(xbmc):
         if val.isdigit() and int(val) not in candidates:
             candidates.append(int(val))
     # Season folders in Kodi's library carry the original series DB ID.
-    for expr in ("Container.FolderPath", "Container(56).ListItem.FolderPath"):
-        match = re.search(r"videodb://tvshows/[^/]+/(\d+)/", label(expr))
+    for path in (root_path, season_path,
+                 label("Container.FolderPath"),
+                 label("Container(56).ListItem.FolderPath")):
+        match = re.search(r"videodb://tvshows/[^/]+/(\d+)/", str(path or ""))
         if match and int(match.group(1)) not in candidates:
             candidates.insert(0, int(match.group(1)))
     return titles, identifiers, candidates
@@ -153,8 +163,8 @@ def _matches_show(show, titles, identifiers):
     return bool(name and any(name == _normalized(t) for t in titles))
 
 
-def _find_library_show(xbmc):
-    titles, identifiers, candidates = _show_context(xbmc)
+def _find_library_show(xbmc, context=None):
+    titles, identifiers, candidates = _show_context(xbmc, context)
     for sid in candidates:
         try:
             details = _rpc(xbmc, "VideoLibrary.GetTVShowDetails",
@@ -343,10 +353,10 @@ def _log(xbmc, message):
     xbmc.log("[Lucent ITA] native Continue: " + str(message), xbmc.LOGINFO)
 
 
-def run():
+def run(context=None):
     """True if playback was requested; False if none can safely be selected."""
     import xbmc
-    showid = _find_library_show(xbmc)
+    showid = _find_library_show(xbmc, context)
     if showid:
         try:
             episodes = _library_episodes(xbmc, showid)
