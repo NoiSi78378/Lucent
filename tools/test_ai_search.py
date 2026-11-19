@@ -27,9 +27,10 @@ rows, _ = parse_ai("Ecco delle serie simili:\n1. **Severance** - mistero\n2. Dar
 assert [x["title"] for x in rows] == ["Severance", "Dark", "Fallout"]
 rows, _ = parse_ai('Risultati:\n- Andor\n- Black Mirror')
 assert [x["title"] for x in rows] == ["Andor", "Black Mirror"]
-for invalid in ("", "   ", None, "Nessuna idea disponibile."):
+for invalid in ("", "   ", None):
     try: parse_ai(invalid); raise AssertionError("invalid AI response accepted")
     except ValueError: pass
+assert parse_ai("Nessuna idea disponibile.") == ([], "")
 assert matches_live("Il padrino", "Il Padrino (film)") and not matches_live("azione", "Film d'azione")
 assert is_default_search("icons/search.png","VideoLibrary.Search")
 assert not is_default_search("icons/search.png","ActivateWindow(Settings)")
