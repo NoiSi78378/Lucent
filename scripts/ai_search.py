@@ -21,7 +21,7 @@ import xbmcvfs
 sys.path.insert(0, os.path.dirname(__file__))
 from ai_search_core import is_default_search, matches_live, parse_ai, stream4me_url
 from ai_art_core import choose_record, catalogue_art, tmdb_art, normalize, metadata_label
-from ai_intent_core import understand, year_eligible, genre_eligible
+from ai_intent_core import (understand, year_eligible, genre_eligible, GENRES, GENRE_IT)
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "openrouter/free"
@@ -67,7 +67,8 @@ def _ai_request(prompt, key, intent=None):
     if intent.get("kind"):
         context += "Tipo richiesto: " + intent["kind"] + ". "
     if intent.get("genre"):
-        context += "Genere richiesto: azione. "
+        context += ("Genere richiesto (OBBLIGATORIO): " +
+                    GENRES[intent["genre"]]["catalog"] + ". ")
     system_prompt = (
         "Sei Lucent, esperto di film e serie TV. Rispondi in italiano con SOLO "
         "un oggetto JSON valido con chiavi message (breve testo) e titles (array "
@@ -84,7 +85,8 @@ def _ai_request(prompt, key, intent=None):
         # the free provider does not support JSON mode or emits empty text.
         messages = [
             {"role": "system", "content": system_prompt if attempt == 0 else (
-                "Consiglia fino a cinque film o serie reali in italiano. "
+                "Consiglia fino a cinque film o serie reali in italiano, "
+                "rispettando esattamente anno, genere e tipo richiesti. "
                 "Rispondi SOLO con una lista numerata di titoli, uno per riga. "
                 "Esempio: 1. Severance\n2. Dark\n3. Fallout. Non aggiungere link."
             )},
@@ -272,70 +274,82 @@ def _remote_art(row, tmdb_key):
 
 
 def _discover(intent, tmdb_key):
-    """Use dated, independent catalogue results, not a model's memory of releases."""
-    if not (intent.get("year") and intent.get("kind") == "film"):
+    """Find films whose actual source metadata matches BOTH year AND genre."""
+    if not (intent.get("year") and intent.get("kind") in ("film", None)):
         return []
     year = int(intent["year"])
+    genre = intent.get("genre")
+    spec = GENRES.get(genre) if genre else None
     rows = []
+    seen = set()
+    deadline = time.monotonic() + 16
+
     if tmdb_key:
         params = {"api_key": tmdb_key, "language": "it-IT",
                   "sort_by": "popularity.desc", "page": 1,
                   "primary_release_date.gte": "%04d-01-01" % year,
                   "primary_release_date.lte": "%04d-12-31" % year}
-        if intent.get("genre") == "action":
-            params["with_genres"] = "28"
+        if spec and spec.get("movie"):
+            params["with_genres"] = str(spec["movie"])
         if intent.get("released") and year == int(intent["today"][:4]):
             params["primary_release_date.lte"] = intent["today"]
         data = _json_art("https://api.themoviedb.org/3/discover/movie?" +
-                         urllib.parse.urlencode(params), timeout=5)
+                         urllib.parse.urlencode(params), timeout=4)
         for item in data.get("results") or []:
             if not isinstance(item, dict):
                 continue
             art = tmdb_art(item)
-            if art.get("year") != str(year) or not art.get("poster"):
-                continue
-            if intent.get("genre") == "action" and 28 not in (item.get("genre_ids") or []):
-                continue
             title = str(item.get("title") or item.get("original_title") or "").strip()
-            if not title:
+            genre_ids = item.get("genre_ids") or []
+            candidate = {"kind": "film", "genre_ids": genre_ids}
+            if (not title or art.get("year") != str(year) or not art.get("poster")
+                    or not genre_eligible(candidate, intent)
+                    or normalize(title) in seen):
                 continue
+            seen.add(normalize(title))
             rows.append({"title": title, "kind": "film", "year": str(year),
                          "verified_year": str(year), "rating": art.get("rating") or "",
-                         "poster": art.get("poster"), "backdrop": art.get("backdrop"),
-                         "genre_ids": item.get("genre_ids") or [],
-                         "reason": "Anno verificato nel catalogo TMDb"})
+                         "poster": art["poster"], "backdrop": art.get("backdrop") or "",
+                         "genre_ids": genre_ids, "reason": "Anno e genere verificati su TMDb"})
             if len(rows) >= 5:
                 return rows
 
-    # Public Cinemeta catalog as a fallback when a personal TMDb key is absent.
-    # It is never used to claim that a title is playable on Stream4Me.
-    genre_path = "genre=Action" if intent.get("genre") == "action" else "top"
-    catalog = "https://v3-cinemeta.strem.io/catalog/movie/top/%s.json" % genre_path if genre_path != "top" else "https://v3-cinemeta.strem.io/catalog/movie/top.json"
-    data = _json_art(catalog, timeout=5)
-    seen = {normalize(row["title"]) for row in rows}
-    for item in data.get("metas") or []:
-        if not isinstance(item, dict) or str(item.get("year") or "")[:4] != str(year):
-            continue
-        title = str(item.get("name") or "").strip()
-        art = catalogue_art(item, "cinemeta")
-        if not title or not art.get("poster") or normalize(title) in seen:
-            continue
-        if intent.get("genre") == "action" and item.get("genres"):
-            labels = [str(name).casefold() for name in item.get("genres") or []]
-            if not any("action" in name or "azione" in name for name in labels):
-                continue
-        if intent.get("released"):
-            dated = str(item.get("released") or item.get("release_date") or "")
-            if dated and dated[:10] > intent["today"]:
-                continue
-        seen.add(normalize(title))
-        rows.append({"title": title, "kind": "film", "year": str(year),
-                     "verified_year": str(year), "poster": art.get("poster"),
-                     "backdrop": art.get("backdrop"), "rating": art.get("rating"),
-                     "genres": item.get("genres") or [],
-                     "reason": "Anno verificato nel catalogo Cinemeta"})
-        if len(rows) >= 5:
+    # Cinemeta's manifest documents two separate catalogue types:
+    # year/genre=YYYY (all movie genres for a selected year), and
+    # top/genre=Horror or top/genre=Romance (a specific genre).
+    # In EITHER catalogue every candidate must still have explicit genre labels.
+    catalogs = ["year/genre=%d" % year]
+    if spec:
+        g = urllib.parse.quote(spec["catalog"], safe="")
+        catalogs.extend(["top/genre=%s" % g, "top/genre=%s&skip=100" % g])
+    for catalog in catalogs:
+        if len(rows) >= 5 or time.monotonic() > deadline:
             break
+        url = "https://v3-cinemeta.strem.io/catalog/movie/%s.json" % catalog
+        data = _json_art(url, timeout=4)
+        metas = data.get("metas") or [] if isinstance(data, dict) else []
+        for item in metas:
+            if not isinstance(item, dict):
+                continue
+            title = str(item.get("name") or "").strip()
+            art = catalogue_art(item, "cinemeta")
+            candidate = {"kind": "film", "genres": item.get("genres") or []}
+            if (not title or art.get("year") != str(year)
+                    or not art.get("poster") or normalize(title) in seen
+                    or not genre_eligible(candidate, intent)):
+                continue
+            if intent.get("released"):
+                dated = str(item.get("released") or item.get("release_date") or "")
+                if dated and dated[:10] > intent["today"]:
+                    continue
+            seen.add(normalize(title))
+            rows.append({"title": title, "kind": "film", "year": str(year),
+                         "verified_year": str(year), "poster": art.get("poster"),
+                         "backdrop": art.get("backdrop"), "rating": art.get("rating"),
+                         "genres": item.get("genres") or [],
+                         "reason": "Anno e genere verificati su Cinemeta"})
+            if len(rows) >= 5:
+                break
     return rows
 
 
@@ -355,18 +369,24 @@ def _add_artwork(rows, intent=None):
             output.append(row)
             continue
         if row.get("verified_year"):
-            if year_eligible(row, intent) and genre_eligible(row, intent):
+            if (year_eligible(row, intent) and genre_eligible(row, intent)
+                    and (row.get("poster") or row.get("backdrop"))):
                 output.append(row)
             continue
         lookup = row.get("kind", "") + "|" + normalize(row.get("title"))
         if not lookup.strip("|"):
             continue
         art = _local_art(row)
-        if not (art.get("year") or art.get("poster")):
+        # A local poster without genre metadata does NOT satisfy a genre request.
+        if (not (art.get("year") or art.get("poster"))
+                or (intent.get("genre") and not genre_eligible(
+                    dict(art, kind=row.get("kind")), intent))):
             cached = cache.get(lookup) or {}
             cached_art = cached.get("art") or {}
             ttl = ART_TTL if (cached_art.get("poster") or cached_art.get("year")) else NO_ART_TTL
-            if now - cached.get("t", 0) < ttl:
+            if (now - cached.get("t", 0) < ttl and
+                    (not intent.get("genre") or genre_eligible(
+                        dict(cached_art, kind=cached_art.get("kind") or row.get("kind")), intent))):
                 art = cached_art
             elif time.monotonic() < deadline:
                 art = _remote_art(row, key)
@@ -557,16 +577,18 @@ class SearchDialog(xbmcgui.WindowXMLDialog):
             rows = _add_artwork(verified + suggestions, intent)
             if not rows:
                 if intent.get("year"):
-                    status = ("Nessun titolo del %d verificabile nei cataloghi. "
-                              "Non mostro film di altri anni: prova la ricerca Stream4Me."
-                              % intent["year"])
+                    status = ("Nessun risultato verificato per %s del %d. "
+                              "Non mostro film di altri generi o anni."
+                              % (GENRE_IT.get(intent.get("genre"), "film"),
+                                 intent["year"]))
                 else:
                     status = "Nessun titolo verificato; prova la ricerca diretta in Stream4Me."
                 self._list([], status)
                 return
             # Never repeat an inaccurate LLM summary for strict-year queries.
             if intent.get("year"):
-                message = "Risultati verificati per l'anno %d." % intent["year"]
+                message = "Anno %d · Genere %s verificati." % (
+                    intent["year"], GENRE_IT.get(intent.get("genre"), "qualsiasi"))
             live, _ = _live_epg([row["title"] for row in rows])
             self._list(live + rows, (message or "Suggerimenti AI") +
                        " · Premi OK su una copertina per cercare in Stream4Me.")

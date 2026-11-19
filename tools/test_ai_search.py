@@ -108,6 +108,39 @@ assert "rows = _add_artwork(verified + suggestions, intent)" in script
 assert "Nessun titolo del %d verificabile" in script
 assert 'if not intent.get("direct") and not (art.get("year") or art.get("poster"))' in script
 assert 'rows = _add_artwork([row], intent)' in script
+# Genre regressions: the user's two failing cases must NEVER pass.
+from ai_intent_core import GENRES, GENRE_IT
+horror = understand("voglio vedere un film horror del 2007", today)
+romance = understand("voglio vedere un film romantico del 2020", today)
+assert horror["genre"] == "horror" and horror["year"] == 2007
+assert romance["genre"] == "romance" and romance["year"] == 2020
+for name in ("romantico", "romantica", "sentimentale", "horror", "commedia", "thriller",
+             "fantascienza", "fantasy", "animazione", "giallo", "crime", "western"):
+    assert understand("voglio un film " + name + " del 2020", today)["genre"] is not None, name
+assert understand("commedia romantica del 2020", today)["genre"] == "romance"
+assert genre_eligible({"kind":"film","genre_ids":[27],"verified_year":"2007"}, horror)
+assert not genre_eligible({"kind":"film","genre_ids":[12,14,10751]}, horror) # Harry Potter
+assert not genre_eligible({"kind":"film","genre_ids":[16,10751]}, horror) # Ratatouille
+assert not genre_eligible({"kind":"film","genre_ids":[28,12]}, horror) # Spider-Man
+assert not genre_eligible({"kind":"film","genres":[]}, horror)
+assert genre_eligible({"kind":"film","genres":["Horror", "Mystery"]}, horror)
+assert genre_eligible({"kind":"film","genre_ids":[10749],"verified_year":"2020"}, romance)
+assert not genre_eligible({"kind":"film","genre_ids":[28,878]}, romance) # Tenet
+assert not genre_eligible({"kind":"film","genre_ids":[16,10751]}, romance) # Soul
+assert not genre_eligible({"kind":"film","genre_ids":[]}, romance)
+assert genre_eligible({"kind":"film","genres":["Romance", "Drama"]}, romance)
+assert genre_eligible({"kind":"film","genres":"Romance / Drama"}, romance)
+assert not genre_eligible({"kind":"film","genres":"Drama / Mystery"}, romance)
+assert GENRES["horror"]["movie"] == 27 and GENRES["romance"]["movie"] == 10749
+assert GENRES["horror"]["catalog"] == "Horror" and GENRES["romance"]["catalog"] == "Romance"
+script = (r/"scripts/ai_search.py").read_text(encoding="utf-8")
+assert 'params["with_genres"] = str(spec["movie"])' in script
+assert 'year/genre=%d' in script and 'top/genre=%s' in script
+assert 'genre_eligible(candidate, intent)' in script
+assert 'not genre_eligible(row, intent)' in script
+assert 'Genere %s verificati' in script
+assert 'Genere richiesto (OBBLIGATORIO)' in script
+
 ui_string = (r/"xml/Lucent_AISearch.xml").read_text(encoding="utf-8")
 assert "Container(50).ListItem.Label" in ui_string
 
