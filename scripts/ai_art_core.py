@@ -92,6 +92,30 @@ def catalogue_art(item, source):
             "year": year_of(item), "rating": rating_of(item)}
 
 
+
+def backdrop_full(url):
+    """High-resolution *landscape* art, distinct from small card thumbnails.
+
+    TMDb serves the same backdrop asset at its native image resolution.
+    MetaHub/Cinemeta's medium backgrounds can be requested in their large
+    landscape rendition. Unknown image sources are never fabricated.
+    """
+    link = safe_image(url)
+    if not link:
+        return ""
+    tmdb = re.fullmatch(
+        r"https://image\.tmdb\.org/t/p/(?:w300|w780|w1280|original)"
+        r"(/[A-Za-z0-9._/-]{4,180})", link)
+    if tmdb:
+        return "https://image.tmdb.org/t/p/original" + tmdb.group(1)
+    meta = re.fullmatch(
+        r"https://images\.metahub\.space/background/(?:small|medium|large|original)"
+        r"/(tt\d{5,12})/img", link)
+    if meta:
+        return "https://images.metahub.space/background/large/" + meta.group(1) + "/img"
+    return link
+
+
 def metadata_label(row):
     kind = "IN DIRETTA" if row.get("kind") == "live" else (
         "SERIE TV" if row.get("kind") == "serie" else "FILM")

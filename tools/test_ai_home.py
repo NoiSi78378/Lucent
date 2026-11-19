@@ -72,4 +72,35 @@ assert "def _run_query(prompt):" in source and "_ai_request(prompt, key, intent)
 assert "rows = _add_artwork(verified + suggestions, intent)" in source
 assert 'ActivateWindow(Videos,"%s",return)' in source
 assert "def set_key():" in source and "_save_key(value)" in source
-print("Lucent AI Home: Kodi lists, navigation, background artwork, multiple shelves and metadata OK")
+
+# High-resolution artwork is a different info provider from the 400x225 card art.
+import sys
+sys.path.insert(0, str(root/"scripts"))
+from ai_art_core import backdrop_full
+assert backdrop_full("https://image.tmdb.org/t/p/w780/abcde123.jpg") == (
+    "https://image.tmdb.org/t/p/original/abcde123.jpg")
+assert backdrop_full("https://image.tmdb.org/t/p/w1280/xyz09876.jpg") == (
+    "https://image.tmdb.org/t/p/original/xyz09876.jpg")
+assert backdrop_full("https://images.metahub.space/background/medium/tt0903747/img") == (
+    "https://images.metahub.space/background/large/tt0903747/img")
+assert backdrop_full("https://example.org/backdrop.jpg") == "https://example.org/backdrop.jpg"
+assert backdrop_full("javascript:alert(1)") == ""
+assert "from ai_art_core import catalogue_art, normalize, tmdb_art, backdrop_full" in source
+assert '"backdrop": backdrop_full(image)' in source
+assert "Upgrade the existing 2.1.45.22 thumbnail-only cache automatically." in source
+assert '"backdrop": backdrop_full(row.get("backdrop") or "")' in source
+assert 'for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason"):' in source
+assert panel.count('<property name="backdrop">') == 101
+assert 'Property(ai.home.pop.1.backdrop)' in panel
+assert 'Property(ai.home.result.1.backdrop)' in panel
+assert '<include name="LucentAISearchBackdropTitle">' in panel
+assert '<include>LucentAISearchBackdropTitle</include>' in home
+assert 'Property(ai.home.pop.1.backdrop)' in home
+assert 'Property(ai.home.result.1.backdrop)' in home
+assert 'font45_title' in panel and 'align>right</align>' in panel
+for id in (9510,9520,9530,9540,9550):
+    assert 'Container(%s).ListItem.Label' % id in panel
+    assert 'Control.HasFocus(%s)' % id in panel
+    assert 'Container(%s).ListItem.Property(backdrop)' % id in home
+
+print("Lucent AI Home: native cards, HD background variants, title overlay and cache migration OK")

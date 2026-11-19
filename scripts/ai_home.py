@@ -16,7 +16,7 @@ import xbmc
 import xbmcgui
 
 sys.path.insert(0, os.path.dirname(__file__))
-from ai_art_core import catalogue_art, normalize, tmdb_art
+from ai_art_core import catalogue_art, normalize, tmdb_art, backdrop_full
 from ai_intent_core import understand, GENRE_IT
 from ai_search import (_ai_request, _discover, _add_artwork, _live_epg, _art_key,
                        _json_art, _settings, _save_key, stream4me_url, KEY_DIR)
@@ -65,7 +65,8 @@ def _metadata(obj, source="cinemeta", media=None):
         sub += "  ·  " + year
     if rating:
         sub += "  ·  ★ " + rating
-    return {"title": title, "image": image, "backdrop": image, "kind": kind, "sub": sub}
+    return {"title": title, "image": image, "backdrop": backdrop_full(image),
+            "kind": kind, "sub": sub}
 
 
 def _read_cache():
@@ -75,6 +76,19 @@ def _read_cache():
         if (isinstance(obj, dict) and
                 time.time() - obj.get("time", 0) < CACHE_SECONDS and
                 obj.get("pop") and obj.get("new") and obj.get("tv") and obj.get("top")):
+            # Upgrade the existing 2.1.45.22 thumbnail-only cache automatically.
+            # Keep the titles already loaded: no extra requests or manual clearing.
+            changed = False
+            for group in ("pop", "new", "tv", "top"):
+                for row in obj.get(group) or []:
+                    if not isinstance(row, dict):
+                        continue
+                    hd = backdrop_full(row.get("backdrop") or row.get("image"))
+                    if row.get("backdrop") != hd:
+                        row["backdrop"] = hd
+                        changed = True
+            if changed:
+                _write_cache(obj)
             return obj
     except (OSError, ValueError, TypeError):
         pass
@@ -175,7 +189,7 @@ def _fill(name, rows):
     for i in range(1, limit + 1):
         row = rows[i - 1] if i <= len(rows) else {}
         prefix = "ai.home.%s.%d." % (name, i)
-        for field in ("title", "sub", "image", "poster", "kind", "reason"):
+        for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason"):
             _put(prefix + field, row.get(field, ""))
 
 
@@ -265,7 +279,9 @@ def _run_query(prompt):
             if rating:
                 sub += "  ·  ★ " + rating
             result.append({"title": row["title"], "sub": sub,
-                           "poster": row.get("poster") or "", "image": row.get("backdrop") or row.get("poster") or "",
+                           "poster": row.get("poster") or "",
+                           "image": row.get("backdrop") or "",
+                           "backdrop": backdrop_full(row.get("backdrop") or ""),
                            "kind": kind,
                            "reason": row.get("reason") or ""})
         _fill("result", result)

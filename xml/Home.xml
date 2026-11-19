@@ -139,37 +139,45 @@
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio>scale</aspectratio><fadetime>450</fadetime>
-                <texture background="true">$INFO[Window(home).Property(ai.home.pop.1.image)]</texture>
+                <texture background="true">$INFO[Window(home).Property(ai.home.pop.1.backdrop)]</texture>
+                <visible>!String.IsEqual(Window(home).Property(ai.home.mode),results)</visible>
             </control>
             <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio>scale</aspectratio><fadetime>400</fadetime>
                 <texture background="true">$INFO[Container(9510).ListItem.Property(backdrop)]</texture>
-                <visible>Control.HasFocus(9510)</visible>
+                <visible>Control.HasFocus(9510) + !String.IsEmpty(Container(9510).ListItem.Property(backdrop))</visible>
             </control>
 <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio>scale</aspectratio><fadetime>400</fadetime>
                 <texture background="true">$INFO[Container(9520).ListItem.Property(backdrop)]</texture>
-                <visible>Control.HasFocus(9520)</visible>
+                <visible>Control.HasFocus(9520) + !String.IsEmpty(Container(9520).ListItem.Property(backdrop))</visible>
             </control>
 <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio>scale</aspectratio><fadetime>400</fadetime>
                 <texture background="true">$INFO[Container(9530).ListItem.Property(backdrop)]</texture>
-                <visible>Control.HasFocus(9530)</visible>
+                <visible>Control.HasFocus(9530) + !String.IsEmpty(Container(9530).ListItem.Property(backdrop))</visible>
             </control>
 <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio>scale</aspectratio><fadetime>400</fadetime>
                 <texture background="true">$INFO[Container(9540).ListItem.Property(backdrop)]</texture>
-                <visible>Control.HasFocus(9540)</visible>
+                <visible>Control.HasFocus(9540) + !String.IsEmpty(Container(9540).ListItem.Property(backdrop))</visible>
             </control>
 <control type="image">
                 <left>0</left><top>0</top><width>1920</width><height>1080</height>
                 <aspectratio>scale</aspectratio><fadetime>400</fadetime>
                 <texture background="true">$INFO[Container(9550).ListItem.Property(backdrop)]</texture>
-                <visible>Control.HasFocus(9550)</visible>
+                <visible>Control.HasFocus(9550) + !String.IsEmpty(Container(9550).ListItem.Property(backdrop))</visible>
+            </control>
+            <!-- In results mode, use the first verified backdrop while focus is on search. -->
+            <control type="image">
+                <left>0</left><top>0</top><width>1920</width><height>1080</height>
+                <aspectratio>scale</aspectratio><fadetime>450</fadetime>
+                <texture background="true">$INFO[Window(home).Property(ai.home.result.1.backdrop)]</texture>
+                <visible>String.IsEqual(Window(home).Property(ai.home.mode),results) + !String.IsEmpty(Window(home).Property(ai.home.result.1.backdrop))</visible>
             </control>
             <!-- The same cinematic fade treatment as every other Lucent section. -->
             <include>BackdropFades</include>
@@ -312,6 +320,7 @@
             <!-- Calendar / TV / Sport / Add-ons / Settings / Power tab without rows of its own: its own screen -->
             <include>LucentTabPanels</include>
             <include>LucentAISearchHome</include>
+            <include>LucentAISearchBackdropTitle</include>
 
             <!-- Shown when the tab has no widgets (or none of them has content) -->
             <control type="group">

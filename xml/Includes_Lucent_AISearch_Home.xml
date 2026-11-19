@@ -368,6 +368,100 @@
                     
   </include>
 
+  <!-- Overlay on the background, above the art but away from the search heading.
+       Only the actually focused Kodi row owns the title (never two highlights). -->
+  <include name="LucentAISearchBackdropTitle">
+    <control type="group">
+      <visible>String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
+      <animation effect="fade" start="0" end="100" time="230">Visible</animation>
+      
+      <control type="label">
+        <left>1020</left><top>137</top><width>730</width><height>75</height>
+        <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny><scroll>true</scroll>
+        <label>$INFO[Container(9510).ListItem.Label]</label>
+        <visible>Control.HasFocus(9510) + !String.IsEmpty(Container(9510).ListItem.Label)</visible>
+      </control>
+      <control type="label">
+        <left>1080</left><top>207</top><width>665</width><height>32</height>
+        <font>font12_bold</font><textcolor>text</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny>
+        <label>$INFO[Container(9510).ListItem.Label2]</label>
+        <visible>Control.HasFocus(9510) + !String.IsEmpty(Container(9510).ListItem.Label)</visible>
+      </control>
+
+      <control type="label">
+        <left>1020</left><top>137</top><width>730</width><height>75</height>
+        <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny><scroll>true</scroll>
+        <label>$INFO[Container(9520).ListItem.Label]</label>
+        <visible>Control.HasFocus(9520) + !String.IsEmpty(Container(9520).ListItem.Label)</visible>
+      </control>
+      <control type="label">
+        <left>1080</left><top>207</top><width>665</width><height>32</height>
+        <font>font12_bold</font><textcolor>text</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny>
+        <label>$INFO[Container(9520).ListItem.Label2]</label>
+        <visible>Control.HasFocus(9520) + !String.IsEmpty(Container(9520).ListItem.Label)</visible>
+      </control>
+
+      <control type="label">
+        <left>1020</left><top>137</top><width>730</width><height>75</height>
+        <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny><scroll>true</scroll>
+        <label>$INFO[Container(9530).ListItem.Label]</label>
+        <visible>Control.HasFocus(9530) + !String.IsEmpty(Container(9530).ListItem.Label)</visible>
+      </control>
+      <control type="label">
+        <left>1080</left><top>207</top><width>665</width><height>32</height>
+        <font>font12_bold</font><textcolor>text</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny>
+        <label>$INFO[Container(9530).ListItem.Label2]</label>
+        <visible>Control.HasFocus(9530) + !String.IsEmpty(Container(9530).ListItem.Label)</visible>
+      </control>
+
+      <control type="label">
+        <left>1020</left><top>137</top><width>730</width><height>75</height>
+        <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny><scroll>true</scroll>
+        <label>$INFO[Container(9540).ListItem.Label]</label>
+        <visible>Control.HasFocus(9540) + !String.IsEmpty(Container(9540).ListItem.Label)</visible>
+      </control>
+      <control type="label">
+        <left>1080</left><top>207</top><width>665</width><height>32</height>
+        <font>font12_bold</font><textcolor>text</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny>
+        <label>$INFO[Container(9540).ListItem.Label2]</label>
+        <visible>Control.HasFocus(9540) + !String.IsEmpty(Container(9540).ListItem.Label)</visible>
+      </control>
+
+      <control type="label">
+        <left>1020</left><top>137</top><width>730</width><height>75</height>
+        <font>font45_title</font><textcolor>FFFFFFFF</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny><scroll>true</scroll>
+        <label>$INFO[Container(9550).ListItem.Label]</label>
+        <visible>Control.HasFocus(9550) + !String.IsEmpty(Container(9550).ListItem.Label)</visible>
+      </control>
+      <control type="label">
+        <left>1080</left><top>207</top><width>665</width><height>32</height>
+        <font>font12_bold</font><textcolor>text</textcolor>
+        <shadowcolor>DD000000</shadowcolor>
+        <align>right</align><aligny>center</aligny>
+        <label>$INFO[Container(9550).ListItem.Label2]</label>
+        <visible>Control.HasFocus(9550) + !String.IsEmpty(Container(9550).ListItem.Label)</visible>
+      </control>
+    </control>
+  </include>
+
   <include name="LucentAISearchHome">
     <control type="group">
       <visible>String.IsEqual(Container(9000).ListItem.Icon,icons/search.png)</visible>
@@ -447,7 +541,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.1.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.1.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.1.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.1.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.1.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,1)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.1.title))</visible>
   </item>
@@ -455,7 +549,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.2.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.2.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.2.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.2.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.2.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,2)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.2.title))</visible>
   </item>
@@ -463,7 +557,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.3.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.3.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.3.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.3.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.3.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,3)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.3.title))</visible>
   </item>
@@ -471,7 +565,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.4.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.4.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.4.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.4.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.4.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,4)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.4.title))</visible>
   </item>
@@ -479,7 +573,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.5.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.5.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.5.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.5.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.5.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,5)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.5.title))</visible>
   </item>
@@ -487,7 +581,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.6.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.6.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.6.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.6.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.6.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,6)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.6.title))</visible>
   </item>
@@ -495,7 +589,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.7.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.7.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.7.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.7.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.7.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,7)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.7.title))</visible>
   </item>
@@ -503,7 +597,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.8.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.8.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.8.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.8.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.8.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,8)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.8.title))</visible>
   </item>
@@ -511,7 +605,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.9.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.9.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.9.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.9.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.9.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,9)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.9.title))</visible>
   </item>
@@ -519,7 +613,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.10.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.10.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.10.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.10.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.10.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,10)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.10.title))</visible>
   </item>
@@ -527,7 +621,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.11.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.11.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.11.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.11.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.11.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,11)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.11.title))</visible>
   </item>
@@ -535,7 +629,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.12.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.12.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.12.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.12.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.12.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,12)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.12.title))</visible>
   </item>
@@ -543,7 +637,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.13.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.13.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.13.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.13.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.13.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,13)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.13.title))</visible>
   </item>
@@ -551,7 +645,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.14.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.14.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.14.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.14.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.14.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,14)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.14.title))</visible>
   </item>
@@ -559,7 +653,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.15.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.15.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.15.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.15.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.15.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,15)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.15.title))</visible>
   </item>
@@ -567,7 +661,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.16.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.16.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.16.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.16.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.16.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,16)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.16.title))</visible>
   </item>
@@ -575,7 +669,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.17.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.17.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.17.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.17.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.17.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,17)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.17.title))</visible>
   </item>
@@ -583,7 +677,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.18.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.18.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.18.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.18.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.18.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,18)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.18.title))</visible>
   </item>
@@ -591,7 +685,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.19.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.19.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.19.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.19.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.19.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,19)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.19.title))</visible>
   </item>
@@ -599,7 +693,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.20.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.20.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.20.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.20.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.20.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,20)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.20.title))</visible>
   </item>
@@ -607,7 +701,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.21.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.21.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.21.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.21.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.21.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,21)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.21.title))</visible>
   </item>
@@ -615,7 +709,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.22.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.22.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.22.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.22.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.22.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,22)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.22.title))</visible>
   </item>
@@ -623,7 +717,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.23.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.23.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.23.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.23.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.23.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,23)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.23.title))</visible>
   </item>
@@ -631,7 +725,7 @@
     <label>$INFO[Window(home).Property(ai.home.pop.24.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.pop.24.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.pop.24.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.24.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.pop.24.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,pop,24)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.pop.24.title))</visible>
   </item></content>
@@ -671,7 +765,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.1.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.1.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.1.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.1.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.1.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,1)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.1.title))</visible>
   </item>
@@ -679,7 +773,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.2.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.2.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.2.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.2.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.2.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,2)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.2.title))</visible>
   </item>
@@ -687,7 +781,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.3.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.3.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.3.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.3.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.3.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,3)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.3.title))</visible>
   </item>
@@ -695,7 +789,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.4.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.4.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.4.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.4.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.4.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,4)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.4.title))</visible>
   </item>
@@ -703,7 +797,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.5.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.5.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.5.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.5.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.5.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,5)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.5.title))</visible>
   </item>
@@ -711,7 +805,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.6.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.6.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.6.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.6.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.6.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,6)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.6.title))</visible>
   </item>
@@ -719,7 +813,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.7.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.7.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.7.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.7.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.7.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,7)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.7.title))</visible>
   </item>
@@ -727,7 +821,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.8.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.8.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.8.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.8.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.8.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,8)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.8.title))</visible>
   </item>
@@ -735,7 +829,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.9.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.9.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.9.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.9.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.9.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,9)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.9.title))</visible>
   </item>
@@ -743,7 +837,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.10.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.10.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.10.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.10.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.10.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,10)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.10.title))</visible>
   </item>
@@ -751,7 +845,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.11.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.11.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.11.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.11.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.11.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,11)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.11.title))</visible>
   </item>
@@ -759,7 +853,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.12.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.12.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.12.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.12.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.12.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,12)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.12.title))</visible>
   </item>
@@ -767,7 +861,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.13.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.13.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.13.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.13.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.13.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,13)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.13.title))</visible>
   </item>
@@ -775,7 +869,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.14.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.14.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.14.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.14.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.14.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,14)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.14.title))</visible>
   </item>
@@ -783,7 +877,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.15.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.15.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.15.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.15.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.15.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,15)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.15.title))</visible>
   </item>
@@ -791,7 +885,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.16.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.16.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.16.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.16.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.16.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,16)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.16.title))</visible>
   </item>
@@ -799,7 +893,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.17.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.17.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.17.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.17.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.17.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,17)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.17.title))</visible>
   </item>
@@ -807,7 +901,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.18.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.18.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.18.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.18.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.18.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,18)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.18.title))</visible>
   </item>
@@ -815,7 +909,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.19.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.19.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.19.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.19.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.19.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,19)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.19.title))</visible>
   </item>
@@ -823,7 +917,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.20.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.20.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.20.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.20.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.20.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,20)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.20.title))</visible>
   </item>
@@ -831,7 +925,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.21.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.21.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.21.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.21.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.21.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,21)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.21.title))</visible>
   </item>
@@ -839,7 +933,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.22.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.22.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.22.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.22.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.22.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,22)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.22.title))</visible>
   </item>
@@ -847,7 +941,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.23.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.23.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.23.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.23.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.23.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,23)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.23.title))</visible>
   </item>
@@ -855,7 +949,7 @@
     <label>$INFO[Window(home).Property(ai.home.new.24.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.new.24.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.new.24.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.24.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.new.24.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,new,24)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.new.24.title))</visible>
   </item></content>
@@ -895,7 +989,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.1.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.1.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.1.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.1.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.1.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,1)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.1.title))</visible>
   </item>
@@ -903,7 +997,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.2.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.2.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.2.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.2.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.2.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,2)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.2.title))</visible>
   </item>
@@ -911,7 +1005,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.3.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.3.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.3.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.3.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.3.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,3)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.3.title))</visible>
   </item>
@@ -919,7 +1013,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.4.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.4.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.4.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.4.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.4.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,4)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.4.title))</visible>
   </item>
@@ -927,7 +1021,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.5.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.5.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.5.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.5.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.5.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,5)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.5.title))</visible>
   </item>
@@ -935,7 +1029,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.6.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.6.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.6.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.6.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.6.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,6)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.6.title))</visible>
   </item>
@@ -943,7 +1037,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.7.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.7.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.7.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.7.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.7.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,7)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.7.title))</visible>
   </item>
@@ -951,7 +1045,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.8.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.8.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.8.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.8.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.8.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,8)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.8.title))</visible>
   </item>
@@ -959,7 +1053,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.9.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.9.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.9.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.9.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.9.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,9)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.9.title))</visible>
   </item>
@@ -967,7 +1061,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.10.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.10.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.10.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.10.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.10.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,10)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.10.title))</visible>
   </item>
@@ -975,7 +1069,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.11.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.11.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.11.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.11.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.11.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,11)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.11.title))</visible>
   </item>
@@ -983,7 +1077,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.12.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.12.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.12.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.12.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.12.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,12)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.12.title))</visible>
   </item>
@@ -991,7 +1085,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.13.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.13.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.13.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.13.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.13.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,13)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.13.title))</visible>
   </item>
@@ -999,7 +1093,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.14.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.14.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.14.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.14.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.14.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,14)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.14.title))</visible>
   </item>
@@ -1007,7 +1101,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.15.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.15.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.15.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.15.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.15.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,15)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.15.title))</visible>
   </item>
@@ -1015,7 +1109,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.16.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.16.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.16.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.16.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.16.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,16)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.16.title))</visible>
   </item>
@@ -1023,7 +1117,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.17.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.17.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.17.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.17.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.17.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,17)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.17.title))</visible>
   </item>
@@ -1031,7 +1125,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.18.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.18.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.18.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.18.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.18.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,18)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.18.title))</visible>
   </item>
@@ -1039,7 +1133,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.19.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.19.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.19.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.19.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.19.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,19)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.19.title))</visible>
   </item>
@@ -1047,7 +1141,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.20.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.20.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.20.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.20.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.20.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,20)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.20.title))</visible>
   </item>
@@ -1055,7 +1149,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.21.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.21.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.21.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.21.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.21.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,21)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.21.title))</visible>
   </item>
@@ -1063,7 +1157,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.22.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.22.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.22.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.22.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.22.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,22)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.22.title))</visible>
   </item>
@@ -1071,7 +1165,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.23.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.23.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.23.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.23.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.23.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,23)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.23.title))</visible>
   </item>
@@ -1079,7 +1173,7 @@
     <label>$INFO[Window(home).Property(ai.home.tv.24.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.tv.24.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.tv.24.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.24.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.tv.24.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,tv,24)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.tv.24.title))</visible>
   </item></content>
@@ -1119,7 +1213,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.1.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.1.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.1.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.1.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.1.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,1)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.1.title))</visible>
   </item>
@@ -1127,7 +1221,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.2.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.2.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.2.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.2.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.2.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,2)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.2.title))</visible>
   </item>
@@ -1135,7 +1229,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.3.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.3.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.3.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.3.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.3.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,3)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.3.title))</visible>
   </item>
@@ -1143,7 +1237,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.4.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.4.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.4.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.4.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.4.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,4)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.4.title))</visible>
   </item>
@@ -1151,7 +1245,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.5.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.5.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.5.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.5.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.5.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,5)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.5.title))</visible>
   </item>
@@ -1159,7 +1253,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.6.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.6.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.6.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.6.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.6.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,6)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.6.title))</visible>
   </item>
@@ -1167,7 +1261,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.7.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.7.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.7.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.7.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.7.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,7)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.7.title))</visible>
   </item>
@@ -1175,7 +1269,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.8.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.8.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.8.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.8.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.8.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,8)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.8.title))</visible>
   </item>
@@ -1183,7 +1277,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.9.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.9.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.9.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.9.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.9.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,9)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.9.title))</visible>
   </item>
@@ -1191,7 +1285,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.10.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.10.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.10.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.10.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.10.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,10)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.10.title))</visible>
   </item>
@@ -1199,7 +1293,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.11.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.11.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.11.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.11.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.11.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,11)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.11.title))</visible>
   </item>
@@ -1207,7 +1301,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.12.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.12.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.12.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.12.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.12.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,12)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.12.title))</visible>
   </item>
@@ -1215,7 +1309,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.13.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.13.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.13.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.13.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.13.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,13)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.13.title))</visible>
   </item>
@@ -1223,7 +1317,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.14.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.14.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.14.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.14.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.14.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,14)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.14.title))</visible>
   </item>
@@ -1231,7 +1325,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.15.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.15.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.15.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.15.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.15.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,15)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.15.title))</visible>
   </item>
@@ -1239,7 +1333,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.16.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.16.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.16.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.16.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.16.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,16)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.16.title))</visible>
   </item>
@@ -1247,7 +1341,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.17.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.17.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.17.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.17.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.17.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,17)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.17.title))</visible>
   </item>
@@ -1255,7 +1349,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.18.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.18.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.18.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.18.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.18.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,18)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.18.title))</visible>
   </item>
@@ -1263,7 +1357,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.19.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.19.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.19.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.19.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.19.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,19)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.19.title))</visible>
   </item>
@@ -1271,7 +1365,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.20.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.20.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.20.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.20.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.20.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,20)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.20.title))</visible>
   </item>
@@ -1279,7 +1373,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.21.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.21.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.21.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.21.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.21.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,21)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.21.title))</visible>
   </item>
@@ -1287,7 +1381,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.22.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.22.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.22.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.22.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.22.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,22)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.22.title))</visible>
   </item>
@@ -1295,7 +1389,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.23.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.23.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.23.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.23.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.23.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,23)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.23.title))</visible>
   </item>
@@ -1303,7 +1397,7 @@
     <label>$INFO[Window(home).Property(ai.home.top.24.title)]</label>
     <label2>$INFO[Window(home).Property(ai.home.top.24.sub)]</label2>
     <thumb>$INFO[Window(home).Property(ai.home.top.24.image)]</thumb>
-    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.24.image)]</property>
+    <property name="backdrop">$INFO[Window(home).Property(ai.home.top.24.backdrop)]</property>
     <onclick>RunScript(special://skin/scripts/ai_home.py,open,top,24)</onclick>
     <visible>!String.IsEmpty(Window(home).Property(ai.home.top.24.title))</visible>
   </item></content>
@@ -1366,7 +1460,7 @@
      <label>$INFO[Window(home).Property(ai.home.result.1.title)]</label>
      <label2>$INFO[Window(home).Property(ai.home.result.1.sub)]</label2>
      <thumb>$INFO[Window(home).Property(ai.home.result.1.poster)]</thumb>
-     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.1.image)]</property>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.1.backdrop)]</property>
      <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,1)</onclick>
      <visible>!String.IsEmpty(Window(home).Property(ai.home.result.1.title))</visible>
    </item>
@@ -1374,7 +1468,7 @@
      <label>$INFO[Window(home).Property(ai.home.result.2.title)]</label>
      <label2>$INFO[Window(home).Property(ai.home.result.2.sub)]</label2>
      <thumb>$INFO[Window(home).Property(ai.home.result.2.poster)]</thumb>
-     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.2.image)]</property>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.2.backdrop)]</property>
      <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,2)</onclick>
      <visible>!String.IsEmpty(Window(home).Property(ai.home.result.2.title))</visible>
    </item>
@@ -1382,7 +1476,7 @@
      <label>$INFO[Window(home).Property(ai.home.result.3.title)]</label>
      <label2>$INFO[Window(home).Property(ai.home.result.3.sub)]</label2>
      <thumb>$INFO[Window(home).Property(ai.home.result.3.poster)]</thumb>
-     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.3.image)]</property>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.3.backdrop)]</property>
      <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,3)</onclick>
      <visible>!String.IsEmpty(Window(home).Property(ai.home.result.3.title))</visible>
    </item>
@@ -1390,7 +1484,7 @@
      <label>$INFO[Window(home).Property(ai.home.result.4.title)]</label>
      <label2>$INFO[Window(home).Property(ai.home.result.4.sub)]</label2>
      <thumb>$INFO[Window(home).Property(ai.home.result.4.poster)]</thumb>
-     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.4.image)]</property>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.4.backdrop)]</property>
      <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,4)</onclick>
      <visible>!String.IsEmpty(Window(home).Property(ai.home.result.4.title))</visible>
    </item>
@@ -1398,7 +1492,7 @@
      <label>$INFO[Window(home).Property(ai.home.result.5.title)]</label>
      <label2>$INFO[Window(home).Property(ai.home.result.5.sub)]</label2>
      <thumb>$INFO[Window(home).Property(ai.home.result.5.poster)]</thumb>
-     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.5.image)]</property>
+     <property name="backdrop">$INFO[Window(home).Property(ai.home.result.5.backdrop)]</property>
      <onclick>RunScript(special://skin/scripts/ai_home.py,open,result,5)</onclick>
      <visible>!String.IsEmpty(Window(home).Property(ai.home.result.5.title))</visible>
    </item></content>
