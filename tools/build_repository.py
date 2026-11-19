@@ -26,7 +26,7 @@ assert re.fullmatch(r"\d+\.\d+\.\d+\.\d+", version), version
 
 repo_id = "repository.lucent.ita"
 repo_version = "1.0.1"
-base = "https://noisi78378.github.io/Lucent"
+base = "https://noisi78378.github.io/Lucent-ITA"
 repo_url = f"{base}/repo-ita"
 skin_zip = site / "repo-ita" / "zips" / skin_addon.attrib["id"] / f"{skin.name}-{version}.zip"
 skin_zip.parent.mkdir(parents=True, exist_ok=True)
