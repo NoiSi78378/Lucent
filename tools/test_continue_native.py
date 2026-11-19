@@ -10,6 +10,7 @@ import pathlib
 import re
 import sys
 import unittest
+from unittest import mock
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -56,6 +57,43 @@ class SelectionTests(unittest.TestCase):
 
     def test_localized_first_air_date(self):
         self.assertTrue(target._valid_today({"firstaired": "17.09.2021"}, "2026-11-19"))
+
+
+
+class KodiEmbeddedDateRegressionTests(unittest.TestCase):
+    """Real C6 root cause: Kodi's embedded Python can break strptime."""
+
+    def test_mobland_dates_parse_even_if_strptime_module_unavailable(self):
+        with mock.patch.dict(sys.modules, {"_strptime": None}):
+            self.assertEqual(str(target._release_date("2025-03-30")), "2025-03-30")
+            self.assertEqual(str(target._release_date("06.04.2025")), "2025-04-06")
+            self.assertEqual(str(target._release_date("13/04/2025")), "2025-04-13")
+            self.assertEqual(str(target._release_date("2025-03-30T10:20:30")), "2025-03-30")
+            self.assertTrue(target._valid_today({"firstaired": "2025-03-30"}, "2026-11-19"))
+
+    def test_invalid_dates_dont_break_episode_selection(self):
+        with mock.patch.dict(sys.modules, {"_strptime": None}):
+            self.assertIsNone(target._release_date("2025-02-31"))
+            self.assertIsNone(target._release_date("non disponibile"))
+            self.assertTrue(target._valid_today({"firstaired": "non disponibile"}))
+            self.assertFalse(target._valid_today({"firstaired": "2030-02-01"}, "2026-11-19"))
+
+    def test_select_mobland_fourth_episode_from_three_watched(self):
+        episodes = [dict(ep(1, i, watched=1 if i <= 3 else 0,
+                            aired="2025-03-30"), episodeid=400+i)
+                    for i in range(1, 11)]
+        with mock.patch.dict(sys.modules, {"_strptime": None}):
+            chosen = target.next_unwatched(episodes, "2026-11-19")
+        self.assertEqual((chosen["season"], chosen["episode"], chosen["episodeid"]),
+                         (1, 4, 404))
+
+    def test_silo_starts_season_one_even_if_season_two_selected(self):
+        episodes = [dict(ep(season, i, aired="2024-11-14"), episodeid=season*100+i)
+                    for season in (1, 2) for i in range(1, 5)]
+        with mock.patch.dict(sys.modules, {"_strptime": None}):
+            chosen = target.next_unwatched(episodes, "2026-11-19")
+        self.assertEqual((chosen["season"], chosen["episode"], chosen["episodeid"]),
+                         (1, 1, 101))
 
 
 class FakeKodi:
@@ -140,6 +178,40 @@ class ContinueIntegrationTests(unittest.TestCase):
     def use(self, kodi):
         sys.modules["xbmc"] = kodi
         return kodi
+
+    def test_mobland_c6_issue_in_full_kodi_rpc_path(self):
+        """Shows via DB ID 3; release date cannot crash before Player.Open."""
+        episodes = [dict(ep(1, i, watched=1 if i <= 3 else 0,
+                            aired="2025-03-30"), episodeid=300+i)
+                    for i in range(1, 11)]
+        kodi = self.use(FakeKodi(
+            labels={"Container.ShowTitle": "MobLand", "ListItem.TvShowDBID": "3"},
+            direct={3: {"title": "MobLand"}},
+            episodes=episodes))
+        with mock.patch.dict(sys.modules, {"_strptime": None}):
+            self.assertTrue(target.run())
+        self.assertIn(("Player.Open", {"item": {"episodeid": 304},
+                       "options": {"resume": False}}), kodi.calls)
+        self.assertEqual(target.LAST_DIAGNOSTIC["step"], "library-played")
+        self.assertFalse(target.LAST_DIAGNOSTIC["error"])
+
+    def test_silo_c6_issue_in_full_kodi_rpc_path(self):
+        """New show; currently viewing season 2, but S1E1 must open."""
+        episodes = [dict(ep(season, i, aired="2024-11-14"), episodeid=season*100+i)
+                    for season in (1, 2) for i in range(1, 5)]
+        kodi = self.use(FakeKodi(
+            labels={"Container.ShowTitle": "Silo", "ListItem.TvShowDBID": "4"},
+            direct={4: {"title": "Silo"}},
+            episodes=episodes))
+        context = ["Silo", "videodb://tvshows/titles/4/",
+                   "videodb://tvshows/titles/4/2/", "4", "Silo", "2",
+                   "Stagione 2", "0"]
+        with mock.patch.dict(sys.modules, {"_strptime": None}):
+            self.assertTrue(target.run(context))
+        self.assertIn(("Player.Open", {"item": {"episodeid": 101},
+                       "options": {"resume": False}}), kodi.calls)
+        self.assertEqual(target.LAST_DIAGNOSTIC["step"], "library-played")
+        self.assertFalse(target.LAST_DIAGNOSTIC["error"])
 
     def test_library_from_zero_no_tmdb_id(self):
         kodi = self.use(FakeKodi(
