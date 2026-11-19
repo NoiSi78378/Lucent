@@ -1578,25 +1578,34 @@ def load_logos():
 
 
 def resume_show():
-    """Continue from the Kodi library or the episodes already visible below.
+    """Continue the actual series through Kodi's native library or add-on.
 
-    Works with Stream4Me and other add-ons that integrate with Kodi, without
-    requiring Lucent Video, TMDb Helper or a Trakt login.
+    Explicit series/season context is passed by the skin's Continue button,
+    so we do not depend on Python inheriting the GUI button's info labels.
     """
+    detail = "C4 avvio"
     try:
         import continue_native
-        if continue_native.run():
+        if continue_native.run(sys.argv[2:]):
             return
+        detail = continue_native.diagnosis()
     except Exception as error:  # noqa: BLE001
-        log(f"native Continue: {error}")
-    # An unknown item is not the same as having no episode in progress.
-    # Never risk playing a different series when the add-on exposes only
-    # TV-show tiles instead of real episodes.
-    message = ("Non riesco a identificare un episodio riproducibile di questa serie. Seleziona una stagione e un episodio."
-               if _IT else
-               ("Ik kan geen afspeelbare aflevering van deze serie vinden. Kies een seizoen en aflevering."
-                if _NL else "Can't identify a playable episode of this series. Select a season and an episode."))
-    notify(message, xbmcgui.NOTIFICATION_INFO)
+        log("native Continue failed: " + str(error))
+        try:
+            detail = continue_native.diagnosis()
+        except Exception:
+            detail = "C4 errore Python"
+    log("native Continue not resolved: " + detail)
+    # Debug only when playback genuinely cannot be identified: no passwords,
+    # token-bearing plugin URLs or personal playback history in the message.
+    message = ("Nessun episodio avviato. " + detail +
+               "\nFai una foto di questo messaggio per diagnosticare il problema.")
+    if _NL:
+        message = "Geen aflevering gestart. " + detail
+    elif not _IT:
+        message = "No episode started. " + detail
+    xbmcgui.Dialog().ok(HEADING, message)
+
 
 def load():
     # 2.1.20: the bell (follow in the calendar) is set here too, in a thread next to the rest - before this the info

@@ -62,13 +62,14 @@ class FakeKodi:
     LOGINFO = 1
 
     def __init__(self, labels=None, shows=None, direct=None, episodes=None,
-                 tabs=None, season_episodes=None):
+                 tabs=None, season_episodes=None, directory_files=None):
         self.labels = labels or {}
         self.shows = shows or []
         self.direct = direct or {}
         self.episodes = episodes or []
         self.tabs = tabs or []
         self.season_episodes = season_episodes or {}
+        self.directory_files = directory_files or {}
         self.selected_season = None
         self.builtins = []
         self.calls = []
@@ -78,13 +79,13 @@ class FakeKodi:
         if m:
             i = int(m.group(1))
             row = self.tabs[i] if i < len(self.tabs) else {}
-            return str(row.get(m.group(2), ""))
+            return str(row.get(m.group(2), self.labels.get(name, "")))
         m = re.fullmatch(r"Container\(5601\).ListItemAbsolute\((\d+)\)\.(.*)", name)
         if m:
             i = int(m.group(1))
             season = self.season_episodes.get(self.selected_season, [])
             row = season[i] if i < len(season) else {}
-            return str(row.get(m.group(2), ""))
+            return str(row.get(m.group(2), self.labels.get(name, "")))
         if name == "Container(56).NumItems":
             return str(len(self.tabs))
         if name == "Container(5601).NumItems" and self.tabs:
@@ -116,6 +117,8 @@ class FakeKodi:
             result = {"tvshowdetails": self.direct.get(params["tvshowid"], {})}
         elif method == "VideoLibrary.GetEpisodes":
             result = {"episodes": self.episodes}
+        elif method == "Files.GetDirectory":
+            result = {"files": self.directory_files.get(params["directory"], [])}
         elif method == "Player.Open":
             result = "OK"
         else:
@@ -214,6 +217,58 @@ class ContinueIntegrationTests(unittest.TestCase):
             "Container(5601).ListItemAbsolute(1).DBType": "tvshow"}))
         self.assertFalse(target.run())
         self.assertNotIn("Action(Select)", kodi.builtins)
+
+
+    def test_explicit_context_from_skin_finds_mobland_without_gui_labels(self):
+        """Exact user report: MobLand S1 E1 watched, E2 needs playing."""
+        kodi = self.use(FakeKodi(
+            direct={50: {"title": "MobLand", "uniqueid": {}}},
+            episodes=[
+                dict(ep(1, 1, watched=1), episodeid=201),
+                dict(ep(1, 2), episodeid=202)]))
+        context = ["MobLand", "videodb://tvshows/titles/50/",
+                   "videodb://tvshows/titles/50/1/", "50", "MobLand", "1"]
+        self.assertTrue(target.run(context))
+        self.assertIn(("Player.Open", {"item": {"episodeid": 202},
+                          "options": {"resume": False}}), kodi.calls)
+
+    def test_directory_fallback_uses_stream4me_season_files(self):
+        folder = "plugin://plugin.video.stream4me/?action=season"
+        kodi = self.use(FakeKodi(directory_files={folder: [
+            {"filetype": "file", "type": "episode", "title": "E1",
+             "file": "plugin://plugin.video.stream4me/?play=1",
+             "season": 1, "episode": 1, "playcount": 1},
+            {"filetype": "file", "type": "episode", "title": "E2",
+             "file": "plugin://plugin.video.stream4me/?play=2",
+             "season": 1, "episode": 2, "playcount": 0}
+        ]}))
+        self.assertTrue(target.run(["MobLand", "", folder, "", "MobLand", "1"]))
+        opened = [p for method, p in kodi.calls if method == "Player.Open"]
+        self.assertEqual(opened, [{"item": {"file": "plugin://plugin.video.stream4me/?play=2"},
+                                   "options": {"resume": False}}])
+        self.assertTrue(any(method == "Files.GetDirectory" for method, p in kodi.calls))
+
+    def test_season_view_with_missing_file_metadata_can_still_select_e2(self):
+        kodi = self.use(FakeKodi(labels={
+            "Container(56).ListItem.Season": "1",
+            "Container(5601).NumItems": "2",
+            "Container(5601).ListItemAbsolute(0).Label": "Stick or Twist",
+            "Container(5601).ListItemAbsolute(0).Episode": "1",
+            "Container(5601).ListItemAbsolute(0).Season": "1",
+            "Container(5601).ListItemAbsolute(0).PlayCount": "1",
+            "Container(5601).ListItemAbsolute(1).Label": "Jigsaw Puzzle",
+            "Container(5601).ListItemAbsolute(1).Episode": "2",
+            "Container(5601).ListItemAbsolute(1).Season": "1",
+            "Container(5601).ListItemAbsolute(1).PlayCount": "0",
+        }))
+        self.assertTrue(target.run(["MobLand"]))
+        self.assertEqual(kodi.builtins[-2:],
+                         ["Control.SetFocus(5601,1,absolute)", "Action(Select)"])
+
+    def test_skin_passes_context_to_script_instead_of_reading_button_focus(self):
+        xml = (ROOT / "xml/Includes_Views.xml").read_text(encoding="utf-8")
+        self.assertIn("info.py,resumeshow,$ESCINFO[Container(56).ListItem.TVShowTitle]", xml)
+        self.assertIn("$ESCINFO[Container(56).ListItem.FolderPath]", xml)
 
     def test_ambiguous_same_name_does_not_pick_random_show(self):
         kodi = FakeKodi(labels={"Container.ShowTitle": "Same Name"},

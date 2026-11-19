@@ -102,10 +102,16 @@ def _label(xbmc, name):
     return str(xbmc.getInfoLabel(name) or "").strip()
 
 
-def _show_context(xbmc):
+def _show_context(xbmc, context=None):
     """Look at the *series*, never confuse a season's database ID with it."""
     label = lambda key: _label(xbmc, key)
+    context = list(context or [])
+    context += [""] * max(0, 5 - len(context))
+    explicit_title, root_path, season_path, explicit_id, explicit_show_title = context[:5]
     titles = []
+    for direct in (explicit_title, explicit_show_title):
+        if direct and direct not in titles:
+            titles.append(direct)
     for expression in ("Container.ShowTitle", "ListItem.TVShowTitle",
                        "Container(56).ListItem.TVShowTitle",
                        "Container.FolderName", "ListItem.Title"):
@@ -123,6 +129,8 @@ def _show_context(xbmc):
                 identifiers[kind] = val
                 break
     candidates = []
+    if str(explicit_id).isdigit() and int(explicit_id) > 0:
+        candidates.append(int(explicit_id))
     for expr in ("Container(56).ListItem.TvShowDBID",
                  "ListItem.TvShowDBID", "ListItem.DBID"):
         if expr == "ListItem.DBID" and label("ListItem.DBType") != "tvshow":
@@ -131,8 +139,10 @@ def _show_context(xbmc):
         if val.isdigit() and int(val) not in candidates:
             candidates.append(int(val))
     # Season folders in Kodi's library carry the original series DB ID.
-    for expr in ("Container.FolderPath", "Container(56).ListItem.FolderPath"):
-        match = re.search(r"videodb://tvshows/[^/]+/(\d+)/", label(expr))
+    for path in (root_path, season_path,
+                 label("Container.FolderPath"),
+                 label("Container(56).ListItem.FolderPath")):
+        match = re.search(r"videodb://tvshows/[^/]+/(\d+)/", str(path or ""))
         if match and int(match.group(1)) not in candidates:
             candidates.insert(0, int(match.group(1)))
     return titles, identifiers, candidates
@@ -140,21 +150,24 @@ def _show_context(xbmc):
 
 def _matches_show(show, titles, identifiers):
     ids = show.get("uniqueid") or {}
+    name = _normalized(show.get("title"))
+    title_matches = bool(name and any(name == _normalized(t) for t in titles))
+    # The season list can expose identifiers belonging to a *season*, not
+    # the parent TV show. An exact series-title match is more reliable here.
+    if title_matches:
+        return True
+    if titles:
+        return False
+    # With no usable title, require a unique matching external ID.
     for key, incoming in identifiers.items():
         actual = str(ids.get(key) or (show.get("imdbnumber") if key == "imdb" else "") or "")
-        if actual and incoming and actual != incoming:
-            return False
-    # An explicit matching ID is stronger than localized display names.
-    for key, incoming in identifiers.items():
-        actual = str(ids.get(key) or "")
         if actual and actual == incoming:
             return True
-    name = _normalized(show.get("title"))
-    return bool(name and any(name == _normalized(t) for t in titles))
+    return False
 
 
-def _find_library_show(xbmc):
-    titles, identifiers, candidates = _show_context(xbmc)
+def _find_library_show(xbmc, context=None):
+    titles, identifiers, candidates = _show_context(xbmc, context)
     for sid in candidates:
         try:
             details = _rpc(xbmc, "VideoLibrary.GetTVShowDetails",
@@ -249,7 +262,10 @@ def _row(xbmc, control_id, index, season_hint=0):
         playable = get("Property(IsPlayable)").lower() in ("1", "true")
         is_folder = _label(xbmc, stem + "IsFolder").lower() in ("1", "true")
         pattern = re.search(r"(?:s\d{1,2}e\d{1,3}|\b\d{1,2}x\d{1,3}\b)", title, re.IGNORECASE)
-        if is_folder or not (file_path or playable) or not (showname or pattern):
+        if is_folder:
+            return None
+        scoped_season_card = season_hint > 0 and episode > 0
+        if not scoped_season_card and (not (file_path or playable) or not (showname or pattern)):
             return None
     return {"index": index, "title": title,
             "season": season, "episode": episode,
@@ -339,14 +355,101 @@ def _choose_on_screen(xbmc):
     return False
 
 
+
+# Safe diagnostics are kept in memory for the calling UI, never transmitted.
+LAST_DIAGNOSTIC = {"step": "init", "library_id": 0, "folder_items": 0, "view_items": 0}
+
+
+def diagnosis():
+    """Short non-sensitive detail for debugging a failed Continue press."""
+    d = LAST_DIAGNOSTIC
+    return ("C4 %s / serie %s / cartella %s / righe %s" %
+            (d.get("step", "?"), d.get("library_id", 0),
+             d.get("folder_items", 0), d.get("view_items", 0)))
+
+
+def _directory_fallback(xbmc, context):
+    """Read the *selected season* through Kodi, not from fragile GUI labels.
+
+    For Kodi/Stream4Me library and add-on folders, Files.GetDirectory returns
+    real episode metadata. Play only a real FILE item with S/E metadata.
+    Never play a show tile or folder based on an E22 count.
+    """
+    context = list(context or [])
+    context += [""] * max(0, 6 - len(context))
+    _, _, explicit_season_path, _, _, explicit_season = context[:6]
+    folders = [
+        explicit_season_path,
+        _label(xbmc, "Container(56).ListItem.FolderPath"),
+    ]
+    season = _integer(explicit_season) or _integer(
+        _label(xbmc, "Container(56).ListItem.Season"))
+    for folder in dict.fromkeys(folders):
+        if not folder or not folder.startswith(("videodb://", "plugin://", "library://")):
+            continue
+        # The generic TV-show root would include unrelated series.
+        if folder.startswith("videodb://tvshows/") and not re.search(
+                r"videodb://tvshows/[^/]+/\d+/", folder):
+            continue
+        try:
+            details = _rpc(xbmc, "Files.GetDirectory", directory=folder,
+                           media="video", properties=[
+                               "title", "season", "episode", "playcount",
+                               "resume", "firstaired", "file", "lastplayed",
+                               "showtitle"])
+        except Exception as error:
+            _log(xbmc, "directory API failed: %s" % str(error)[:130])
+            try:
+                details = _rpc(xbmc, "Files.GetDirectory",
+                               directory=folder, media="video")
+            except Exception:
+                continue
+        items = details.get("files") or []
+        LAST_DIAGNOSTIC["folder_items"] = len(items)
+        rows = []
+        for ep in items:
+            # Files.GetDirectory marks actual playable files as filetype=file.
+            # Directory entries are a further navigation level, not videos.
+            if str(ep.get("filetype") or "") != "file":
+                continue
+            if ep.get("type") in ("tvshow", "season", "movie"):
+                continue
+            number = _integer(ep.get("episode"))
+            current_season = _integer(ep.get("season")) or season
+            if number <= 0 or current_season <= 0:
+                continue
+            if not ep.get("file"):
+                continue
+            rows.append(dict(ep, season=current_season, episode=number))
+        chosen = next_unwatched(rows)
+        if not chosen:
+            continue
+        # File based playback also works for imported .strm items. A plugin
+        # resolves its own source; no Lucent-specific player is required.
+        resume = chosen.get("resume") or {}
+        continuing = _number(resume.get("position")) > 0
+        LAST_DIAGNOSTIC["step"] = "directory-play"
+        _log(xbmc, "directory matched S%02dE%02d" %
+             (chosen["season"], chosen["episode"]))
+        _rpc(xbmc, "Player.Open",
+             item={"file": chosen["file"]},
+             options={"resume": continuing})
+        return True
+    return False
+
+
+
 def _log(xbmc, message):
     xbmc.log("[Lucent ITA] native Continue: " + str(message), xbmc.LOGINFO)
 
 
-def run():
+def run(context=None):
     """True if playback was requested; False if none can safely be selected."""
     import xbmc
-    showid = _find_library_show(xbmc)
+    LAST_DIAGNOSTIC.update(step="library-lookup", library_id=0,
+                           folder_items=0, view_items=0)
+    showid = _find_library_show(xbmc, context)
+    LAST_DIAGNOSTIC["library_id"] = int(showid or 0)
     if showid:
         try:
             episodes = _library_episodes(xbmc, showid)
@@ -355,6 +458,7 @@ def run():
                 resume = chosen.get("resume") or {}
                 continuing = _number(resume.get("position")) > 0
                 _log(xbmc, f"library show={showid}, S{chosen['season']}E{chosen['episode']}, resume={continuing}")
+                LAST_DIAGNOSTIC["step"] = "library-play"
                 _rpc(xbmc, "Player.Open",
                      item={"episodeid": _integer(chosen["episodeid"])},
                      options={"resume": continuing})
@@ -364,8 +468,15 @@ def run():
                 return False
         except Exception as error:
             _log(xbmc, f"library playback fallback: {error}")
+    # Read the selected season's actual Kodi directory even if the script
+    # cannot see its on-screen GUI control or the show was not in the library.
+    LAST_DIAGNOSTIC["step"] = "directory-lookup"
+    if _directory_fallback(xbmc, context):
+        return True
     # For an add-on-only show, select the *real* episode provided by the
     # existing addon, never a synthetic Lucent Video or TMDb Helper URL.
+    LAST_DIAGNOSTIC["step"] = "view-lookup"
+    LAST_DIAGNOSTIC["view_items"] = _integer(_label(xbmc, "Container(5601).NumItems"))
     result = _choose_on_screen(xbmc)
     if not result:
         _log(xbmc, "no identifiable playable episodes; refusing to launch a different title")
