@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - feature/netflix-continue-no-intro
+      - feature/continue-kodi-library-context-2.1.45.4
     paths:
       - "scripts/continue_native.py"
       - "scripts/info.py"
       - "xml/Startup.xml"
+      - "xml/Includes_Views.xml"
       - "tools/test_continue_native.py"
       - ".github/workflows/test-continue-native.yml"
   workflow_dispatch:
