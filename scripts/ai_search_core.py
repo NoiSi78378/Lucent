@@ -20,7 +20,7 @@ def stream4me_url(title):
     return S4ME_PREFIX + quote(value, safe="")
 
 def _clean(value, size=160):
-    return re.sub(r"[\\x00-\\x1f\\x7f]", " ", str(value or "")).strip()[:size]
+    return re.sub(r"[\x00-\x1f\x7f]", " ", str(value or "")).strip()[:size]
 
 def parse_ai(content):
     """Extract structured recommendations; model text/URLs are NEVER Kodi commands."""
@@ -30,8 +30,8 @@ def parse_ai(content):
         raise ValueError("invalid model response")
     text = content.strip()
     if text.startswith("```"):
-        text = re.sub(r"^\x60{3}(?:json)?\\s*", "", text, flags=re.I)
-        text = re.sub(r"\\s*\x60{3}$", "", text)
+        text = re.sub(r"^\x60{3}(?:json)?\s*", "", text, flags=re.I)
+        text = re.sub(r"\s*\x60{3}$", "", text)
     try:
         raw = json.loads(text)
     except (TypeError, ValueError):
