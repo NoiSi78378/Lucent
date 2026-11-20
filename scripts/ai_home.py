@@ -357,6 +357,35 @@ def _verified_person_search(person, intent):
                 (period, person["name"]))
 
 
+class _QueryProgress:
+    """Kodi's BG dialog is a shared singleton; never close it twice."""
+    def __init__(self):
+        self.dialog = xbmcgui.DialogProgressBG()
+        self.closed = False
+    def create(self,*args):
+        self.dialog.create(*args)
+    def update(self,*args):
+        if not self.closed:
+            self.dialog.update(*args)
+    def close(self):
+        if not self.closed:
+            self.closed = True
+            self.dialog.close()
+
+
+def _start_tv_channel(channel):
+    """Enter Kodi's native PVR window before tuning, not the AI Home overlay."""
+    if channel.get("locked"):
+        raise RuntimeError("Canale bloccato: aprilo dalla guida Kodi.")
+    _status("Sintonizzazione richiesta · "+pvr.label(channel))
+    if xbmc.getCondVisibility("Window.IsActive(home)"):
+        xbmc.executebuiltin("ActivateWindow(TVChannels)", True)
+    result=pvr.tune(_rpc,channel)
+    if result!="OK":
+        _status("Kodi non ha confermato · "+pvr.label(channel))
+    return result
+
+
 def _tv_channels():
     try:
         return pvr.channels(_rpc)
@@ -396,8 +425,7 @@ def _tv_action(plan,prompt,progress,channels=None):
                     _status("Sintonizzazione annullata.")
                     return
                 targets=[targets[i]]
-        result=pvr.tune(_rpc,targets[0])
-        _status(("Sintonizzazione richiesta · " if result=="OK" else "Kodi non ha confermato · ")+pvr.label(targets[0]))
+        _start_tv_channel(targets[0])
         return
     if name:
         if len(targets)>1:
@@ -415,7 +443,7 @@ def _tv_action(plan,prompt,progress,channels=None):
         _status("Guida TV · "+pvr.label(c))
         if when in ("now","next") and rows:
             if xbmcgui.Dialog().yesno(pvr.label(c),msg,yeslabel="Guarda canale",nolabel="Chiudi"):
-                pvr.tune(_rpc,c)
+                _start_tv_channel(c)
         else:
             xbmcgui.Dialog().textviewer("Guida TV · "+pvr.label(c),msg)
         return
@@ -435,13 +463,13 @@ def _tv_action(plan,prompt,progress,channels=None):
         return
     _status("Programmi TV trovati: %d"%len(rows))
     i=xbmcgui.Dialog().select("Guida TV",[pvr.line(b,c) for c,b in rows])
-    if i>=0: pvr.tune(_rpc,rows[i][0])
+    if i>=0: _start_tv_channel(rows[i][0])
 
 
 def _run_query(prompt, context=None):
     """One validated plan then a bounded, allowlisted executor."""
     _focus_search()
-    progress = xbmcgui.DialogProgressBG()
+    progress = _QueryProgress()
     progress.create("Lucent AI", "Comprendo la richiesta...")
     _status("Ricerca in corso...")
     try:

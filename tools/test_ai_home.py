@@ -251,3 +251,45 @@ assert validate({"operation":"tune","channel":"DMAX"})["channel"]=="DMAX"
 assert 'if op in ("tune","epg"):' in source
 assert source.index("tv_request=pvr.local_request") < source.index('target,message = assistant.resume_target(p)')
 print("PVR assistant: channel identity, local route, EPG and native tuning verified")
+
+# Regression: native TV handoff, shared progress close and permanent OSD focus.
+import ast
+from types import SimpleNamespace
+def function_from(path,name,namespace):
+    code=ast.parse((root/path).read_text(encoding="utf-8"))
+    definition=next(n for n in code.body if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name==name)
+    exec(compile(ast.Module(body=[definition],type_ignores=[]),str(path),"exec"),namespace)
+    return namespace[name]
+calls=[]
+fake=SimpleNamespace(getCondVisibility=lambda _:True,
+    executebuiltin=lambda action,wait: calls.append(("GUI",action,wait)))
+start=function_from("scripts/ai_home.py","_start_tv_channel",
+    {"xbmc":fake,"_status":lambda status:calls.append(("status",status)),
+     "pvr":pvr,"_rpc":lambda method,params:calls.append((method,params)) or "OK"})
+assert start({"channelid":7,"channel":"DMAX"})=="OK"
+assert calls[1:]==[("GUI","ActivateWindow(TVChannels)",True),("Player.Open",{"item":{"channelid":7}})]
+assert source.count("pvr.tune(_rpc,")==1
+wrapper=function_from("scripts/ai_home.py","_QueryProgress",{"xbmcgui":SimpleNamespace(
+    DialogProgressBG=lambda:SimpleNamespace(close=lambda:calls.append("closed")))})
+progress=wrapper()
+progress.close();progress.close()
+assert calls.count("closed")==1
+keymap=function_from("scripts/keymap.py","pvr_keymap",{})
+import xml.etree.ElementTree as ET
+for mode in (True,False):
+    keys=ET.fromstring(keymap(mode))
+    for device in ("remote","keyboard"):
+        assert keys.findtext("FullscreenLiveTV/"+device+"/up")=="ChannelUp"
+        assert keys.findtext("FullscreenLiveTV/"+device+"/down")=="ChannelDown"
+    assert keys.findtext("FullscreenLiveTV/remote/select")=="OSD"
+    assert keys.findtext("FullscreenLiveTV/remote/back")==(
+        "RunScript(special://skin/scripts/fsback.py)" if mode else "Back")
+osd=ET.parse(root/"xml/VideoOSD.xml").getroot()
+for ident in ("4990","4991","4992"):
+    assert len(osd.findall(".//control[@id='"+ident+"']"))==1
+assert any("SetFocus(4990)"==a.text for a in osd.findall("onload"))
+assert not any(a.text=="SetFocus(460)" for a in osd.findall("onload"))
+assert osd.find(".//control[@id='4992']").findall("onclick")[-1].text=="PlayerControl(Stop)"
+assert osd.find(".//control[@id='4991']").findall("onclick")[-1].text=="ActivateWindow(pvrosdchannels)"
+assert "SetFocus(460,0)" not in (root/"scripts/live.py").read_text()
+print("PVR handoff, dialog closure, dedicated keymap and stable OSD focus verified")

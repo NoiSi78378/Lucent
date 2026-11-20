@@ -99,6 +99,37 @@ TOUCH_KEYMAP = """<keymap>
 """
 
 
+# FullscreenLiveTV is a separate input context. Preserve film mappings.
+PVR_PATH = DIR + "lucent-pvr-navigation.xml"
+
+def pvr_keymap(backstop=True):
+    back = "RunScript(special://skin/scripts/fsback.py)" if backstop else "Back"
+    return """<keymap>
+    <FullscreenLiveTV>
+        <keyboard>
+            <backspace>{back}</backspace>
+            <escape>{back}</escape>
+            <browser_back>{back}</browser_back>
+            <up>ChannelUp</up>
+            <down>ChannelDown</down>
+            <pageup>ChannelUp</pageup>
+            <pagedown>ChannelDown</pagedown>
+            <return>OSD</return>
+            <enter>OSD</enter>
+        </keyboard>
+        <remote>
+            <back>{back}</back>
+            <up>ChannelUp</up>
+            <down>ChannelDown</down>
+            <pageplus>ChannelUp</pageplus>
+            <pageminus>ChannelDown</pageminus>
+            <select>OSD</select>
+        </remote>
+    </FullscreenLiveTV>
+</keymap>
+""".format(back=back)
+
+
 def read(path):
     if not xbmcvfs.exists(path):
         return None
@@ -121,7 +152,9 @@ def sync(path, text, wanted):
 
 
 def main():
-    changed = sync(PATH, KEYMAP, xbmc.getInfoLabel("Skin.String(nuvio.backstop)") != "off")
+    backstop = xbmc.getInfoLabel("Skin.String(nuvio.backstop)") != "off"
+    changed = sync(PATH, KEYMAP, backstop)
+    changed = sync(PVR_PATH, pvr_keymap(backstop), True) or changed
     # OK opens the page first for films / episodes in the Kodi video lists (add-on folders): only when chosen in Skin settings
     ok_wanted = xbmc.getCondVisibility("Skin.HasSetting(nuvio.ok.movie.page) | Skin.HasSetting(nuvio.ok.episode.page)")
     changed = sync(OK_PATH, OK_KEYMAP, ok_wanted) or changed
@@ -131,6 +164,7 @@ def main():
     if changed:
         xbmc.executebuiltin("Action(reloadkeymaps)")
         log("keymaps updated")
+    xbmc.executebuiltin("SetProperty(lucent.pvr.keys.v1,1,home)")
 
 
 if __name__ == "__main__":

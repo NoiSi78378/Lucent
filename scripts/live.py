@@ -205,10 +205,7 @@ def guide(here):
     HOME.setProperty("live.g.chname", clean(xbmc.getInfoLabel("VideoPlayer.ChannelName")))
     HOME.setProperty("live.g.up", up)
     HOME.setProperty("live.g.down", down)
-    # the player menu opened before the guide was filled: the programme on now gets the focus
-    if rows and xbmc.getCondVisibility("String.IsEmpty(Window(Home).Property(live.sc.on)) + Window.IsActive(videoosd) + !Control.HasFocus(460) + !ControlGroup(400).HasFocus + "
-                                       "[Control.HasFocus(471) | !ControlGroup(470).HasFocus]"):
-        xbmc.executebuiltin("SetFocus(460,0)")
+    # Asynchronous EPG loading must not steal focus from the TV OSD controls.
 
 
 def clean(name):

@@ -20,6 +20,10 @@ def main():
         if wid and not xbmc.getCondVisibility(f"Window.IsActive({wid})") and not xbmc.getCondVisibility("Window.IsActive(fullscreenvideo)"):
             xbmc.executebuiltin("RunScript(special://skin/scripts/sport.py)")
         return
+    # Timeshift can report a seek after channel switching. Do not eat Live TV Back.
+    if xbmc.getCondVisibility("PVR.IsPlayingTV"):
+        xbmc.executebuiltin("PlayerControl(Stop)")
+        return
     # while you skip through the film (seek bar on screen, fast forward / rewind, a seek just done) Back only ends the
     # skipping: it must not stop the film (a remote that skips with left / right showed the seek bar, Back stopped)
     if xbmc.getCondVisibility("Player.Forwarding | Player.Rewinding"):
