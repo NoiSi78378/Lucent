@@ -581,7 +581,7 @@
                     <control type="button" id="1526">
                         <left>24</left><top>6</top><width>1200</width><height>96</height>
                         <label></label><textcolor>text3</textcolor><focusedcolor>on_focus</focusedcolor>
-                        <onclick>RunScript(special://skin/scripts/ai_home.py,key)</onclick>
+                        <onclick>RunScript(special://skin/scripts/ai_home.py,settings)</onclick>
                         <font>font10</font><textoffsetx>36</textoffsetx>
                         <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
                         <texturenofocus border="20" colordiffuse="card">rr20.png</texturenofocus>
@@ -593,11 +593,11 @@
                     </control>
                     <control type="label"><left>124</left><top>20</top><width>960</width><height>36</height>
                         <font>font12_bold</font><textcolor>text</textcolor><aligny>center</aligny>
-                        <label>Lucent AI · Chiave OpenRouter</label>
+                        <label>Lucent AI · Assistente e configurazione</label>
                     </control>
                     <control type="label"><left>124</left><top>56</top><width>960</width><height>30</height>
                         <font>font_tiny</font><textcolor>text4</textcolor><aligny>center</aligny>
-                        <label>Configura l'accesso all'assistente AI nella ricerca Home</label>
+                        <label>Modello, ragionamento, account OpenRouter e cronologia</label>
                     </control>
                     <control type="image"><left>1168</left><top>42</top><width>24</width><height>24</height>
                         <texture colordiffuse="text4">icons/chevron_right.png</texture>

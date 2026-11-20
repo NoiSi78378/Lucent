@@ -477,7 +477,7 @@
         <label>Film, serie o un consiglio: scrivi e premi Invio per cercare.</label>
       </control>
       <control type="button" id="9500">
-        <left>215</left><top>245</top><width>1530</width><height>89</height>
+        <left>215</left><top>245</top><width>1390</width><height>89</height>
         <label>$INFO[Window(home).Property(ai.home.query)]</label>
         <font>font27</font><textcolor>FFFFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
         <textoffsetx>75</textoffsetx><aligny>center</aligny>
@@ -485,14 +485,13 @@
         <texturenofocus border="30" colordiffuse="glass_strong">rr20.png</texturenofocus>
         <onclick>RunScript(special://skin/scripts/ai_home.py,input)</onclick>
         <onleft>9000</onleft>
-        <onright condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9502</onright>
-        <onright>9500</onright><onup>9000</onup>
+        <onright>9503</onright><onup>9000</onup>
         <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown>
         <ondown>9510</ondown>
       </control>
       <!-- Native Lucent luminous outline: the search bar visibly has focus. -->
       <control type="image">
-        <left>213</left><top>243</top><width>1535</width><height>93</height>
+        <left>213</left><top>243</top><width>1395</width><height>93</height>
         <texture border="30" colordiffuse="focus">rr20_edge.png</texture>
         <visible>Control.HasFocus(9500)</visible>
       </control>
@@ -503,22 +502,45 @@
       <!-- Never destroy the focused button: focus moves to 9500 before reset.
            The OR guard keeps this reachable if a slow device hasn't yet moved focus. -->
       <control type="button" id="9502">
-        <left>1677</left><top>259</top><width>58</width><height>59</height>
+        <left>1615</left><top>259</top><width>58</width><height>59</height>
         <label></label>
         <texturefocus border="20" colordiffuse="focus">rr20.png</texturefocus>
         <texturenofocus border="20" colordiffuse="glass_strong">rr20.png</texturenofocus>
-        <onleft>9500</onleft><onright>9500</onright><onup>9500</onup>
+        <onleft>9500</onleft><onright>9503</onright><onup>9500</onup>
         <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown>
         <ondown>9510</ondown>
         <onclick>SetFocus(9500)</onclick>
         <onclick>RunScript(special://skin/scripts/ai_home.py,reset)</onclick>
-        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results) | Control.HasFocus(9502)</visible>
+        <visible>String.IsEqual(Window(home).Property(ai.home.hasquery),1) | Control.HasFocus(9502)</visible>
       </control>
       <control type="image">
-        <left>1692</left><top>274</top><width>28</width><height>28</height>
+        <left>1630</left><top>274</top><width>28</width><height>28</height>
         <texture colordiffuse="FFFFFFFF">icons/close.png</texture>
-        <visible>String.IsEqual(Window(home).Property(ai.home.mode),results) | Control.HasFocus(9502)</visible>
+        <visible>String.IsEqual(Window(home).Property(ai.home.hasquery),1) | Control.HasFocus(9502)</visible>
       </control>
+
+      <control type="button" id="9503">
+        <left>1681</left><top>259</top><width>58</width><height>59</height><label/>
+        <texturefocus border="20" colordiffuse="focus">rr20_edge.png</texturefocus>
+        <texturenofocus border="20" colordiffuse="glass_strong">rr20.png</texturenofocus>
+        <onclick>RunScript(special://skin/scripts/ai_home.py,history)</onclick>
+        <onleft condition="Control.IsVisible(9502)">9502</onleft><onleft>9500</onleft>
+        <onright>9504</onright><onup>9500</onup>
+        <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown><ondown>9510</ondown>
+      </control>
+      <control type="image"><left>1695</left><top>273</top><width>30</width><height>30</height>
+        <texture colordiffuse="FFFFFFFF">icons/clock.png</texture></control>
+      <control type="button" id="9504">
+        <left>1747</left><top>259</top><width>58</width><height>59</height><label/>
+        <texturefocus border="20" colordiffuse="focus">rr20_edge.png</texturefocus>
+        <texturenofocus border="20" colordiffuse="glass_strong">rr20.png</texturenofocus>
+        <onclick>RunScript(special://skin/scripts/ai_home.py,ask)</onclick>
+        <onleft>9503</onleft><onright>9504</onright><onup>9500</onup>
+        <ondown condition="String.IsEqual(Window(home).Property(ai.home.mode),results)">9550</ondown><ondown>9510</ondown>
+      </control>
+      <control type="image"><left>1761</left><top>273</top><width>30</width><height>30</height>
+        <texture colordiffuse="FFFFFFFF">icons/sparkle.png</texture></control>
+
       <control type="label">
         <left>220</left><top>346</top><width>1500</width><height>31</height>
         <font>font12</font><textcolor>text3</textcolor><scroll>true</scroll>
@@ -551,7 +573,8 @@
        <onleft>9000</onleft>
        <onup>9500</onup><ondown>9520</ondown>
        <onback>9000</onback>
-       <itemlayout width="428" height="289">
+       <oninfo>RunScript(special://skin/scripts/ai_home.py,ask,9510)</oninfo>
+        <itemlayout width="428" height="289">
    <include>LucentAINativeCardPlain</include>
   </itemlayout>
   <focusedlayout width="428" height="289">
@@ -775,7 +798,8 @@
        <onleft>9000</onleft>
        <onup>9510</onup><ondown>9530</ondown>
        <onback>9000</onback>
-       <itemlayout width="428" height="289">
+       <oninfo>RunScript(special://skin/scripts/ai_home.py,ask,9520)</oninfo>
+        <itemlayout width="428" height="289">
    <include>LucentAINativeCardPlain</include>
   </itemlayout>
   <focusedlayout width="428" height="289">
@@ -999,7 +1023,8 @@
        <onleft>9000</onleft>
        <onup>9520</onup><ondown>9540</ondown>
        <onback>9000</onback>
-       <itemlayout width="428" height="289">
+       <oninfo>RunScript(special://skin/scripts/ai_home.py,ask,9530)</oninfo>
+        <itemlayout width="428" height="289">
    <include>LucentAINativeCardPlain</include>
   </itemlayout>
   <focusedlayout width="428" height="289">
@@ -1223,7 +1248,8 @@
        <onleft>9000</onleft>
        <onup>9530</onup><ondown>9540</ondown>
        <onback>9000</onback>
-       <itemlayout width="428" height="289">
+       <oninfo>RunScript(special://skin/scripts/ai_home.py,ask,9540)</oninfo>
+        <itemlayout width="428" height="289">
    <include>LucentAINativeCardPlain</include>
   </itemlayout>
   <focusedlayout width="428" height="289">
@@ -1441,7 +1467,8 @@
    <orientation>horizontal</orientation><scrolltime>230</scrolltime>
    <onleft>9000</onleft><onup>9500</onup><ondown>9550</ondown>
    <onback>RunScript(special://skin/scripts/ai_home.py,reset)</onback>
-   <itemlayout width="316" height="435"><control type="image">
+   <oninfo>RunScript(special://skin/scripts/ai_home.py,ask,9550)</oninfo>
+        <itemlayout width="316" height="435"><control type="image">
     <left>3</left><top>2</top><width>308</width><height>427</height>
     <texture border="26" colordiffuse="card">rr20.png</texture>
    </control>

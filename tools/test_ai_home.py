@@ -18,7 +18,7 @@ assert "Includes_Lucent_AISearch_Home.xml" in includes
 assert "<include>LucentAISearchHome</include>" in home
 assert "RunScript(special://skin/scripts/ai_home.py,refresh)" in home
 assert 'tab("t_search", "search", "SetFocus(9500)")' in menu
-assert "RunScript(special://skin/scripts/ai_home.py,key)" in settings
+assert "RunScript(special://skin/scripts/ai_home.py,settings)" in settings
 assert "OpenRouter" in settings
 assert "RunScript(special://skin/scripts/ai_home.py,input)" in panel
 assert panel.count("mask_landscape.png") >= 2
@@ -68,8 +68,8 @@ assert "SUGGESTION_LIMIT = 24" in source
 assert '"top": [], "tv": []' not in source or True
 assert '"tv": [], "top": []' in source
 assert "skip=%d.json" in source and "genre=%d" in source
-assert "def _run_query(prompt):" in source and "_ai_request(prompt, key, intent)" in source
-assert "rows = _add_artwork(verified + suggestions, intent)" in source
+assert "def _run_query(prompt, context=None):" in source and "assistant.plan_query(prompt,context)" in source
+assert "assistant.catalogue(p,_exact_titles)" in source
 assert 'ActivateWindow(Videos,"%s",return)' in source
 assert "def set_key():" in source and "_save_key(value)" in source
 
@@ -89,7 +89,7 @@ assert "from ai_art_core import catalogue_art, normalize, tmdb_art, backdrop_ful
 assert '"backdrop": backdrop_full(image)' in source
 assert "Upgrade the existing 2.1.45.22 thumbnail-only cache automatically." in source
 assert '"backdrop": backdrop_full(row.get("backdrop") or "")' in source
-assert 'for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason"):' in source
+assert 'for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason", "year", "tmdb_id"):' in source
 assert panel.count('<property name="backdrop">') == 112
 assert 'Property(ai.home.pop.1.backdrop)' in panel
 assert 'Property(ai.home.result.1.backdrop)' in panel
@@ -157,8 +157,8 @@ assert source.index("_focus_search()", source.index("def reset_search():")) < so
 assert "from ai_cast_core import person_intent, find_person, credit_rows" in source
 assert "def _verified_person_search(person, intent):" in source
 assert '"movie_credits"' in source and '"tv_credits"' in source
-assert "rows, message = _verified_person_search(person, intent)" in source
-assert "if person:" in source
+assert "assistant.plan_query(prompt,context)" in source
+assert "assistant.catalogue(p,_exact_titles)" in source
 from ai_cast_core import person_intent, find_person, credit_rows
 actor = person_intent("Cerca il film con Robert Pattinson del 2026")
 assert actor == {"name":"Robert Pattinson", "role":"actor"}
@@ -184,3 +184,36 @@ assert not credit_rows({"crew":[{"title":"Other Job","release_date":"2026-04-10"
                                  "job":"Writer"}]}, "film","director",cast_intent)
 
 print("Lucent AI Home: focus-safe reset, static clear icon, visible search focus, verified actor credits OK")
+
+
+from ai_assistant_core import validate, matches, choose_episode
+p=validate({"operation":"search","kind":"film","year_from":2020,"year_to":2026,
+ "genres":["horror","thriller"],"exclude_genres":["comedy"],"runtime_max":100,
+ "countries":["KR"],"rating_min":7,"people":[{"name":"Robert Pattinson","role":"actor","exclude":False}]})
+film={"title":"Fixture","release_date":"2024-04-01","genres":[{"id":27},{"id":53}],
+ "runtime":95,"production_countries":[{"iso_3166_1":"KR"}],"vote_average":7.5,
+ "credits":{"cast":[{"name":"Robert Pattinson"}],"crew":[]}}
+assert matches(film,p,"film")
+assert not matches(dict(film,runtime=125),p,"film")
+assert not matches(dict(film,credits={"cast":[]}),p,"film")
+assert not matches(dict(film,genres=[{"id":27}]),p,"film")
+assert not matches(dict(film,genres=[{"id":27},{"id":53},{"id":35}]),p,"film")
+assert not matches(dict(film,production_countries=[]),p,"film")
+assert not matches(dict(film,release_date="2019-01-01"),p,"film")
+assert not matches(dict(film,vote_average=6),p,"film")
+assert not matches(dict(film,runtime=None),p,"film")
+assert validate({"operation":"search","genres":["x"]})["unverified"]==["x"]
+assert choose_episode([{"episodeid":1,"season":1,"episode":1,"playcount":1},
+ {"episodeid":2,"season":1,"episode":2,"resume":{"position":120}},
+ {"episodeid":3,"season":1,"episode":3}])["episodeid"]==2
+assert choose_episode([{"episodeid":1,"season":1,"episode":1},
+ {"episodeid":2,"season":1,"episode":2}],[(1,1)])["episodeid"]==2
+assert 'deepseek/deepseek-v4.1-flash-1017' in (root/"scripts/ai_assistant.py").read_text()
+assert "keyboard.isConfirmed()" in source
+assert "9503" in panel and "9504" in panel and "icons/clock.png" in panel
+assert "assistant.resume_target(p)" in source
+assert "Player.Open" in source
+assert "assistant.history()" in source
+assert "if op==\"answer\":" in source
+assert "assistant.assistant" not in source
+print("Assistant: combined constraints, evidence rejection, episode progression, history and UI passed")

@@ -24,7 +24,7 @@ from ai_art_core import choose_record, catalogue_art, tmdb_art, normalize, metad
 from ai_intent_core import (understand, year_eligible, genre_eligible, GENRES, GENRE_IT)
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "openrouter/free"
+MODEL = "deepseek/deepseek-v4.1-flash-1017"
 UI = "Lucent_AISearch.xml"
 SKIN = xbmcvfs.translatePath("special://skin/")
 KEY_DIR = xbmcvfs.translatePath("special://profile/addon_data/skin.lucent.ai/")
@@ -50,7 +50,9 @@ def _save_key(key):
     os.makedirs(KEY_DIR, exist_ok=True)
     tmp = KEY_FILE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as file:
-        json.dump({"openrouter_key": key.strip()}, file)
+        data = _settings()
+        data["openrouter_key"] = key.strip()
+        json.dump(data, file)
     try:
         os.chmod(tmp, 0o600)
     except OSError:

@@ -8,6 +8,7 @@ existing private profile file and is never logged or bundled with the skin.
 import datetime
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -20,6 +21,7 @@ from ai_art_core import catalogue_art, normalize, tmdb_art, backdrop_full
 from ai_intent_core import understand, GENRE_IT
 from ai_exact_core import candidate, merge_candidates
 from ai_cast_core import person_intent, find_person, credit_rows
+import ai_assistant as assistant
 from ai_search import (_ai_request, _discover, _add_artwork, _live_epg, _art_key,
                        _json_art, _settings, _save_key, stream4me_url, KEY_DIR, _rpc)
 
@@ -38,6 +40,8 @@ def _put(name, value):
     value = "" if value is None else str(value)
     if HOME.getProperty(name) != value:
         HOME.setProperty(name, value)
+    if name == "ai.home.query":
+        HOME.setProperty("ai.home.hasquery", "1" if value and value != PLACEHOLDER else "")
 
 
 def _status(value):
@@ -191,7 +195,7 @@ def _fill(name, rows):
     for i in range(1, limit + 1):
         row = rows[i - 1] if i <= len(rows) else {}
         prefix = "ai.home.%s.%d." % (name, i)
-        for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason"):
+        for field in ("title", "sub", "image", "backdrop", "poster", "kind", "reason", "year", "tmdb_id"):
             _put(prefix + field, row.get(field, ""))
 
 
@@ -244,16 +248,14 @@ def input_search():
     default = HOME.getProperty("ai.home.query")
     if default == PLACEHOLDER:
         default = ""
-    query = xbmcgui.Dialog().input(
-        "Lucent AI · Cosa vuoi guardare?", defaultt=default,
-        type=xbmcgui.INPUT_ALPHANUM)
-    if not query or not query.strip():
-        # Clearing the search box also restores discovery. Kodi returns an empty
-        # value when the keyboard is cancelled; the explicit X always works.
-        if default:
-            reset_search()
+    keyboard = xbmc.Keyboard(default, "Lucent AI · Cosa vuoi guardare?")
+    keyboard.doModal()
+    if not keyboard.isConfirmed():
         return
-    query = query.strip()[:250]
+    query = keyboard.getText().strip()[:500]
+    if not query:
+        reset_search()
+        return
     _put("ai.home.query", query)
     _run_query(query)
 
@@ -354,87 +356,178 @@ def _verified_person_search(person, intent):
                 (period, person["name"]))
 
 
-def _run_query(prompt):
-    from ai_search import _art_key
-    intent = understand(prompt)
+def _run_query(prompt, context=None):
+    """One validated plan then a bounded, allowlisted executor."""
+    _focus_search()
     progress = xbmcgui.DialogProgressBG()
-    progress.create("Lucent AI", "Cerco titoli e verifico i metadati...")
+    progress.create("Lucent AI", "Comprendo la richiesta...")
     _status("Ricerca in corso...")
     try:
-        if intent["direct"]:
+        # Simple titles remain available without any AI credentials. Requests for
+        # actions or people must go through the planner (even just two words).
+        direct = understand(prompt)["direct"] and not context and not re.search(
+            r"\b(riprendi|continua|avvia|apri|aggiungi|aggiungimi|cancella|elimina|"
+            r"aggiorna|guarda|chi|quando|quanto|perche|perché|spiega|dammi|dal|senza)\b",
+            prompt, re.I)
+        if direct:
             rows = _exact_titles(prompt)
-            message = ("Titoli corrispondenti: %d · Film e serie TV" % len(rows)
-                       if rows[0].get("kind") != "titolo"
-                       else "Titolo non indicizzato · ricerca Stream4Me disponibile.")
+            message = "Titoli corrispondenti: %d" % len(rows)
+            assistant.remember(prompt, {"operation":"search","title":prompt})
         else:
-            person = person_intent(prompt)
-            if person:
-                progress.update(35, "Lucent AI", "Verifico cast e crediti di %s..." % person["name"])
-                rows, message = _verified_person_search(person, intent)
-                if not rows:
-                    _fill("result", [])
-                    _put("ai.home.mode", "suggestions")
-                    _status(message)
+            p = assistant.plan_query(prompt,context)
+            op = p["operation"]
+            progress.update(35,"Lucent AI","Consulto le fonti disponibili...")
+            if op in ("resume","play"):
+                target,message = assistant.resume_target(p)
+                progress.close()
+                if target:
+                    if _rpc("Player.Open",target)=="OK":
+                        _status("Riproduzione richiesta · "+message)
+                    else:
+                        _status("Kodi non ha confermato la riproduzione.")
+                else: xbmcgui.Dialog().ok("Lucent AI",message)
+                return
+            if op=="scan":
+                progress.close()
+                if xbmcgui.Dialog().yesno("Lucent AI","Aggiornare la videoteca Kodi?"):
+                    _rpc("VideoLibrary.Scan",{})
+                    _status("Aggiornamento videoteca richiesto a Kodi.")
+                return
+            if op=="add":
+                progress.close()
+                if not p["title"]:
+                    xbmcgui.Dialog().ok("Lucent AI","Indica quale titolo vuoi aggiungere.")
                     return
-            else:
-                verified = _discover(intent, _art_key()) if intent.get("year") else []
-                key = (_settings().get("openrouter_key") or "").strip()
-                suggestions, message = [], ""
-                if key and len(verified) < 4:
-                    try:
-                        suggestions, message = _ai_request(prompt, key, intent)
-                    except RuntimeError as err:
-                        if not verified:
-                            raise
-                        message = "Catalogo verificato."
-                elif not key and not verified:
-                    _status("Imposta la chiave OpenRouter nelle impostazioni della skin.")
+                kind=p["kind"]
+                found=[x for k in ([kind] if kind else ["serie","film"]) for x in assistant.library_items(k)
+                       if normalize(x.get("title"))==normalize(p["title"])]
+                if found:
+                    xbmcgui.Dialog().ok("Lucent AI","Un titolo omonimo è già nella videoteca. Controlla la scheda prima di aggiungerne un altro.")
                     return
-                progress.update(65, "Lucent AI", "Verifico genere, anno e copertine...")
-                rows = _add_artwork(verified + suggestions, intent)
-                if intent.get("year"):
-                    label = GENRE_IT.get(intent.get("genre"), "qualsiasi genere")
-                    message = "Risultati verificati · %s · %s" % (label, intent["year"])
+                xbmcgui.Dialog().ok("Lucent AI","L'importazione da una sorgente specifica va confermata nell'add-on. Apro la ricerca del titolo; non posso confermare l'aggiunta automatica.")
+                if xbmc.getCondVisibility("System.HasAddon(plugin.video.s4me)"):
+                    xbmc.executebuiltin('ActivateWindow(Videos,"%s",return)' % stream4me_url(p["title"]))
+                return
+            if op=="answer":
+                response=assistant.answer(prompt,p,context)
+                progress.close()
+                xbmcgui.Dialog().textviewer("Lucent AI",response)
+                return
+            if op=="epg":
+                progress.close()
+                if p["title"]:
+                    live,msg=_live_epg([p["title"]])
+                    xbmcgui.Dialog().ok("Lucent AI","\n".join(x["title"]+" · "+x["reason"] for x in live) or msg)
                 else:
-                    message = message or "Risultati AI verificati."
+                    xbmc.executebuiltin("ActivateWindow(TVGuide)")
+                return
+            if op=="unsupported":
+                progress.close()
+                xbmcgui.Dialog().ok("Lucent AI","Questa azione non è ancora supportata da Kodi/Lucent.")
+                return
+            if op=="library":
+                rows=[]
+                for kind in ([p["kind"]] if p["kind"] else ["film","serie"]):
+                    for obj in assistant.library_items(kind):
+                        if p["title"] and normalize(p["title"])!=normalize(obj.get("title")): continue
+                        if p["unwatched"] and (obj.get("playcount") or obj.get("watchedepisodes")): continue
+                        art=obj.get("art") or {}
+                        rows.append({"title":obj.get("title"),"kind":kind,"year":obj.get("year"),
+                                     "poster":art.get("poster"),"backdrop":art.get("fanart")})
+                message="Videoteca Kodi · filtri titolo, tipo e visione"
+                if assistant.hard_filters(dict(p,unwatched=False)):
+                    message+=" · altri criteri non verificati"
+            else:
+                rows,message=assistant.catalogue(p,_exact_titles)
+        _focus_search()
         if not rows:
-            _fill("result", [])
             _put("ai.home.mode", "suggestions")
-            _status("Nessun titolo verificato per questa richiesta. Prova un'altra ricerca.")
+            _fill("result", [])
+            _status(message+" · Nessuna corrispondenza trovata.")
             return
-        # No full-screen dialog; populate visible native Home controls directly.
-        result = []
+        result=[]
         for row in rows[:SLOTS]:
-            kind = row.get("kind") or "film"
-            year = str(row.get("year") or "")
-            rating = str(row.get("rating") or "")
-            sub = ("SERIE TV" if kind == "serie" else
-                   "FILM" if kind == "film" else "RICERCA TITOLO")
-            if year:
-                sub += "  ·  " + year
-            if rating:
-                sub += "  ·  ★ " + rating
-            result.append({"title": row["title"], "sub": sub,
-                           "poster": row.get("poster") or "",
-                           "image": row.get("backdrop") or "",
+            kind=row.get("kind") or "film"
+            year=str(row.get("year") or "")
+            rating=str(row.get("rating") or "")
+            sub="SERIE TV" if kind=="serie" else "FILM" if kind=="film" else "RICERCA TITOLO"
+            if year: sub+="  ·  "+year
+            if rating: sub+="  ·  ★ "+rating
+            result.append({"title":row["title"],"sub":sub,
+                           "poster":row.get("poster") or "",
+                           "image":row.get("backdrop") or "",
                            "backdrop": backdrop_full(row.get("backdrop") or ""),
-                           "kind": kind,
-                           "reason": row.get("reason") or ""})
-        _fill("result", result)
-        _put("ai.home.mode", "results")
-        _status(message + " · Seleziona un titolo per aprire Stream4Me.")
-    except RuntimeError as err:
-        _fill("result", [])
-        _put("ai.home.mode", "suggestions")
-        _status(str(err) + " · La ricerca per titolo resta disponibile.")
-    except Exception as err:
-        # No model messages, queries or private keys in Kodi logs.
-        xbmc.log("[skin.lucent] AI Home query: " + type(err).__name__, xbmc.LOGWARNING)
-        _fill("result", [])
-        _put("ai.home.mode", "suggestions")
-        _status("Ricerca non disponibile. Riprova o verifica la connessione.")
+                           "kind":kind,"reason":row.get("reason") or "",
+                           "year":year,"tmdb_id":row.get("tmdb_id") or ""})
+        _fill("result",result)
+        _put("ai.home.mode","results")
+        _status(message+" · Seleziona un titolo per aprirlo.")
+    except (RuntimeError,ValueError) as exc:
+        _focus_search()
+        _put("ai.home.mode","suggestions")
+        _fill("result",[])
+        _status(str(exc))
+    except Exception as exc:
+        xbmc.log("[skin.lucent] assistant: "+type(exc).__name__,xbmc.LOGWARNING)
+        _focus_search()
+        _put("ai.home.mode","suggestions")
+        _fill("result",[])
+        _status("Ricerca non disponibile. Verifica connessione e impostazioni.")
     finally:
         progress.close()
+
+
+def history_menu():
+    rows=assistant.history()
+    if not rows:
+        xbmcgui.Dialog().ok("Lucent AI","Nessuna ricerca recente.")
+        return
+    rows=list(reversed(rows))
+    choice=xbmcgui.Dialog().select("Cronologia Lucent AI",[r["query"] for r in rows])
+    if choice>=0:
+        _put("ai.home.query",rows[choice]["query"])
+        _run_query(rows[choice]["query"])
+
+
+def ask_selected(container=0):
+    if container not in (9510,9520,9530,9540,9550):
+        # Explicit fallback: choose the active item from the visible shelves.
+        ids=(9550,) if HOME.getProperty("ai.home.mode")=="results" else (9510,9520,9530,9540)
+        choices=[(i,xbmc.getInfoLabel("Container(%d).ListItem.Label"%i)) for i in ids]
+        choices=[x for x in choices if x[1]]
+        if not choices: return
+        selected=xbmcgui.Dialog().select("Chiedi all'AI · titolo",[x[1] for x in choices])
+        if selected<0: return
+        container=choices[selected][0]
+    title=xbmc.getInfoLabel("Container(%d).ListItem.Label"%container)
+    meta=xbmc.getInfoLabel("Container(%d).ListItem.Label2"%container)
+    if not title: return
+    keyboard=xbmc.Keyboard("","Chiedi all'AI · "+title)
+    keyboard.doModal()
+    if keyboard.isConfirmed() and keyboard.getText().strip():
+        text=keyboard.getText().strip()[:500]
+        _put("ai.home.query",text)
+        _run_query(text,{"title":title,"metadata":meta})
+
+
+def assistant_settings():
+    d=xbmcgui.Dialog()
+    cfg=_settings()
+    choice=d.select("Lucent AI",["Chiave OpenRouter","Modello AI · "+cfg.get("model",assistant.MODEL),
+        "Ragionamento · "+cfg.get("reasoning","medium"),
+        "Memoria · "+("Attiva" if cfg.get("memory",True) else "Disattivata"),"Cancella cronologia"])
+    if choice==0: set_key()
+    elif choice==1:
+        i=d.select("Modello OpenRouter",list(assistant.MODELS)+["Altro modello..."])
+        if i==len(assistant.MODELS):
+            model=d.input("ID modello OpenRouter",defaultt=cfg.get("model",assistant.MODEL))
+            if re.fullmatch(r"[A-Za-z0-9_.:/-]{3,100}",model or ""): assistant.configure(model=model)
+        elif i>=0: assistant.configure(model=assistant.MODELS[i])
+    elif choice==2:
+        i=d.select("Ragionamento",["Rapido","Bilanciato","Approfondito"])
+        if i>=0: assistant.configure(reasoning=("low","medium","high")[i])
+    elif choice==3: assistant.configure(memory=not cfg.get("memory",True))
+    elif choice==4 and d.yesno("Lucent AI","Cancellare le quattro ricerche recenti?"): assistant.clear_history()
 
 
 def open_title(source, index):
@@ -488,6 +581,12 @@ def main():
             pass
     elif action == "key":
         set_key()
+    elif action == "settings":
+        assistant_settings()
+    elif action == "history":
+        history_menu()
+    elif action == "ask":
+        ask_selected(int(sys.argv[2]) if len(sys.argv)>2 and sys.argv[2].isdigit() else 0)
 
 
 if __name__ == "__main__":
