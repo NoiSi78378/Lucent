@@ -21,7 +21,7 @@
     <!-- once per Kodi start, one Python start: key maps, rating logos, Calendar / Sport tabs, then the background helper
          (calendar, sport, updates, Tonight for you, poster colour, subtitles). After a skin update nuvio.started is cleared so it runs again. -->
     <onload condition="String.IsEmpty(Window(home).Property(nuvio.started))">RunScript(special://skin/scripts/startup.py)</onload>
-    <onload condition="!String.IsEmpty(Window(home).Property(nuvio.started)) + String.IsEmpty(Window(home).Property(lucent.pvr.keys.v1))">RunScript(special://skin/scripts/keymap.py)</onload>
+    <onload condition="!String.IsEmpty(Window(home).Property(nuvio.started)) + [String.IsEmpty(Window(home).Property(lucent.pvr.keys.v1)) | String.IsEmpty(Window(home).Property(lucent.voice.keys.v1))]">RunScript(special://skin/scripts/keymap.py)</onload>
     <onload condition="String.IsEmpty(Window(home).Property(lucent.pc.count)) + !String.IsEmpty(Window(home).Property(nuvio.started))">RunScript(special://skin/scripts/tabpanels.py)</onload>
     <onload condition="String.IsEmpty(Skin.String(lucent.logoask)) + Pvr.HasTVChannels + !String.IsEmpty(Window(home).Property(nuvio.started))">RunScript(special://skin/scripts/channels.py,asklogos)</onload>
     <!-- poster trailers are switched off for now (set the skin setting nuvio.trailers.menu to bring them back) -->

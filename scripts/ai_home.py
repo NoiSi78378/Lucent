@@ -466,12 +466,19 @@ def _tv_action(plan,prompt,progress,channels=None):
     if i>=0: _start_tv_channel(rows[i][0])
 
 
-def _run_query(prompt, context=None):
-    """One validated plan then a bounded, allowlisted executor."""
-    _focus_search()
+def _run_query(prompt, context=None, global_mode=False):
+    """One validated plan; the global entry never changes Home focus or results."""
+    if not global_mode:
+        _focus_search()
+    def report(message):
+        if global_mode:
+            xbmcgui.Dialog().notification("Lucent AI",message,xbmcgui.NOTIFICATION_INFO,4500)
+        else:
+            _status(message)
     progress = _QueryProgress()
     progress.create("Lucent AI", "Comprendo la richiesta...")
-    _status("Ricerca in corso...")
+    if not global_mode:
+        _status("Ricerca in corso...")
     try:
         # Route explicit channel actions locally, before cinematic interpretation.
         tv_request=None
@@ -513,16 +520,16 @@ def _run_query(prompt, context=None):
                 progress.close()
                 if target:
                     if _rpc("Player.Open",target)=="OK":
-                        _status("Riproduzione richiesta · "+message)
+                        report("Riproduzione richiesta · "+message)
                     else:
-                        _status("Kodi non ha confermato la riproduzione.")
+                        report("Kodi non ha confermato la riproduzione.")
                 else: xbmcgui.Dialog().ok("Lucent AI",message)
                 return
             if op=="scan":
                 progress.close()
                 if xbmcgui.Dialog().yesno("Lucent AI","Aggiornare la videoteca Kodi?"):
                     _rpc("VideoLibrary.Scan",{})
-                    _status("Aggiornamento videoteca richiesto a Kodi.")
+                    report("Aggiornamento videoteca richiesto a Kodi.")
                 return
             if op=="add":
                 progress.close()
@@ -563,6 +570,13 @@ def _run_query(prompt, context=None):
                     message+=" · altri criteri non verificati"
             else:
                 rows,message=assistant.catalogue(p,_exact_titles)
+        if global_mode:
+            progress.close()
+            if not rows:
+                xbmcgui.Dialog().ok("Lucent AI",message+" · Nessuna corrispondenza trovata.")
+                return
+            _global_results(rows,message)
+            return
         _focus_search()
         if not rows:
             _put("ai.home.mode", "suggestions")
@@ -587,18 +601,48 @@ def _run_query(prompt, context=None):
         _put("ai.home.mode","results")
         _status(message+" · Seleziona un titolo per aprirlo.")
     except (RuntimeError,ValueError) as exc:
-        _focus_search()
-        _put("ai.home.mode","suggestions")
-        _fill("result",[])
-        _status(str(exc))
+        if global_mode:
+            progress.close()
+            xbmcgui.Dialog().ok("Lucent AI",str(exc))
+        else:
+            _focus_search()
+            _put("ai.home.mode","suggestions")
+            _fill("result",[])
+            _status(str(exc))
     except Exception as exc:
         xbmc.log("[skin.lucent] assistant: "+type(exc).__name__,xbmc.LOGWARNING)
-        _focus_search()
-        _put("ai.home.mode","suggestions")
-        _fill("result",[])
-        _status("Ricerca non disponibile. Verifica connessione e impostazioni.")
+        if global_mode:
+            progress.close()
+            xbmcgui.Dialog().ok("Lucent AI","Ricerca non disponibile. Verifica connessione e impostazioni.")
+        else:
+            _focus_search()
+            _put("ai.home.mode","suggestions")
+            _fill("result",[])
+            _status("Ricerca non disponibile. Verifica connessione e impostazioni.")
     finally:
         progress.close()
+
+
+def _global_results(rows,message):
+    """Native selection dialog over the active window; no Home navigation."""
+    items=[]
+    valid=[]
+    for row in rows[:SLOTS]:
+        title=row.get("title")
+        if not title:
+            continue
+        kind="Serie TV" if row.get("kind")=="serie" else "Film" if row.get("kind")=="film" else "Titolo"
+        sub=" · ".join(x for x in (kind,str(row.get("year") or ""),str(row.get("rating") or "")) if x)
+        item=xbmcgui.ListItem(label=title,label2=sub)
+        item.setArt({"thumb":row.get("poster") or row.get("backdrop") or ""})
+        items.append(item)
+        valid.append(title)
+    if not items:
+        xbmcgui.Dialog().ok("Lucent AI",message)
+        return
+    selected=xbmcgui.Dialog().select("Lucent AI · "+message[:100],items,useDetails=True)
+    if 0<=selected<len(valid):
+        _open_search_title(valid[selected])
 
 
 def history_menu():
@@ -640,7 +684,8 @@ def assistant_settings():
     cfg=_settings()
     choice=d.select("Lucent AI",["Chiave OpenRouter","Modello AI · "+cfg.get("model",assistant.MODEL),
         "Ragionamento · "+cfg.get("reasoning","medium"),
-        "Memoria · "+("Attiva" if cfg.get("memory",True) else "Disattivata"),"Cancella cronologia"])
+        "Memoria · "+("Attiva" if cfg.get("memory",True) else "Disattivata"),"Cancella cronologia",
+        "Assistente globale e microfono","Apri assistente globale"])
     if choice==0: set_key()
     elif choice==1:
         i=d.select("Modello OpenRouter",list(assistant.MODELS)+["Altro modello..."])
@@ -653,6 +698,26 @@ def assistant_settings():
         if i>=0: assistant.configure(reasoning=("low","medium","high")[i])
     elif choice==3: assistant.configure(memory=not cfg.get("memory",True))
     elif choice==4 and d.yesno("Lucent AI","Cancellare le quattro ricerche recenti?"): assistant.clear_history()
+    elif choice==5: voice_settings()
+    elif choice==6: xbmc.executebuiltin("RunScript(special://skin/scripts/ai_voice.py)")
+
+
+def voice_settings():
+    mode=xbmc.getInfoLabel("Skin.String(lucent.voice.key)") or "back"
+    auto=xbmc.getInfoLabel("Skin.String(lucent.voice.auto)")!="off"
+    labels={"back":"Indietro prolungato","keyboard":"Ctrl+Alt+F12","off":"Disattivata"}
+    dialog=xbmcgui.Dialog()
+    i=dialog.select("Assistente globale",["Scorciatoia · "+labels.get(mode,"Disattivata"),
+        "Microfono automatico · "+("Sì" if auto else "No"),"Prova assistente"])
+    if i==0:
+        choice=dialog.select("Scorciatoia Kodi",["Indietro prolungato","Ctrl+Alt+F12 (tastiera)","Disattiva scorciatoia"])
+        if choice in (0,1,2):
+            xbmc.executebuiltin("Skin.SetString(lucent.voice.key,%s)"%("back","keyboard","off")[choice],True)
+            xbmc.executebuiltin("RunScript(special://skin/scripts/keymap.py)")
+    elif i==1:
+        xbmc.executebuiltin("Skin.SetString(lucent.voice.auto,%s)"%("off" if auto else "on"))
+    elif i==2:
+        xbmc.executebuiltin("RunScript(special://skin/scripts/ai_voice.py)")
 
 
 def open_title(source, index):
@@ -661,6 +726,10 @@ def open_title(source, index):
     title = HOME.getProperty("ai.home.%s.%d.title" % (source, index)).strip()
     if not title:
         return
+    _open_search_title(title)
+
+
+def _open_search_title(title):
     if not xbmc.getCondVisibility("System.HasAddon(plugin.video.s4me)"):
         xbmcgui.Dialog().ok("Lucent AI", "Installa o abilita Stream4Me per cercare il titolo.")
         return

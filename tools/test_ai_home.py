@@ -68,7 +68,7 @@ assert "SUGGESTION_LIMIT = 24" in source
 assert '"top": [], "tv": []' not in source or True
 assert '"tv": [], "top": []' in source
 assert "skip=%d.json" in source and "genre=%d" in source
-assert "def _run_query(prompt, context=None):" in source and "assistant.plan_query(prompt,context)" in source
+assert "def _run_query(prompt, context=None, global_mode=False):" in source and "assistant.plan_query(prompt,context)" in source
 assert "assistant.catalogue(p,_exact_titles)" in source
 assert 'ActivateWindow(Videos,"%s",return)' in source
 assert "def set_key():" in source and "_save_key(value)" in source
@@ -316,3 +316,53 @@ assert buttons[0].findtext("onclick")=="Dialog.Close(videoosd,true)"
 assert buttons[0].findtext("onright")=="4991" and buttons[1].findtext("onright")=="4992"
 assert all(b.findtext("onback")=="Dialog.Close(videoosd,true)" for b in buttons)
 print("PVR controls: centered geometry, safe guide gap, rendering order and unchanged navigation")
+
+# Global assistant keymap is long-press only and does not shadow the ordinary
+# short Back or native OK/dictation mappings.
+keysource=(root/"scripts/keymap.py").read_text(encoding="utf-8")
+namespace={}
+keyast=ast.parse(keysource)
+for name in ("VOICE_ACTION","VOICE_WINDOWS"):
+    node=next(
+        n for n in keyast.body if isinstance(n,ast.Assign) and isinstance(n.targets[0],ast.Name) and n.targets[0].id==name)
+    exec(compile(ast.Module(body=[node],type_ignores=[]),"keymap","exec"),namespace)
+voicekeys=function_from("scripts/keymap.py","voice_keymap",namespace)
+keyxml=ET.fromstring(voicekeys())
+for win in ("global","Home","Videos","FullscreenVideo","FullscreenLiveTV","VideoOSD","TVGuide","Settings"):
+    for key in ("backspace","browser_back"):
+        assert keyxml.findtext(win+"/keyboard/"+key)=='RunScript(special://skin/scripts/ai_voice.py)'
+        assert keyxml.find(win+"/keyboard/"+key).get("mod")=="longpress"
+    assert keyxml.find(win+"/remote/back").get("mod")=="longpress"
+assert not keyxml.findall(".//return") and not keyxml.findall(".//enter") and not keyxml.findall(".//select")
+assert keyxml.findtext("VirtualKeyboard/keyboard/browser_back")=="PreviousMenu"
+assert keyxml.findtext("VirtualKeyboard/keyboard/backspace")=="noop"
+assert keyxml.findtext("NumericInput/remote/back")=="noop"
+assert len(ET.fromstring(voicekeys("off")))==0
+assert ET.fromstring(voicekeys("keyboard")).find("global/keyboard/f12").get("mod")=="ctrl,alt"
+keyboardxml=ET.parse(root/"xml/DialogKeyboard.xml").getroot()
+voice_load=next(n for n in keyboardxml.findall("onload") if "ai_voice.py,listen" in n.text)
+assert "lucent.voice.arm" in voice_load.get("condition") and "System.Platform.Android" in voice_load.get("condition")
+voicepath="scripts/ai_voice.py"
+vsource=(root/voicepath).read_text(encoding="utf-8")
+assert 'keyboard.isConfirmed()' in vsource and '_run_query(text,context,global_mode=True)' in vsource
+assert 'Action(VoiceRecognizer)' in vsource and 'home.clearProperty(ARM)' in vsource
+assert 'PlayerControl(Stop)' not in vsource and 'SetFocus(' not in vsource
+assert 'if not global_mode:\n        _focus_search()' in source
+assert 'if global_mode:\n            progress.close()\n            if not rows:' in source
+# Simulate native recognition trigger; tickets prevent stale or duplicate calls.
+class FakeHome:
+    def __init__(self,props): self.props=dict(props)
+    def getProperty(self,k): return self.props.get(k,"")
+    def clearProperty(self,k): self.props.pop(k,None)
+actions=[]
+fake_xbmc=SimpleNamespace(Monitor=lambda:SimpleNamespace(abortRequested=lambda:False,waitForAbort=lambda _:False),
+    executebuiltin=lambda action:actions.append(action))
+fake_gui=SimpleNamespace(getCurrentWindowDialogId=lambda:10103)
+listen=function_from(voicepath,"listen",{"xbmc":fake_xbmc,"xbmcgui":fake_gui,
+    "ARM":"arm","BUSY":"busy","KEYBOARD":10103})
+window=FakeHome({"arm":"123","busy":"123"})
+listen(window);listen(window)
+assert actions==["Action(VoiceRecognizer)"] and not window.getProperty("arm")
+listen(FakeHome({"arm":"stale","busy":"123"}))
+assert len(actions)==1
+print("Voice AI: isolated keymap, native keyboard, one-shot capture and global UI verified")

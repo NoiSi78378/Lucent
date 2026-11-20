@@ -130,6 +130,58 @@ def pvr_keymap(backstop=True):
 """.format(back=back)
 
 
+# Separate, reversible overlay. No ordinary Back, OK or channel mappings are
+# rewritten. Android BACK is translated to backspace; other remotes may send
+# browser_back or a remote back event. Kodi tries a window's short action
+# before a global long action, so list the relevant native windows explicitly.
+VOICE_PATH = DIR + "lucent-voice.xml"
+VOICE_ACTION = "RunScript(special://skin/scripts/ai_voice.py)"
+VOICE_WINDOWS = (
+    "global","Home","Videos","VideoPlaylist","MovieInformation","Music",
+    "MusicPlaylist","MusicPlaylistEditor","MusicInformation","Pictures",
+    "PictureInfo","FavouritesBrowser","Programs","Addon","AddonInformation",
+    "Settings","PlayerSettings","MediaSettings","SystemSettings",
+    "ServiceSettings","InterfaceSettings","Profiles","SystemInfo","Weather",
+    "FileManager","TVChannels","TVGuide","TVRecordings","TVTimers","TVSearch",
+    "RadioChannels","RadioGuide","RadioRecordings","RadioTimers",
+    "FullscreenVideo","FullscreenLiveTV","FullscreenRadio","VideoOSD",
+    "FullscreenInfo","SeekBar","PVROSDChannels","PVRChannelGuide","VideoMenu",
+)
+
+def voice_keymap(mode="back"):
+    if mode not in ("back","keyboard"):
+        return "<keymap/>"
+    lines=["<keymap>"]
+    for win in VOICE_WINDOWS:
+        lines.append("    <"+win+">")
+        if mode=="back":
+            lines.append("        <keyboard>")
+            for key in ("backspace","browser_back"):
+                lines.append('            <'+key+' mod="longpress">'+VOICE_ACTION+'</'+key+'>')
+            if win in ("FullscreenVideo","FullscreenLiveTV","FullscreenRadio","VideoOSD","FullscreenInfo","SeekBar","VideoMenu"):
+                lines.append('            <escape mod="longpress">'+VOICE_ACTION+'</escape>')
+            lines.extend(["        </keyboard>","        <remote>",
+                          '            <back mod="longpress">'+VOICE_ACTION+'</back>',
+                          "        </remote>"])
+        else:
+            lines.extend(["        <keyboard>",'            <f12 mod="ctrl,alt">'+VOICE_ACTION+'</f12>',"        </keyboard>"])
+        lines.append("    </"+win+">")
+    # Never intercept Back or OK inside a text field / password / numeric input.
+    # Explicit noop disables global long-press detection for those keys;
+    # browser_back retains Kodi's stock keyboard escape on long press.
+    if mode=="back":
+        lines.extend(['    <VirtualKeyboard><keyboard>',
+            '        <backspace mod="longpress">noop</backspace>',
+            '        <browser_back mod="longpress">PreviousMenu</browser_back>',
+            '        <escape mod="longpress">Back</escape>',
+            '    </keyboard><remote><back mod="longpress">noop</back></remote></VirtualKeyboard>',
+            '    <NumericInput><keyboard>',
+            '        <backspace mod="longpress">noop</backspace>',
+            '        <browser_back mod="longpress">noop</browser_back>',
+            '    </keyboard><remote><back mod="longpress">noop</back></remote></NumericInput>'])
+    return "\n".join(lines+["</keymap>",""])
+
+
 def read(path):
     if not xbmcvfs.exists(path):
         return None
@@ -155,6 +207,8 @@ def main():
     backstop = xbmc.getInfoLabel("Skin.String(nuvio.backstop)") != "off"
     changed = sync(PATH, KEYMAP, backstop)
     changed = sync(PVR_PATH, pvr_keymap(backstop), True) or changed
+    voice_mode = xbmc.getInfoLabel("Skin.String(lucent.voice.key)") or "back"
+    changed = sync(VOICE_PATH, voice_keymap(voice_mode), voice_mode in ("back","keyboard")) or changed
     # OK opens the page first for films / episodes in the Kodi video lists (add-on folders): only when chosen in Skin settings
     ok_wanted = xbmc.getCondVisibility("Skin.HasSetting(nuvio.ok.movie.page) | Skin.HasSetting(nuvio.ok.episode.page)")
     changed = sync(OK_PATH, OK_KEYMAP, ok_wanted) or changed
@@ -165,6 +219,7 @@ def main():
         xbmc.executebuiltin("Action(reloadkeymaps)")
         log("keymaps updated")
     xbmc.executebuiltin("SetProperty(lucent.pvr.keys.v1,1,home)")
+    xbmc.executebuiltin("SetProperty(lucent.voice.keys.v1,1,home)")
 
 
 if __name__ == "__main__":

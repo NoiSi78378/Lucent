@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
     <defaultcontrol always="true">300</defaultcontrol>   <!-- 2.1.15 (#21): OK first, like Estuary -->
+    <!-- Only the global AI explicitly arms speech; ordinary keyboards are untouched. -->
+    <onload condition="System.Platform.Android + !String.IsEmpty(Window(home).Property(lucent.voice.arm))">RunScript(special://skin/scripts/ai_voice.py,listen)</onload>
     <include>Anim_SlideUp</include>
     <controls>
         <include>DialogDim</include>
