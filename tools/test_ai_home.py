@@ -220,3 +220,34 @@ print("Assistant: combined constraints, evidence rejection, episode progression,
 
 assert "public_catalogue" in (root/"scripts/ai_assistant.py").read_text()
 assert "keyboard.isConfirmed()" in source
+
+# PVR integration: routing must precede film/series playback; test real RPC payloads.
+import ai_pvr as pvr
+fixture_channels=[{"channelid":10,"channel":"DMAX HD","broadcastnow":{"title":"Programma DMAX"}},
+                  {"channelid":12,"channel":"Italia 1 HD","broadcastnow":{"title":"Programma Italia 1"}},
+                  {"channelid":13,"channel":"Italia 2","broadcastnow":{"title":"Altro"}}]
+assert pvr.match_channels(fixture_channels,"DMAX")[0]["channelid"]==10
+assert pvr.match_channels(fixture_channels,"Italia 1")[0]["channelid"]==12
+assert pvr.match_channels(fixture_channels,"Italia uno")[0]["channelid"]==12
+assert not pvr.match_channels(fixture_channels,"Italia")
+assert pvr.local_request("metti su Dmax",fixture_channels)["operation"]=="tune"
+assert pvr.local_request("cosa c'è su Italia 1?",fixture_channels)=={
+    "operation":"epg","channel":"Italia 1","when":"now"}
+assert pvr.local_request("Cosa danno su Italia 1 stasera?",fixture_channels)["when"]=="tonight"
+assert pvr.local_request("Voglio vedere quel film del ragazzo sopravvissuto su Marte",fixture_channels) is None
+calls=[]
+def pvr_rpc(method,params):
+    calls.append((method,params))
+    if method=="PVR.GetChannels":
+        return {"channels":fixture_channels,"limits":{"start":0,"end":3,"total":3}}
+    if method=="Player.Open": return "OK"
+    raise AssertionError(method)
+cs=pvr.channels(pvr_rpc)
+assert len(cs)==3 and calls[0][1]["channelgroupid"]=="alltv"
+assert pvr.schedule(pvr_rpc,cs[1],"now")[0]["title"]=="Programma Italia 1"
+assert pvr.tune(pvr_rpc,cs[0])=="OK"
+assert calls[-1]==("Player.Open",{"item":{"channelid":10}})
+assert validate({"operation":"tune","channel":"DMAX"})["channel"]=="DMAX"
+assert 'if op in ("tune","epg"):' in source
+assert source.index("tv_request=pvr.local_request") < source.index('target,message = assistant.resume_target(p)')
+print("PVR assistant: channel identity, local route, EPG and native tuning verified")

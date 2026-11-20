@@ -22,6 +22,7 @@ from ai_intent_core import understand, GENRE_IT
 from ai_exact_core import candidate, merge_candidates
 from ai_cast_core import person_intent, find_person, credit_rows
 import ai_assistant as assistant
+import ai_pvr as pvr
 from ai_search import (_ai_request, _discover, _add_artwork, _live_epg, _art_key,
                        _json_art, _settings, _save_key, stream4me_url, KEY_DIR, _rpc)
 
@@ -356,6 +357,87 @@ def _verified_person_search(person, intent):
                 (period, person["name"]))
 
 
+def _tv_channels():
+    try:
+        return pvr.channels(_rpc)
+    except (RuntimeError,TypeError,ValueError):
+        return []
+
+
+def _tv_action(plan,prompt,progress,channels=None):
+    progress.close()
+    channels=_tv_channels() if channels is None else channels
+    if not channels:
+        msg="Nessun canale TV PVR accessibile. Controlla World Live TV, la lista canali e il client PVR."
+        _status(msg)
+        xbmcgui.Dialog().ok("Lucent AI · TV",msg)
+        return
+    name=plan.get("channel") or ""
+    when=plan.get("when") or "now"
+    title=plan.get("title") or ""
+    targets=pvr.match_channels(channels,name) if name else []
+    if name and not targets:
+        msg="Canale non trovato nella lista PVR: "+name
+        _status(msg)
+        xbmcgui.Dialog().ok("Lucent AI · TV",msg)
+        return
+    if plan["operation"]=="tune":
+        if not targets:
+            _status("Indica il nome del canale TV.")
+            return
+        # If channels have identical aliases, use the exact label if unique;
+        # otherwise ask rather than tune a different regional channel.
+        if len(targets)>1:
+            exact=[c for c in targets if pvr.norm(pvr.label(c))==pvr.norm(name)]
+            if len(exact)==1: targets=exact
+            else:
+                i=xbmcgui.Dialog().select("Scegli il canale",[pvr.label(c) for c in targets])
+                if i<0:
+                    _status("Sintonizzazione annullata.")
+                    return
+                targets=[targets[i]]
+        result=pvr.tune(_rpc,targets[0])
+        _status(("Sintonizzazione richiesta · " if result=="OK" else "Kodi non ha confermato · ")+pvr.label(targets[0]))
+        return
+    if name:
+        if len(targets)>1:
+            i=xbmcgui.Dialog().select("Scegli il canale",[pvr.label(c) for c in targets])
+            if i<0:
+                _status("Ricerca TV annullata.")
+                return
+            targets=[targets[i]]
+        c=targets[0]
+        rows=pvr.schedule(_rpc,c,when)
+        if title:
+            rows=[r for r in rows if pvr.norm(title) in pvr.norm(pvr.broadcast_title(r)) or
+                  pvr.norm(title) in pvr.norm(r.get("originaltitle"))]
+        msg="\n".join(pvr.line(r) for r in rows[:35]) if rows else "Nessun dato EPG per questo orario. Il canale può comunque essere disponibile."
+        _status("Guida TV · "+pvr.label(c))
+        if when in ("now","next") and rows:
+            if xbmcgui.Dialog().yesno(pvr.label(c),msg,yeslabel="Guarda canale",nolabel="Chiudi"):
+                pvr.tune(_rpc,c)
+        else:
+            xbmcgui.Dialog().textviewer("Guida TV · "+pvr.label(c),msg)
+        return
+    if when not in ("now","next"):
+        # Do not issue hundreds of PVR queries across the entire guide.
+        _status("Guida TV · seleziona il canale e l'orario")
+        xbmc.executebuiltin("ActivateWindow(TVGuide)")
+        return
+    rows=[]
+    for c in channels:
+        for b in pvr.schedule(_rpc,c,when):
+            if not title or pvr.norm(title) in pvr.norm(pvr.broadcast_title(b)):
+                rows.append((c,b))
+    if not rows:
+        _status("Nessuna corrispondenza nei dati EPG disponibili.")
+        xbmcgui.Dialog().ok("Lucent AI · TV","Nessuna corrispondenza nei dati EPG disponibili.")
+        return
+    _status("Programmi TV trovati: %d"%len(rows))
+    i=xbmcgui.Dialog().select("Guida TV",[pvr.line(b,c) for c,b in rows])
+    if i>=0: pvr.tune(_rpc,rows[i][0])
+
+
 def _run_query(prompt, context=None):
     """One validated plan then a bounded, allowlisted executor."""
     _focus_search()
@@ -363,6 +445,16 @@ def _run_query(prompt, context=None):
     progress.create("Lucent AI", "Comprendo la richiesta...")
     _status("Ricerca in corso...")
     try:
+        # Route explicit channel actions locally, before cinematic interpretation.
+        tv_request=None
+        tv_channels=None
+        if re.search(r"\b(metti|sintonizza|sintonizzami|passa|vai|apri|avvia|guarda|vedere|cosa|danno|trasmettono|programma|tv|canale)\b",prompt,re.I):
+            tv_channels=_tv_channels()
+            tv_request=pvr.local_request(prompt,tv_channels)
+        if tv_request:
+            assistant.remember(prompt,tv_request)
+            _tv_action(tv_request,prompt,progress,tv_channels)
+            return
         # Simple titles remain available without any AI credentials. Requests for
         # actions or people must go through the planner (even just two words).
         direct = understand(prompt)["direct"] and not context and not re.search(
@@ -380,6 +472,14 @@ def _run_query(prompt, context=None):
             p = assistant.plan_query(prompt,context)
             op = p["operation"]
             progress.update(35,"Lucent AI","Consulto le fonti disponibili...")
+            if op in ("tune","epg"):
+                _tv_action(p,prompt,progress,tv_channels)
+                return
+            if op=="play" and p.get("title") and not p.get("kind"):
+                available=_tv_channels() if tv_channels is None else tv_channels
+                if pvr.match_channels(available,p["title"]):
+                    _tv_action(dict(p,operation="tune",channel=p["title"]),prompt,progress,available)
+                    return
             if op in ("resume","play"):
                 target,message = assistant.resume_target(p)
                 progress.close()
@@ -407,7 +507,8 @@ def _run_query(prompt, context=None):
                 if found:
                     xbmcgui.Dialog().ok("Lucent AI","Un titolo omonimo è già nella videoteca. Controlla la scheda prima di aggiungerne un altro.")
                     return
-                xbmcgui.Dialog().ok("Lucent AI","L'importazione da una sorgente specifica va confermata nell'add-on. Apro la ricerca del titolo; non posso confermare l'aggiunta automatica.")
+                _status("Importazione non eseguita · apertura ricerca manuale")
+                xbmcgui.Dialog().ok("Lucent AI","Non è disponibile un’importazione automatica verificata per la sorgente richiesta. Puoi aggiungere il titolo manualmente da una sorgente autorizzata.")
                 if xbmc.getCondVisibility("System.HasAddon(plugin.video.s4me)"):
                     xbmc.executebuiltin('ActivateWindow(Videos,"%s",return)' % stream4me_url(p["title"]))
                 return
@@ -415,14 +516,6 @@ def _run_query(prompt, context=None):
                 response=assistant.answer(prompt,p,context)
                 progress.close()
                 xbmcgui.Dialog().textviewer("Lucent AI",response)
-                return
-            if op=="epg":
-                progress.close()
-                if p["title"]:
-                    live,msg=_live_epg([p["title"]])
-                    xbmcgui.Dialog().ok("Lucent AI","\n".join(x["title"]+" · "+x["reason"] for x in live) or msg)
-                else:
-                    xbmc.executebuiltin("ActivateWindow(TVGuide)")
                 return
             if op=="unsupported":
                 progress.close()

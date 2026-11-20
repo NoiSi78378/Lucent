@@ -11,9 +11,10 @@ GENRES.update({
     "history":{"movie":36,"tv":None}, "music":{"movie":10402,"tv":None},
     "family":{"movie":10751,"tv":10751}, "biography":{"movie":None,"tv":None},
 })
-OPS = ("search","answer","resume","play","library","add","epg","scan","unsupported")
+OPS = ("search","answer","resume","play","library","add","epg","tune","scan","unsupported")
 FIELDS = {
     "operation": {"type":"string","enum":list(OPS)},
+    "channel":{"type":"string"}, "when":{"type":"string","enum":["now","next","today","tonight","tomorrow"]},
     "title":{"type":"string"}, "kind":{"type":"string","enum":["","film","serie"]},
     "year_from":{"type":"integer"}, "year_to":{"type":"integer"},
     "genres":{"type":"array","items":{"type":"string"}},
