@@ -293,3 +293,26 @@ assert osd.find(".//control[@id='4992']").findall("onclick")[-1].text=="PlayerCo
 assert osd.find(".//control[@id='4991']").findall("onclick")[-1].text=="ActivateWindow(pvrosdchannels)"
 assert "SetFocus(460,0)" not in (root/"scripts/live.py").read_text()
 print("PVR handoff, dialog closure, dedicated keymap and stable OSD focus verified")
+
+
+# The safety controls stay independent of the EPG, but are now centered
+# just above its native panel and drawn on top of the OSD gradients.
+parents={child:parent for parent in osd.iter() for child in parent}
+buttons=[osd.find(".//control[@id='%s']"%i) for i in (4990,4991,4992)]
+group=parents[buttons[0]]
+assert all(parents[b] is group for b in buttons)
+assert group.findtext("visible")=="Pvr.IsPlayingTV"
+assert group in osd.find("controls").findall("control")
+assert list(osd.find("controls"))[-1] is group
+gx,gy,gw,gh=[int(group.findtext(k)) for k in ("left","top","width","height")]
+guide=parents[osd.find(".//control[@id='460']")]
+assert gx*2+gw==1920
+assert 0 < int(guide.findtext("top"))-(gy+gh) <= 24
+rects=[(int(b.findtext("left")),int(b.findtext("width"))) for b in buttons]
+assert rects==[(0,220),(238,240),(496,220)]
+assert all(int(b.findtext("height"))==gh and b.findtext("textcolor")=="FFFFFFFF" for b in buttons)
+assert all(b.find("texturenofocus").get("colordiffuse")=="E6222832" for b in buttons)
+assert buttons[0].findtext("onclick")=="Dialog.Close(videoosd,true)"
+assert buttons[0].findtext("onright")=="4991" and buttons[1].findtext("onright")=="4992"
+assert all(b.findtext("onback")=="Dialog.Close(videoosd,true)" for b in buttons)
+print("PVR controls: centered geometry, safe guide gap, rendering order and unchanged navigation")
