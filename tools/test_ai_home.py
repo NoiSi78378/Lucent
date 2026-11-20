@@ -217,3 +217,6 @@ assert "assistant.history()" in source
 assert "if op==\"answer\":" in source
 assert "assistant.assistant" not in source
 print("Assistant: combined constraints, evidence rejection, episode progression, history and UI passed")
+
+assert "public_catalogue" in (root/"scripts/ai_assistant.py").read_text()
+assert "keyboard.isConfirmed()" in source

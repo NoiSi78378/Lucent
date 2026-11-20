@@ -109,7 +109,7 @@ def hard_filters(p):
 def matches(item,p,kind,today=None):
     """Check detail evidence, not model text. Return false for missing hard evidence."""
     today=today or datetime.date.today().isoformat()
-    date=str(item.get("release_date") if kind=="film" else item.get("first_air_date") or "")
+    date=str((item.get("release_date") if kind=="film" else item.get("first_air_date")) or "")
     title=item.get("title") or item.get("name") or ""
     if not title or (p["kind"] and p["kind"]!=kind):
         return False
@@ -123,14 +123,14 @@ def matches(item,p,kind,today=None):
             return False
         if p["released"] and date>today:
             return False
-    ids={x.get("id") for x in item.get("genres",[]) if isinstance(x,dict)}
+    ids={x.get("id") for x in (item.get("genres") or []) if isinstance(x,dict)}
     ids.update(item.get("genre_ids") or [])
     for key in ("genres","exclude_genres"):
         for genre in p[key]:
             gid=GENRES[genre]["movie" if kind=="film" else "tv"]
             if gid is None or not ids or (key=="genres" and gid not in ids) or (key=="exclude_genres" and gid in ids):
                 return False
-    countries={x.get("iso_3166_1") for x in item.get("production_countries",[]) if isinstance(x,dict)}
+    countries={x.get("iso_3166_1") for x in (item.get("production_countries") or []) if isinstance(x,dict)}
     countries.update(item.get("origin_country") or [])
     if p["countries"] and not set(p["countries"]).issubset(countries):
         return False

@@ -10,8 +10,8 @@ import urllib.parse
 import urllib.request
 
 from ai_assistant_core import SCHEMA, GENRES, validate, hard_filters, matches, choose_episode, clean
-from ai_art_core import normalize, tmdb_art
-from ai_search import _settings, _art_key, _rpc, KEY_DIR, KEY_FILE
+from ai_art_core import normalize, tmdb_art, catalogue_art, year_of
+from ai_search import _settings, _art_key, _rpc, KEY_DIR, KEY_FILE, _json_art
 
 MODEL="deepseek/deepseek-v4.1-flash-1017"
 MODELS=(MODEL,"deepseek/deepseek-v4.1-flash","openrouter/free")
@@ -99,7 +99,11 @@ def _chat(messages,plan=False):
             text=choice.get("message",{}).get("content")
             if isinstance(text,str) and text.strip():
                 if plan:
-                    try: return validate(json.loads(text.strip()))
+                    try:
+                        raw=json.loads(text.strip())
+                        if not isinstance(raw,dict) or not set(SCHEMA["required"]).issubset(raw):
+                            raise ValueError("Incomplete plan")
+                        return validate(raw)
                     except (ValueError,TypeError): pass
                 else:
                     return clean(text,3000)
@@ -210,17 +214,68 @@ def detail_row(item,kind,reason=""):
             "poster":art.get("poster"),"backdrop":art.get("backdrop"),
             "tmdb_id":str(item.get("id") or ""),"reason":reason,"plot":clean(item.get("overview"),500)}
 
+def public_catalogue(p,exact):
+    """No-key discovery with independent Cinemeta genre and date evidence."""
+    from ai_intent_core import genre_eligible, GENRES as public_genres
+    needs_tmdb=("people","countries","exclude_countries","language","runtime_min","runtime_max",
+                "votes_min","seasons_min","seasons_max","status","unwatched","season","episode")
+    if any(p[k] for k in needs_tmdb):
+        raise RuntimeError("Questi criteri richiedono TMDb o dati Kodi/Trakt. Configura TMDb nelle impostazioni.")
+    if any(g not in public_genres for g in p["genres"]+p["exclude_genres"]):
+        raise RuntimeError("Genere non verificabile senza la configurazione TMDb.")
+    rows=[]; seen=set(); deadline=time.monotonic()+20
+    names=([p["title"]] if p["title"] else [])+p["candidates"]
+    kinds=[p["kind"]] if p["kind"] else ["film","serie"]
+    for kind in kinds:
+        media="movie" if kind=="film" else "series"
+        root="https://v3-cinemeta.strem.io/catalog/"+media+"/"
+        paths=[("top/search="+urllib.parse.quote(name,safe=""),name) for name in names[:8]]
+        if not paths and not p["themes"] and not p["similar"]:
+            if p["year_from"] and p["year_to"] and p["year_to"]-p["year_from"]<=8:
+                paths.extend(("year/genre=%d"%year,"") for year in range(p["year_to"],p["year_from"]-1,-1))
+            if p["genres"]:
+                g=public_genres[p["genres"][0]]["catalog"]
+                paths.append(("top/genre="+urllib.parse.quote(g,safe=""),""))
+            if not paths: paths=[("top","")]
+        for path,name in paths:
+            if time.monotonic()>deadline or len(rows)>=16: break
+            data=_json_art(root+path+".json",timeout=4)
+            for item in data.get("metas",[]) if isinstance(data,dict) else []:
+                if not isinstance(item,dict): continue
+                title=item.get("name") or ""
+                if not title or (name and normalize(name)!=normalize(title)): continue
+                year=year_of(item)
+                if (p["year_from"] or p["year_to"]) and not year: continue
+                if year and (p["year_from"] and int(year)<p["year_from"] or p["year_to"] and int(year)>p["year_to"]): continue
+                date=str(item.get("released") or item.get("release_date") or "")[:10]
+                if p["released"] and (not re.fullmatch(r"\d{4}-\d{2}-\d{2}",date) or date>datetime.date.today().isoformat()): continue
+                genres=item.get("genres") or []
+                if any(not genre_eligible({"kind":kind,"genres":genres},{"genre":g}) for g in p["genres"]): continue
+                if p["exclude_genres"] and (not genres or any(genre_eligible({"kind":kind,"genres":genres},{"genre":g}) for g in p["exclude_genres"])): continue
+                if normalize(title) in {normalize(x) for x in p["exclude_titles"]+p["similar"]}: continue
+                art=catalogue_art(item,"cinemeta")
+                if p["rating_min"] and float(art.get("rating") or 0)<p["rating_min"]: continue
+                k=(normalize(title),kind,year)
+                if k in seen: continue
+                seen.add(k)
+                rows.append(dict(art,title=title,kind=kind,year=year,reason="Metadati Cinemeta"))
+                if len(rows)>=16: break
+    if p["order"]=="rating": rows.sort(key=lambda r:float(r.get("rating") or 0),reverse=True)
+    if p["order"] in ("recent","oldest"): rows.sort(key=lambda r:r.get("year") or "",reverse=p["order"]=="recent")
+    note="Metadati Cinemeta · copertura limitata senza TMDb"
+    if p["unverified"]: note+=" · non verificabile: "+", ".join(p["unverified"])[:180]
+    if p["themes"] or p["similar"]: note+=" · affinità indicativa"
+    return rows,note
+
+
 def catalogue(p,exact):
-    """Independent retrieval and filtering; semantic guesses are labeled as such."""
+    """Independent retrieval; unknown semantic criteria are explicitly labeled."""
     if not tmdb_key():
-        if hard_filters(p):
-            raise RuntimeError("Serve una Key TMDb per verificare tutti i criteri della ricerca.")
-        names=([p["title"]] if p["title"] else [])+p["candidates"]
-        rows=[]
-        for name in names[:5]:
-            rows.extend(r for r in exact(name) if r.get("kind") in ("film","serie")
-                        and (not p["kind"] or r["kind"]==p["kind"]))
-        return rows[:16],"Titoli trovati nei cataloghi; pertinenza semantica indicativa."
+        if not hard_filters(p) and not p["themes"] and not p["similar"] and p["title"]:
+            rows=[r for r in exact(p["title"]) if r.get("kind") in ("film","serie")
+                  and (not p["kind"] or r["kind"]==p["kind"])]
+            return rows,"Titoli corrispondenti nei cataloghi"
+        return public_catalogue(p,exact)
     c=Catalog()
     kinds=["movie","tv"] if not p["kind"] else ["movie" if p["kind"]=="film" else "tv"]
     local_watched=set()
@@ -246,7 +301,23 @@ def catalogue(p,exact):
                 if title in p["similar"] and isinstance(item.get("id"),int):
                     pool.extend(c.get("%s/%s/recommendations"%(media,item["id"])).get("results") or [])
                     break
-        if not targets and not p["themes"]: pool.extend(c.discover(p,media))
+        required=[x for x in p["people"] if not x["exclude"]]
+        if required and not targets:
+            for person in required[:3]:
+                people=c.get("search/person",query=person["name"]).get("results") or []
+                exact_people=[x for x in people if normalize(x.get("name"))==normalize(person["name"])]
+                if len(exact_people)!=1: continue
+                ident=exact_people[0].get("id")
+                if not isinstance(ident,int): continue
+                credits=c.get("person/%d/%s_credits"%(ident,media))
+                pool.extend(credits.get("cast" if person["role"]=="actor" else "crew") or [])
+            pool=[x for x in pool if not p["year_from"] or
+                  str(x.get("release_date") or x.get("first_air_date") or "")[:4]>=str(p["year_from"])]
+            pool=[x for x in pool if not p["year_to"] or
+                  str(x.get("release_date") or x.get("first_air_date") or "")[:4]<=str(p["year_to"])]
+            if media=="movie": pool.extend(c.discover(p,media))
+        elif not targets and not p["themes"]:
+            pool.extend(c.discover(p,media))
         for item in pool[:35]:
             if time.monotonic()>c.deadline: break
             ident=item.get("id")
@@ -296,7 +367,7 @@ def _trakt(path,params=None,all_pages=False):
         if not isinstance(data,list): return None
         result.extend(data)
         if page>=pages or not data: return result
-    return result
+    return None  # Do not claim complete history after hitting the pagination cap.
 
 def trakt_progress(title,year=0):
     search=_trakt("search/show",{"query":title})

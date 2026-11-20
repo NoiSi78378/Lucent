@@ -237,9 +237,9 @@ def _focus_search():
 def reset_search():
     """Return to discovery without losing remote/keyboard navigation."""
     _focus_search()
+    _put("ai.home.mode", "suggestions")
     _fill("result", [])
     _put("ai.home.query", PLACEHOLDER)
-    _put("ai.home.mode", "suggestions")
     _status(CLOSE_SEARCH)
     _focus_search()
 
@@ -371,9 +371,12 @@ def _run_query(prompt, context=None):
             prompt, re.I)
         if direct:
             rows = _exact_titles(prompt)
-            message = "Titoli corrispondenti: %d" % len(rows)
-            assistant.remember(prompt, {"operation":"search","title":prompt})
-        else:
+            if rows and rows[0].get("kind")=="titolo" and _settings().get("openrouter_key"):
+                direct=False
+            else:
+                message = "Titoli corrispondenti: %d" % len(rows)
+                assistant.remember(prompt, {"operation":"search","title":prompt})
+        if not direct:
             p = assistant.plan_query(prompt,context)
             op = p["operation"]
             progress.update(35,"Lucent AI","Consulto le fonti disponibili...")
@@ -485,8 +488,9 @@ def history_menu():
     rows=list(reversed(rows))
     choice=xbmcgui.Dialog().select("Cronologia Lucent AI",[r["query"] for r in rows])
     if choice>=0:
+        # History may contain an action: require a fresh confirmation.
         _put("ai.home.query",rows[choice]["query"])
-        _run_query(rows[choice]["query"])
+        input_search()
 
 
 def ask_selected(container=0):
